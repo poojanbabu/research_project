@@ -143,4 +143,54 @@ def plot_fig3():
     plt.close()
 
 
-plot_fig3()
+def plot_perm_decay_rates():
+    Path("../Plot/Perm").mkdir(parents=True, exist_ok=True)
+
+    # Plot energy
+    nPatterns = np.loadtxt("../Text/patterns.txt")
+    arr_energy = np.loadtxt("../Text/Perm/energy.txt")
+    plt.plot(nPatterns, arr_energy, linewidth=1)
+    plt.xticks(nPatterns)
+    plt.yscale("log")
+    plt.xlabel("# Patterns", fontsize=16)
+    plt.ylabel("Energy", fontsize=16)
+    plt.tight_layout()
+    plt.savefig("../Plot/Perm/energy.png")
+    plt.close()
+
+    arr_error = np.loadtxt("../Text/Perm/error.txt")
+    plt.plot(nPatterns, arr_error, linewidth=1)
+    plt.xticks(nPatterns)
+    plt.xlabel("# Patterns", fontsize=16)
+    plt.ylabel("Error", fontsize=16)
+    plt.tight_layout()
+    plt.savefig("../Plot/Perm/error.png")
+    plt.close()
+
+    arr_epochs = np.loadtxt("../Text/Perm/epoch.txt")
+    plt.plot(nPatterns, arr_epochs, linewidth=1)
+    plt.xticks(nPatterns)
+    plt.xlabel("# Patterns", fontsize=16)
+    plt.ylabel("Epoch (Learning time)", fontsize=16)
+    plt.tight_layout()
+    plt.savefig("../Plot/Perm/epoch.png")
+    plt.close()
+
+
+def perm_decay_patterns():
+    Path("../Plot/Perm_decay").mkdir(parents=True, exist_ok=True)
+
+    decay_rates_lLTP = np.loadtxt("../Text/Perm_decay/decay_rates.txt")
+    arr_patterns = np.loadtxt("../Text/Perm_decay/patterns.txt")
+    plt.plot(decay_rates_lLTP, arr_patterns, linewidth=1, marker='o')
+    plt.xticks(decay_rates_lLTP)
+    plt.xlabel("Decay rate", fontsize=16)
+    plt.ylabel("# Patterns", fontsize=16)
+    plt.tight_layout()
+    plt.savefig("../Plot/Perm_decay/patterns.png")
+    plt.close()
+
+
+perm_decay_patterns()
+# plot_perm_decay_rates()
+# plot_fig3()
