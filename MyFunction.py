@@ -54,12 +54,12 @@ class Perceptron():
 
     def CalculateOutput(self, iPattern):
         # adding maintenance cost into var_energy and var_energy_eLTP
-        self.var_energy += self.energy_scale_maintenance * np.sum(np.fabs(self.arr_weight[np.arange(0, self.nDim)]))
-        # self.var_energy_eLTP += self.energy_scale_maintenance * np.sum(
-        #     np.fabs(self.arr_deltaW[np.arange(0, self.nDim)]))
-        # self.arr_deltaW[np.arange(0, self.nDim)] = self.arr_deltaW[np.arange(0, self.nDim)] * np.exp(-self.decay_eLTP)
+        self.var_energy += self.energy_scale_maintenance * np.sum(np.fabs(self.arr_deltaW[np.arange(0, self.nDim)]))
+        self.var_energy_eLTP += self.energy_scale_maintenance * np.sum(
+            np.fabs(self.arr_deltaW[np.arange(0, self.nDim)]))
+        self.arr_deltaW[np.arange(0, self.nDim)] = self.arr_deltaW[np.arange(0, self.nDim)] * np.exp(-self.decay_eLTP)
         self.arr_weight[np.arange(0, self.nDim)] = self.arr_weight[np.arange(0, self.nDim)] * np.exp(-self.decay_lLTP)
-        input = np.dot(self.arr_weight, self.pattern[iPattern])
+        input = np.dot(self.arr_weight + self.arr_deltaW, self.pattern[iPattern])
         if_spike = int(input > 0.)
         difference = self.pattern_answer[iPattern] - if_spike
         return difference
@@ -74,7 +74,7 @@ class Perceptron():
 
     def BreakLoop(self):
         tmp = self.var_epoch % self.size_buffer
-        if (self.count_error >= self.arr_count_error_buffer[tmp]):
+        if self.count_error >= self.arr_count_error_buffer[tmp]:
             self.var_epoch -= self.size_buffer
             self.arr_weight = self.arr_weight_buffer[tmp]
             self.var_energy = self.arr_energy_buffer[tmp]
@@ -94,14 +94,14 @@ class Perceptron():
         self.var_error += self.count_error / self.nPattern
 
         # consolidate all e-LTP weights to l-LTP weights at the end
-        # self.arr_weight += self.arr_deltaW
+        self.arr_weight += self.arr_deltaW
         self.var_energy += self.energy_scale_lLTP * np.sum(
-            np.fabs(self.arr_weight[np.arange(0, self.nDim)]))  # assume changing bias costs no energy
-        # self.var_energy_lLTP += self.energy_scale_lLTP * np.sum(
-        #     np.fabs(self.arr_deltaW[np.arange(0, self.nDim)]))  # assume changing bias costs no energy
+            np.fabs(self.arr_deltaW[np.arange(0, self.nDim)]))  # assume changing bias costs no energy
+        self.var_energy_lLTP += self.energy_scale_lLTP * np.sum(
+            np.fabs(self.arr_deltaW[np.arange(0, self.nDim)]))  # assume changing bias costs no energy
 
     def Output(self):
-        if (self.energy_detail is None):
+        if self.energy_detail is None:
             return self.var_energy, self.var_error, self.var_epoch
         else:
             return self.var_energy, self.var_energy_eLTP, self.var_energy_lLTP, self.var_error, self.var_epoch
@@ -115,46 +115,46 @@ class Perceptron():
     # standard perceptron
     def AlgoStandard(self):
         self.Initialise()
-        while (self.count_error != 0):
+        while self.count_error != 0:
             self.count_error = 0.;
             if_spike = 0
             self.arr_deltaW = np.zeros(self.nDim + 1)
             for iPattern in range(0, self.nPattern):
                 difference = self.CalculateOutput(iPattern)
-                if (difference != 0):
+                if difference != 0:
                     self.arr_deltaW = self.learning_rate * difference * self.pattern[iPattern]
                     self.SaveChange()
                     self.count_error += 1.
-            if (self.BreakLoop()):
+            if self.BreakLoop():
                 break
         self.Finalise()
         return self.Output()
 
     # only change individual synapse w when deltaW is large
     def AlgoSynapse(self, synapse_threshold=None):
-        if (synapse_threshold is None):
+        if synapse_threshold is None:
             print("Warning: synapse threshold is not set manually!")
             synapse_threshold = self.synapse_threshold
         self.Initialise()
-        while (self.count_error != 0):
+        while self.count_error != 0:
             self.count_error = 0.;
             if_spike = 0
             for iPattern in range(0, self.nPattern):
                 difference = self.CalculateOutput(iPattern)
-                if (difference != 0):
+                if difference != 0:
                     self.arr_deltaW += self.learning_rate * difference * self.pattern[iPattern]
                     self.count_error += 1.
                 arr_syn_update = np.where(np.fabs(self.arr_deltaW) > synapse_threshold)[0]
                 for iArrSyn in range(0, len(arr_syn_update)):
                     nSynapse = arr_syn_update[iArrSyn]
                     self.arr_weight[nSynapse] += self.arr_deltaW[nSynapse]
-                    if (nSynapse != self.nDim):
+                    if nSynapse != self.nDim:
                         self.var_energy += self.energy_scale_lLTP * np.fabs(
                             self.arr_deltaW[nSynapse])  # assume changing bias costs no energy
                         self.var_energy_lLTP += self.energy_scale_lLTP * np.fabs(
                             self.arr_deltaW[nSynapse])  # assume changing bias costs no energy
                     self.arr_deltaW[nSynapse] = 0.
-            if (self.BreakLoop()):
+            if self.BreakLoop():
                 break
         self.Finalise()
         return self.Output()
@@ -167,14 +167,15 @@ class Perceptron():
         self.Initialise()
         while self.count_error != 0:
             self.count_error = 0.;
+            if_spike = 0
             for iPattern in range(0, self.nPattern):
                 difference = self.CalculateOutput(iPattern)
                 if difference != 0:
-                    self.arr_weight += self.learning_rate * difference * self.pattern[iPattern]
+                    self.arr_deltaW += self.learning_rate * difference * self.pattern[iPattern]
                     self.count_error += 1
-                # arr_syn_update = np.where(np.fabs(self.arr_deltaW) > synapse_threshold)[0]
-                # if len(arr_syn_update) > 0:
-                #     self.SaveChange()
+                arr_syn_update = np.where(np.fabs(self.arr_deltaW) > synapse_threshold)[0]
+                if len(arr_syn_update) > 0:
+                    self.SaveChange()
             if self.BreakLoop():
                 break
         self.Finalise()
@@ -190,8 +191,8 @@ def MakePattern(nPattern, nDimension, is_pattern_integer=False, is_plus_minus_on
     pattern = np.ones(shape=(nPattern, nDimension + 1))  # +1 is from bias
     pattern_answer = -999 * np.ones(nPattern)
     for iPattern in range(0, nPattern):
-        if (is_pattern_integer):
-            if (is_plus_minus_one):  # set patterns to either +1 or -1
+        if is_pattern_integer:
+            if is_plus_minus_one:  # set patterns to either +1 or -1
                 pattern[iPattern] = -1 + 2 * np.around(np.random.uniform(0, 1, nDimension + 1))
             else:  # set patterns to either 1 or 0
                 pattern[iPattern] = np.where(np.random.uniform(-1, 1., nDimension + 1) < 0., 0, 1)

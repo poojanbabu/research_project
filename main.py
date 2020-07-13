@@ -62,7 +62,7 @@ def perm_decay_patterns():
         for iRun in range(nRun):
             Per.pattern = pattern[iRun]
             Per.pattern_answer = pattern_answer[iRun]
-            energy[iRun], energy_eLTP[iRun], energy_lLTP[iRun], error[iRun], epoch[iRun] = Per.AlgoSynapseAll(0)
+            energy[iRun], energy_eLTP[iRun], energy_lLTP[iRun], error[iRun], epoch[iRun] = Per.AlgoStandard()
             print("Run:", iRun+1, "energy:", energy[iRun], " energy_eLTP:", energy_eLTP[iRun], " energy_lLTP:",
                   energy_lLTP[iRun], " error:", error[iRun], " epoch:", epoch[iRun])
 
@@ -120,7 +120,7 @@ def perm_decay_rates():
             for iRun in range(nRun):
                 Per.pattern = pattern[iRun]
                 Per.pattern_answer = pattern_answer[iRun]
-                energy[iRun], energy_eLTP[iRun], energy_lLTP[iRun], error[iRun], epoch[iRun] = Per.AlgoSynapseAll(0)
+                energy[iRun], energy_eLTP[iRun], energy_lLTP[iRun], error[iRun], epoch[iRun] = Per.AlgoStandard()
                 print("Run:", iRun + 1, "energy:", energy[iRun], " energy_eLTP:", energy_eLTP[iRun], " energy_lLTP:",
                       energy_lLTP[iRun], " error:", error[iRun], " epoch:", epoch[iRun])
 
@@ -162,3 +162,6 @@ def perm_decay_rates():
 
 # perm_decay_patterns()
 perm_decay_rates()
+
+
+

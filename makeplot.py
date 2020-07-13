@@ -149,7 +149,7 @@ def plot_perm_decay_rates():
     # Plot energy
     nPatterns = np.loadtxt("../Text/patterns.txt")
     arr_energy = np.loadtxt("../Text/Perm/energy.txt")
-    plt.plot(nPatterns, arr_energy, linewidth=1)
+    plt.plot(nPatterns, arr_energy, linewidth=1, color=arr_color[1], marker='o')
     plt.xticks(nPatterns)
     plt.yscale("log")
     plt.xlabel("# Patterns", fontsize=16)
@@ -159,7 +159,7 @@ def plot_perm_decay_rates():
     plt.close()
 
     arr_error = np.loadtxt("../Text/Perm/error.txt")
-    plt.plot(nPatterns, arr_error, linewidth=1)
+    plt.plot(nPatterns, arr_error, linewidth=1, color=arr_color[1], marker='o')
     plt.xticks(nPatterns)
     plt.xlabel("# Patterns", fontsize=16)
     plt.ylabel("Error", fontsize=16)
@@ -168,7 +168,7 @@ def plot_perm_decay_rates():
     plt.close()
 
     arr_epochs = np.loadtxt("../Text/Perm/epoch.txt")
-    plt.plot(nPatterns, arr_epochs, linewidth=1)
+    plt.plot(nPatterns, arr_epochs, linewidth=1, color=arr_color[1], marker='o')
     plt.xticks(nPatterns)
     plt.xlabel("# Patterns", fontsize=16)
     plt.ylabel("Epoch (Learning time)", fontsize=16)
@@ -182,7 +182,7 @@ def perm_decay_patterns():
 
     decay_rates_lLTP = np.loadtxt("../Text/Perm_decay/decay_rates.txt")
     arr_patterns = np.loadtxt("../Text/Perm_decay/patterns.txt")
-    plt.plot(decay_rates_lLTP, arr_patterns, linewidth=1, marker='o')
+    plt.plot(decay_rates_lLTP, arr_patterns, linewidth=1, marker='o', color=arr_color[4])
     plt.xticks(decay_rates_lLTP)
     plt.xlabel("Decay rate", fontsize=16)
     plt.ylabel("# Patterns", fontsize=16)
@@ -190,7 +190,34 @@ def perm_decay_patterns():
     plt.savefig("../Plot/Perm_decay/patterns.png")
     plt.close()
 
+    arr_energy = np.loadtxt("../Text/Perm_decay/energy.txt")
+    plt.plot(decay_rates_lLTP, arr_energy, linewidth=1, marker='o', color=arr_color[4])
+    plt.xticks(decay_rates_lLTP)
+    plt.xlabel("Decay rate", fontsize=16)
+    plt.ylabel("Energy", fontsize=16)
+    plt.tight_layout()
+    plt.savefig("../Plot/Perm_decay/energy.png")
+    plt.close()
+
+    arr_error = np.loadtxt("../Text/Perm_decay/error.txt")
+    plt.plot(decay_rates_lLTP, arr_error, linewidth=1, marker='o', color=arr_color[4])
+    plt.xticks(decay_rates_lLTP)
+    plt.xlabel("Decay rate", fontsize=16)
+    plt.ylabel("Error", fontsize=16)
+    plt.tight_layout()
+    plt.savefig("../Plot/Perm_decay/error.png")
+    plt.close()
+
+    arr_epoch = np.loadtxt("../Text/Perm_decay/epoch.txt")
+    plt.plot(decay_rates_lLTP, arr_epoch, linewidth=1, marker='o', color=arr_color[4])
+    plt.xticks(decay_rates_lLTP)
+    plt.xlabel("Decay rate", fontsize=16)
+    plt.ylabel("Epoch", fontsize=16)
+    plt.tight_layout()
+    plt.savefig("../Plot/Perm_decay/epoch.png")
+    plt.close()
+
 
 perm_decay_patterns()
-# plot_perm_decay_rates()
+plot_perm_decay_rates()
 # plot_fig3()
