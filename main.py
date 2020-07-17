@@ -3,7 +3,14 @@ import numpy as np
 import MyFunction as MyF
 from pathlib import Path
 import multiprocessing as mp
+import logging
 
+# Initialize logger
+logging.basicConfig(filename='../out.log', format='%(asctime)s - %(process)d - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
+# Global variables
 nRun = 10  # one file contains events with one hyperplane solution
 learning_rate = 1.0
 size_buffer = 1000
@@ -65,16 +72,16 @@ def perm_decay_patterns():
             Per.pattern = pattern[iRun]
             Per.pattern_answer = pattern_answer[iRun]
             energy[iRun], energy_eLTP[iRun], energy_lLTP[iRun], error[iRun], epoch[iRun] = Per.AlgoStandard()
-            print("Run:", iRun + 1, "energy:", energy[iRun], " energy_eLTP:", energy_eLTP[iRun], " energy_lLTP:",
-                  energy_lLTP[iRun], " error:", error[iRun], " epoch:", epoch[iRun])
+            logger.info(f"Run: {iRun} energy: {energy[iRun]} energy_eLTP: {energy_eLTP[iRun]} energy_lLTP: "
+                        f"{energy_lLTP[iRun]} error: {error[iRun]} epoch: {epoch[iRun]}")
 
         arr_energy[idx] = np.mean(energy)
         arr_energy_eLTP[idx] = np.mean(energy_eLTP)
         arr_energy_lLTP[idx] = np.mean(energy_lLTP)
         arr_error[idx] = np.mean(error)
         arr_epoch[idx] = np.mean(epoch)
-        print("#Patterns:", nPatterns[idx], " energy:", arr_energy[idx], " energy_eLTP:", arr_energy_eLTP[idx],
-              "energy_lLTP:", arr_energy_lLTP[idx], " error:", arr_error[idx], " epoch:", arr_epoch[idx])
+        logger.info(f"#Patterns: {nPatterns[idx]} energy: {arr_energy[idx]} energy_eLTP: {arr_energy_eLTP[idx]} "
+                    f"energy_lLTP: {arr_energy_lLTP[idx]} error: {arr_error[idx]} epoch: {arr_epoch[idx]}")
 
     np.savetxt("../Text/Perm/energy.txt", arr_energy)
     np.savetxt("../Text/Perm/energy_eLTP.txt", arr_energy_eLTP)
@@ -103,13 +110,14 @@ def perm_decay_rates(iProcess):
     arr_patterns = np.nan * np.ones(len(decay_rates_lLTP))  # min number of patterns that can be trained with zero error
 
     arr_std_epoch = np.nan * np.ones(len(decay_rates_lLTP))
+    nPattern_prev = 0
 
     for idx in range(len(decay_rates_lLTP)):
         decay_lLTP = decay_rates_lLTP[idx]
-        print('Decay rate:', decay_lLTP)
+        logger.info(f'Decay rate: {decay_lLTP}')
         iPattern = 100
         while iPattern <= nPattern:
-            print('Process:', iProcess, 'Trying for patterns:', iPattern)
+            logger.info(f'Process: {iProcess} Trying for patterns: {iPattern}')
             weight_initial = np.zeros(nDimension + 1)  # +1 is for bias
             pattern, pattern_answer = create_patterns(iPattern, nDimension)
             Per = MyF.Perceptron(pattern[0], pattern_answer[0], weight_initial, size_buffer, learning_rate,
@@ -126,11 +134,10 @@ def perm_decay_rates(iProcess):
                 Per.pattern = pattern[iRun]
                 Per.pattern_answer = pattern_answer[iRun]
                 energy[iRun], energy_eLTP[iRun], energy_lLTP[iRun], error[iRun], epoch[iRun] = Per.AlgoStandard()
-                print('Process:', iProcess, "Run:", iRun, "energy:", energy[iRun], " energy_eLTP:", energy_eLTP[iRun],
-                      " energy_lLTP:",
-                      energy_lLTP[iRun], " error:", error[iRun], " epoch:", epoch[iRun])
+                logger.info(f"Process: {iProcess} Run: {iRun} energy: {energy[iRun]} energy_eLTP: {energy_eLTP[iRun]} "
+                            f"energy_lLTP: {energy_lLTP[iRun]} error: {error[iRun]} epoch: {epoch[iRun]}")
 
-            print('Process:', iProcess, "#Pattens:", iPattern, "Mean Error:", np.mean(error))
+            logger.info(f'Process: {iProcess} #Pattens: {iPattern} Mean Error: {np.mean(error)}')
             if np.mean(error) > 0.0:
                 break
 
@@ -152,10 +159,9 @@ def perm_decay_rates(iProcess):
         arr_patterns[idx] = nPattern_prev
 
         arr_std_epoch[idx] = std_epoch
-        print('Process:', iProcess, "#Patterns:", arr_patterns[idx], " energy:", arr_energy[idx], " energy_eLTP:",
-              arr_energy_eLTP[idx],
-              "energy_lLTP:", arr_energy_lLTP[idx], " error:", arr_error[idx], " epoch:", arr_epoch[idx],
-              "std epoch:", arr_std_epoch[idx])
+        logger.info(f'Process: {iProcess} #Patterns: {arr_patterns[idx]} energy: {arr_energy[idx]} energy_eLTP: '
+                    f'{arr_energy_eLTP[idx]} energy_lLTP: {arr_energy_lLTP[idx]} error: {arr_error[idx]} epoch: '
+                    f'{arr_epoch[idx]} std epoch: {arr_std_epoch[idx]}')
 
     Path("../Text/Perm_decay").mkdir(parents=True, exist_ok=True)
     np.savetxt("../Text/Perm_decay/energy_" + str(iProcess) + ".txt", arr_energy)
@@ -166,8 +172,8 @@ def perm_decay_rates(iProcess):
     np.savetxt("../Text/Perm_decay/patterns_" + str(iProcess) + ".txt", arr_patterns)
     np.savetxt("../Text/Perm_decay/std_epoch_" + str(iProcess) + ".txt", arr_std_epoch)
 
-def calculate_mean(nProcess):
 
+def calculate_mean(nProcess):
     arr_mean_energy = np.nan * np.ones(len(decay_rates_lLTP))
     arr_mean_error = np.nan * np.ones(len(decay_rates_lLTP))
     arr_mean_epoch = np.nan * np.ones(len(decay_rates_lLTP))
