@@ -4,11 +4,23 @@ import MyFunction as MyF
 from pathlib import Path
 import multiprocessing as mp
 import logging
+import logging.handlers
+import sys
+import time
 
 # Initialize logger
-logging.basicConfig(filename='../out.log', format='%(asctime)s - %(process)d - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.DEBUG)
+# logging.basicConfig(filename='../out.log', format='%(asctime)s - %(process)d - %(name)s - %(levelname)s - %(message)s',
+#                     level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+log_formatter = logging.Formatter('%(asctime)s - %(process)d - %(name)s - %(levelname)s - %(message)s')
+c_handler = logging.StreamHandler(sys.stdout)
+c_handler.setFormatter(log_formatter)
+f_handler = logging.handlers.RotatingFileHandler(filename='../out.log', maxBytes=(1048576*5), backupCount=7)
+f_handler.setFormatter(log_formatter)
+logger.addHandler(c_handler)
+logger.addHandler(f_handler)
+
 
 # Global variables
 nRun = 10  # one file contains events with one hyperplane solution
@@ -102,6 +114,9 @@ decay_rates_lLTP = np.linspace(1e-6, 1e-4, 20)
 
 
 def perm_decay_rates(iProcess):
+    tmp = time.gmtime()
+    np.random.seed(tmp[3] * (iProcess * 100 + tmp[4] * 10 + tmp[5]))
+
     arr_energy = np.nan * np.ones(len(decay_rates_lLTP))  # total energy
     arr_energy_eLTP = np.nan * np.ones(len(decay_rates_lLTP))  # transient energy
     arr_energy_lLTP = np.nan * np.ones(len(decay_rates_lLTP))  # permanent energy
