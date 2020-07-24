@@ -8,14 +8,12 @@ import sys
 import time
 
 # Initialize logger
-# logging.basicConfig(filename='../out.log', format='%(asctime)s - %(process)d - %(name)s - %(levelname)s - %(message)s',
-#                     level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 log_formatter = logging.Formatter('%(asctime)s - %(process)d - %(name)s - %(levelname)s - %(message)s')
 c_handler = logging.StreamHandler(sys.stdout)
 c_handler.setFormatter(log_formatter)
-f_handler = logging.handlers.RotatingFileHandler(filename='../out.log', maxBytes=(1048576*5), backupCount=7)
+f_handler = logging.handlers.RotatingFileHandler(filename='../out.log', maxBytes=(1048576*5), backupCount=10)
 f_handler.setFormatter(log_formatter)
 logger.addHandler(c_handler)
 logger.addHandler(f_handler)
@@ -108,22 +106,30 @@ def perm_decay_patterns():
 
 nDimension = 1000
 nPattern = 1600
-
-decay_rates_lLTP = np.linspace(1e-6, 1e-4, 20)
+# decay_rates_lLTP = np.linspace(1e-6, 1e-4, 20)
+decay_rates_lLTP = np.logspace(-6, -5, 10)
 
 
 def perm_decay_rates(iProcess):
     tmp = time.gmtime()
     np.random.seed(tmp[3] * (iProcess * 100 + tmp[4] * 10 + tmp[5]))
 
-    arr_energy = np.nan * np.ones(len(decay_rates_lLTP))  # total energy
-    arr_energy_eLTP = np.nan * np.ones(len(decay_rates_lLTP))  # transient energy
-    arr_energy_lLTP = np.nan * np.ones(len(decay_rates_lLTP))  # permanent energy
-    arr_error = np.nan * np.ones(len(decay_rates_lLTP))  # number of errors
-    arr_epoch = np.nan * np.ones(len(decay_rates_lLTP))  # training time (epoch)
-    arr_patterns = np.nan * np.ones(len(decay_rates_lLTP))  # min number of patterns that can be trained with zero error
-
+    # Arrays to store the mean/std values of different measurements from all the runs
+    arr_mean_energy = np.nan * np.ones(len(decay_rates_lLTP))  # total energy
+    arr_mean_energy_eLTP = np.nan * np.ones(len(decay_rates_lLTP))  # transient energy
+    arr_mean_energy_lLTP = np.nan * np.ones(len(decay_rates_lLTP))  # permanent energy
+    arr_mean_error = np.nan * np.ones(len(decay_rates_lLTP))  # number of errors
+    arr_mean_epoch = np.nan * np.ones(len(decay_rates_lLTP))  # training time (epoch)
+    arr_mean_patterns = np.nan * np.ones(len(decay_rates_lLTP))  # min number of patterns that can be trained with zero error
     arr_std_epoch = np.nan * np.ones(len(decay_rates_lLTP))
+
+    # Arrays to store the individual values of all the measurements
+    arr_all_energy = np.nan * np.ones(shape=(len(decay_rates_lLTP), nRun))
+    arr_all_energy_eLTP = np.nan * np.ones(shape=(len(decay_rates_lLTP), nRun))
+    arr_all_energy_lLTP = np.nan * np.ones(shape=(len(decay_rates_lLTP), nRun))
+    arr_all_error = np.nan * np.ones(shape=(len(decay_rates_lLTP), nRun))
+    arr_all_epoch = np.nan * np.ones(shape=(len(decay_rates_lLTP), nRun))
+
     nPattern_prev = 0
 
     for idx in range(len(decay_rates_lLTP)):
@@ -155,6 +161,14 @@ def perm_decay_rates(iProcess):
             if np.mean(error) > 0.0:
                 break
 
+            # Copy values of all the runs to the 2D array
+            arr_all_energy[idx] = energy
+            arr_all_energy_eLTP[idx] = energy_eLTP
+            arr_all_energy_lLTP[idx] = energy_lLTP
+            arr_all_error[idx] = error
+            arr_all_epoch[idx] = epoch
+
+            # Calculate the mean and std of all the runs
             mean_error = np.mean(error)
             mean_energy = np.mean(energy)
             mean_energy_eLTP = np.mean(energy_eLTP)
@@ -165,25 +179,33 @@ def perm_decay_rates(iProcess):
             nPattern_prev = iPattern
             iPattern += 20
 
-        arr_energy[idx] = mean_energy
-        arr_energy_eLTP[idx] = mean_energy_eLTP
-        arr_energy_lLTP[idx] = mean_energy_lLTP
-        arr_error[idx] = mean_error
-        arr_epoch[idx] = mean_epoch
-        arr_patterns[idx] = nPattern_prev
+        arr_mean_energy[idx] = mean_energy
+        arr_mean_energy_eLTP[idx] = mean_energy_eLTP
+        arr_mean_energy_lLTP[idx] = mean_energy_lLTP
+        arr_mean_error[idx] = mean_error
+        arr_mean_epoch[idx] = mean_epoch
+        arr_mean_patterns[idx] = nPattern_prev
 
         arr_std_epoch[idx] = std_epoch
-        logger.info(f'Process: {iProcess} #Patterns: {arr_patterns[idx]} energy: {arr_energy[idx]} energy_eLTP: '
-                    f'{arr_energy_eLTP[idx]} energy_lLTP: {arr_energy_lLTP[idx]} error: {arr_error[idx]} epoch: '
-                    f'{arr_epoch[idx]} std epoch: {arr_std_epoch[idx]}')
+        logger.info(f'Process: {iProcess} #Patterns: {arr_mean_patterns[idx]} energy: {arr_mean_energy[idx]} energy_eLTP: '
+                    f'{arr_mean_energy_eLTP[idx]} energy_lLTP: {arr_mean_energy_lLTP[idx]} error: {arr_mean_error[idx]} epoch: '
+                    f'{arr_mean_epoch[idx]} std epoch: {arr_std_epoch[idx]}')
 
     Path("../Text/Perm_decay").mkdir(parents=True, exist_ok=True)
-    np.savetxt("../Text/Perm_decay/energy_" + str(iProcess) + ".txt", arr_energy)
-    np.savetxt("../Text/Perm_decay/energy_eLTP_" + str(iProcess) + ".txt", arr_energy_eLTP)
-    np.savetxt("../Text/Perm_decay/energy_lLTP_" + str(iProcess) + ".txt", arr_energy_lLTP)
-    np.savetxt("../Text/Perm_decay/error_" + str(iProcess) + ".txt", arr_error)
-    np.savetxt("../Text/Perm_decay/epoch_" + str(iProcess) + ".txt", arr_epoch)
-    np.savetxt("../Text/Perm_decay/patterns_" + str(iProcess) + ".txt", arr_patterns)
+    # Write all the 2D arrays (values from all the runs) to files
+    np.savetxt('../Text/Perm_decay/energy_all_' + str(iProcess) + '.txt', arr_all_energy)
+    np.savetxt('../Text/Perm_decay/energy_eLTP_all_' + str(iProcess) + '.txt', arr_all_energy_eLTP)
+    np.savetxt('../Text/Perm_decay/energy_lLTP_all_' + str(iProcess) + '.txt', arr_all_energy_lLTP)
+    np.savetxt('../Text/Perm_decay/error_all_' + str(iProcess) + '.txt', arr_all_error)
+    np.savetxt('../Text/Perm_decay/epoch_all_' + str(iProcess) + '.txt', arr_all_epoch)
+
+    # Write the mean/std values of the runs to files
+    np.savetxt("../Text/Perm_decay/energy_" + str(iProcess) + ".txt", arr_mean_energy)
+    np.savetxt("../Text/Perm_decay/energy_eLTP_" + str(iProcess) + ".txt", arr_mean_energy_eLTP)
+    np.savetxt("../Text/Perm_decay/energy_lLTP_" + str(iProcess) + ".txt", arr_mean_energy_lLTP)
+    np.savetxt("../Text/Perm_decay/error_" + str(iProcess) + ".txt", arr_mean_error)
+    np.savetxt("../Text/Perm_decay/epoch_" + str(iProcess) + ".txt", arr_mean_epoch)
+    np.savetxt("../Text/Perm_decay/patterns_" + str(iProcess) + ".txt", arr_mean_patterns)
     np.savetxt("../Text/Perm_decay/std_epoch_" + str(iProcess) + ".txt", arr_std_epoch)
 
 
@@ -194,13 +216,19 @@ def combine_results(nProcess):
     arr_combined_mean_epoch = np.nan * np.ones(len(decay_rates_lLTP))
     arr_combined_mean_patterns = np.nan * np.ones(len(decay_rates_lLTP))
     arr_combined_std_epoch = np.nan * np.ones(len(decay_rates_lLTP))
+    arr_combined_std_energy = np.nan * np.ones(len(decay_rates_lLTP))
+    arr_combined_std_patterns = np.nan * np.ones(len(decay_rates_lLTP))
 
-    # Arrays to store the values from all the processes
+    # Arrays to store the mean/std values from all the processes
     arr_mean_energy = np.zeros(shape=(nProcess, len(decay_rates_lLTP)))
     arr_mean_error = np.zeros(shape=(nProcess, len(decay_rates_lLTP)))
     arr_mean_epoch = np.zeros(shape=(nProcess, len(decay_rates_lLTP)))
     arr_mean_patterns = np.zeros(shape=(nProcess, len(decay_rates_lLTP)))
     arr_std_epoch = np.zeros(shape=(nProcess, len(decay_rates_lLTP)))
+
+    # Arrays to store all the run values from all the processes
+    arr_all_energy = None  # np.zeros(shape=(decay_rates_lLTP, nRun))
+    arr_all_epoch = None  # np.zeros(shape=(decay_rates_lLTP, nRun))
 
     # Read the values of different processes from files.
     for iProcess in range(nProcess):
@@ -210,6 +238,19 @@ def combine_results(nProcess):
         arr_mean_patterns[iProcess] = np.loadtxt("../Text/Perm_decay/patterns_" + str(iProcess) + ".txt")
         arr_std_epoch[iProcess] = np.loadtxt("../Text/Perm_decay/std_epoch_" + str(iProcess) + ".txt")
 
+        # Read values from all the runs
+        new_arr_energy = np.loadtxt("../Text/Perm_decay/energy_all_" + str(iProcess) + ".txt")
+        new_arr_epoch = np.loadtxt("../Text/Perm_decay/epoch_all_" + str(iProcess) + ".txt")
+        if arr_all_energy is None:
+            arr_all_energy = new_arr_energy
+        else:
+            arr_all_energy = np.append(arr_all_energy, new_arr_energy, axis=1)
+
+        if arr_all_epoch is None:
+            arr_all_epoch = new_arr_epoch
+        else:
+            arr_all_epoch = np.append(arr_all_epoch, new_arr_epoch, axis=1)
+
     # Calculate the overall mean and standard deviation values
     for i in range(len(decay_rates_lLTP)):
         arr_combined_mean_energy[i] = np.mean(arr_mean_energy[:, i])
@@ -217,17 +258,24 @@ def combine_results(nProcess):
         arr_combined_mean_epoch[i] = np.mean(arr_mean_epoch[:, i])
         arr_combined_mean_patterns[i] = np.mean(arr_mean_patterns[:, i])
 
+        print('Combined mean:', arr_combined_mean_epoch[i], 'Original mean: ', np.mean(arr_all_epoch[i, :]))
         # Standard deviation
         std_sum = 0
         for j in range(nProcess):
             std_sum += arr_std_epoch[j][i] ** 2 + (arr_mean_epoch[j][i] - arr_combined_mean_epoch[i]) ** 2
         arr_combined_std_epoch[i] = np.sqrt(std_sum / nProcess)
+        print('Combined std:', arr_combined_std_epoch[i], 'Original std:', np.std(arr_all_epoch[i, :]))
+
+        arr_combined_std_energy[i] = np.std(arr_all_energy[i, :])
+        arr_combined_std_patterns[i] = np.std(arr_mean_patterns[:, i])
 
     np.savetxt("../Text/Perm_decay/energy.txt", arr_combined_mean_energy)
     np.savetxt("../Text/Perm_decay/error.txt", arr_combined_mean_error)
     np.savetxt("../Text/Perm_decay/epoch.txt", arr_combined_mean_epoch)
     np.savetxt("../Text/Perm_decay/patterns.txt", arr_combined_mean_patterns)
     np.savetxt("../Text/Perm_decay/std_epoch.txt", arr_combined_std_epoch)
+    np.savetxt("../Text/Perm_decay/std_energy.txt", arr_combined_std_energy)
+    np.savetxt("../Text/Perm_decay/std_patterns.txt", arr_combined_std_patterns)
 
 
 nProcess = 5
