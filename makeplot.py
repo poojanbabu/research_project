@@ -68,8 +68,15 @@ def perm_decay_patterns():
     dict_std_patterns = dict(zip(decay_rates_lLTP, arr_std_patterns))
     dict_std_patterns = OrderedDict(sorted(dict_std_patterns.items()))
 
+    # Fit a straight line to the plot
+    x = np.array([*dict_patterns.keys()])
+    logx = np.log(x)
+    y = np.array([*dict_patterns.values()])
+    coeff = np.polyfit(logx, y, 1)
+    poly1d_fn = np.poly1d(coeff)
     plt.errorbar([*dict_patterns.keys()], [*dict_patterns.values()], yerr=[*dict_std_patterns.values()], **lineStyle,
                  color=arr_color[4])
+    plt.plot(x, poly1d_fn(logx))
     plt.xscale('log')
     plt.xlabel("Decay rate", fontsize=16)
     plt.ylabel("# Patterns", fontsize=16)
