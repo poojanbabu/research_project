@@ -1,16 +1,8 @@
 #!/usr/bin/env python
-import math
 import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
 from collections import OrderedDict
-
-nDimension, nRun, learning_rate, energy_scale_lLTP, energy_scale_maintenance, synapse_threshold, arr_decay_eLTP = np.loadtxt(
-    "../Text/variables.txt")
-decay_rates = np.loadtxt("../Text/decay_rates.txt")
-learning_rates = np.loadtxt("../Text/learning_rates.txt")
-maintenance_costs = np.loadtxt("../Text/maintenance_costs.txt")
-nRun = int(synapse_threshold)
 
 arr_color = ["black", "red", "lawngreen", "cyan", "purple"]
 marker_types = ['.', ',', 'o', 'v', 'd']
@@ -74,6 +66,7 @@ def perm_decay_patterns():
     y = np.array([*dict_patterns.values()])
     coeff = np.polyfit(logx, y, 1)
     poly1d_fn = np.poly1d(coeff)
+    
     plt.errorbar([*dict_patterns.keys()], [*dict_patterns.values()], yerr=[*dict_std_patterns.values()], **lineStyle,
                  color=arr_color[4])
     plt.plot(x, poly1d_fn(logx))
