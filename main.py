@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 import numpy as np
-import MyFunction as MyF
+import Code.MyFunction as MyF
 from pathlib import Path
 import multiprocessing as mp
 import logging.handlers
 import sys
 import time
+from functools import partial
+import Code.MyConstants as Constants
 
 # Initialize logger
 logger = logging.getLogger(__name__)
@@ -25,11 +27,7 @@ learning_rate = 1.0
 size_buffer = 1000
 energy_scale_lLTP = 1.0
 energy_scale_maintenance = energy_scale_lLTP * np.array([0.001])
-synapse_threshold = 2
 decay_eLTP = 0.001
-
-synapse_threshold_max = 40
-
 
 #####################################
 #        Pattern generation         #
@@ -100,19 +98,21 @@ def perm_decay_patterns():
 
     np.savetxt("../Text/patterns.txt", nPatterns)
     np.savetxt("../Text/variables.txt", (
-        nDimension, nRun, learning_rate, energy_scale_lLTP, energy_scale_maintenance, synapse_threshold_max,
-        decay_eLTP))
+        nDimension, nRun, learning_rate, energy_scale_lLTP, energy_scale_maintenance, decay_eLTP))
 
 
-nDimension = 1000
-nPattern = 1600
-# decay_rates_lLTP = np.linspace(1e-6, 1e-4, 20)
-decay_rates_lLTP = np.logspace(-6, -5, 10)
-
-
-def perm_decay_rates(iProcess):
+def perm_decay_rates(iProcess, **kwargs):
+    # New random seed for each process
     tmp = time.gmtime()
     np.random.seed(tmp[3] * (iProcess * 100 + tmp[4] * 10 + tmp[5]))
+
+    # Read all the arguments
+    nDimension = kwargs['nDimension']
+    nPattern = kwargs['nPattern']
+    decay_rates_lLTP = kwargs['decay_rates_lLTP']
+    iPattern_init = kwargs['iPattern_init']
+    step_size = kwargs['step_size']
+    output_path = kwargs['output_path']
 
     # Arrays to store the mean/std values of different measurements from all the runs
     arr_mean_energy = np.nan * np.ones(len(decay_rates_lLTP))  # total energy
@@ -120,7 +120,7 @@ def perm_decay_rates(iProcess):
     arr_mean_energy_lLTP = np.nan * np.ones(len(decay_rates_lLTP))  # permanent energy
     arr_mean_error = np.nan * np.ones(len(decay_rates_lLTP))  # number of errors
     arr_mean_epoch = np.nan * np.ones(len(decay_rates_lLTP))  # training time (epoch)
-    arr_mean_patterns = np.nan * np.ones(len(decay_rates_lLTP))  # min number of patterns that can be trained with zero error
+    arr_mean_patterns = np.nan * np.ones(len(decay_rates_lLTP))  # max number of patterns that can be trained with zero error
     arr_std_epoch = np.nan * np.ones(len(decay_rates_lLTP))
 
     # Arrays to store the individual values of all the measurements
@@ -135,7 +135,7 @@ def perm_decay_rates(iProcess):
     for idx in range(len(decay_rates_lLTP)):
         decay_lLTP = decay_rates_lLTP[idx]
         logger.info(f'Decay rate: {decay_lLTP}')
-        iPattern = 100
+        iPattern = iPattern_init
         while iPattern <= nPattern:
             logger.info(f'Process: {iProcess} Trying for patterns: {iPattern}')
             weight_initial = np.zeros(nDimension + 1)  # +1 is for bias
@@ -177,7 +177,7 @@ def perm_decay_rates(iProcess):
             std_epoch = np.std(epoch)
 
             nPattern_prev = iPattern
-            iPattern += 20
+            iPattern += step_size
 
         arr_mean_energy[idx] = mean_energy
         arr_mean_energy_eLTP[idx] = mean_energy_eLTP
@@ -191,25 +191,28 @@ def perm_decay_rates(iProcess):
                     f'{arr_mean_energy_eLTP[idx]} energy_lLTP: {arr_mean_energy_lLTP[idx]} error: {arr_mean_error[idx]} epoch: '
                     f'{arr_mean_epoch[idx]} std epoch: {arr_std_epoch[idx]}')
 
-    Path("../Text/Perm_decay").mkdir(parents=True, exist_ok=True)
+    Path(output_path).mkdir(parents=True, exist_ok=True)
     # Write all the 2D arrays (values from all the runs) to files
-    np.savetxt('../Text/Perm_decay/energy_all_' + str(iProcess) + '.txt', arr_all_energy)
-    np.savetxt('../Text/Perm_decay/energy_eLTP_all_' + str(iProcess) + '.txt', arr_all_energy_eLTP)
-    np.savetxt('../Text/Perm_decay/energy_lLTP_all_' + str(iProcess) + '.txt', arr_all_energy_lLTP)
-    np.savetxt('../Text/Perm_decay/error_all_' + str(iProcess) + '.txt', arr_all_error)
-    np.savetxt('../Text/Perm_decay/epoch_all_' + str(iProcess) + '.txt', arr_all_epoch)
+    np.savetxt(output_path + Constants.ENERGY_FILE_PROC_ALL.format(str(iProcess)), arr_all_energy)
+    np.savetxt(output_path + Constants.ENERGY_ELTP_FILE_PROC_ALL.format(str(iProcess)), arr_all_energy_eLTP)
+    np.savetxt(output_path + Constants.ENERGY_LLTP_FILE_PROC_ALL.format(str(iProcess)), arr_all_energy_lLTP)
+    np.savetxt(output_path + Constants.ERROR_FILE_PROC_ALL.format(str(iProcess)), arr_all_error)
+    np.savetxt(output_path + Constants.EPOCH_FILE_PROC_ALL.format(str(iProcess)), arr_all_epoch)
 
     # Write the mean/std values of the runs to files
-    np.savetxt("../Text/Perm_decay/energy_" + str(iProcess) + ".txt", arr_mean_energy)
-    np.savetxt("../Text/Perm_decay/energy_eLTP_" + str(iProcess) + ".txt", arr_mean_energy_eLTP)
-    np.savetxt("../Text/Perm_decay/energy_lLTP_" + str(iProcess) + ".txt", arr_mean_energy_lLTP)
-    np.savetxt("../Text/Perm_decay/error_" + str(iProcess) + ".txt", arr_mean_error)
-    np.savetxt("../Text/Perm_decay/epoch_" + str(iProcess) + ".txt", arr_mean_epoch)
-    np.savetxt("../Text/Perm_decay/patterns_" + str(iProcess) + ".txt", arr_mean_patterns)
-    np.savetxt("../Text/Perm_decay/std_epoch_" + str(iProcess) + ".txt", arr_std_epoch)
+    np.savetxt(output_path + Constants.ENERGY_FILE_PROC.format(str(iProcess)), arr_mean_energy)
+    np.savetxt(output_path + Constants.ENERGY_ELTP_FILE_PROC.format(str(iProcess)), arr_mean_energy_eLTP)
+    np.savetxt(output_path + Constants.ENERGY_LLTP_FILE_PROC.format(str(iProcess)), arr_mean_energy_lLTP)
+    np.savetxt(output_path + Constants.ERROR_FILE_PROC.format(str(iProcess)), arr_mean_error)
+    np.savetxt(output_path + Constants.EPOCH_FILE_PROC.format(str(iProcess)), arr_mean_epoch)
+    np.savetxt(output_path + Constants.PATTERNS_FILE_PROC.format(str(iProcess)), arr_mean_patterns)
+    np.savetxt(output_path + Constants.STD_EPOCH_FILE_PROC.format(str(iProcess)), arr_std_epoch)
 
 
-def combine_results(nProcess):
+def combine_results(nProcess, **kwargs):
+    decay_rates_lLTP = kwargs['decay_rates_lLTP']
+    output_path = kwargs['output_path']
+
     # Combined mean and standard deviations
     arr_combined_mean_energy = np.nan * np.ones(len(decay_rates_lLTP))
     arr_combined_mean_error = np.nan * np.ones(len(decay_rates_lLTP))
@@ -227,20 +230,20 @@ def combine_results(nProcess):
     arr_std_epoch = np.zeros(shape=(nProcess, len(decay_rates_lLTP)))
 
     # Arrays to store all the run values from all the processes
-    arr_all_energy = None  # np.zeros(shape=(decay_rates_lLTP, nRun))
-    arr_all_epoch = None  # np.zeros(shape=(decay_rates_lLTP, nRun))
+    arr_all_energy = None
+    arr_all_epoch = None
 
     # Read the values of different processes from files.
     for iProcess in range(nProcess):
-        arr_mean_energy[iProcess] = np.loadtxt("../Text/Perm_decay/energy_" + str(iProcess) + ".txt")
-        arr_mean_error[iProcess] = np.loadtxt("../Text/Perm_decay/error_" + str(iProcess) + ".txt")
-        arr_mean_epoch[iProcess] = np.loadtxt("../Text/Perm_decay/epoch_" + str(iProcess) + ".txt")
-        arr_mean_patterns[iProcess] = np.loadtxt("../Text/Perm_decay/patterns_" + str(iProcess) + ".txt")
-        arr_std_epoch[iProcess] = np.loadtxt("../Text/Perm_decay/std_epoch_" + str(iProcess) + ".txt")
+        arr_mean_energy[iProcess] = np.loadtxt(output_path + Constants.ENERGY_FILE_PROC.format(str(iProcess)))
+        arr_mean_error[iProcess] = np.loadtxt(output_path + Constants.ERROR_FILE_PROC.format(str(iProcess)))
+        arr_mean_epoch[iProcess] = np.loadtxt(output_path + Constants.EPOCH_FILE_PROC.format(str(iProcess)))
+        arr_mean_patterns[iProcess] = np.loadtxt(output_path + Constants.PATTERNS_FILE_PROC.format(str(iProcess)))
+        arr_std_epoch[iProcess] = np.loadtxt(output_path + Constants.STD_EPOCH_FILE_PROC.format(str(iProcess)))
 
         # Read values from all the runs
-        new_arr_energy = np.loadtxt("../Text/Perm_decay/energy_all_" + str(iProcess) + ".txt")
-        new_arr_epoch = np.loadtxt("../Text/Perm_decay/epoch_all_" + str(iProcess) + ".txt")
+        new_arr_energy = np.loadtxt(output_path + Constants.ENERGY_FILE_PROC_ALL.format(str(iProcess)))
+        new_arr_epoch = np.loadtxt(output_path + Constants.EPOCH_FILE_PROC_ALL.format(str(iProcess)))
         if arr_all_energy is None:
             arr_all_energy = new_arr_energy
         else:
@@ -264,25 +267,42 @@ def combine_results(nProcess):
         for j in range(nProcess):
             std_sum += arr_std_epoch[j][i] ** 2 + (arr_mean_epoch[j][i] - arr_combined_mean_epoch[i]) ** 2
         arr_combined_std_epoch[i] = np.sqrt(std_sum / nProcess)
-        print('Combined std:', arr_combined_std_epoch[i], 'Original std:', np.std(arr_all_epoch[i, :]))
+        # print('Combined std:', arr_combined_std_epoch[i], 'Original std:', np.std(arr_all_epoch[i, :]))
 
         arr_combined_std_energy[i] = np.std(arr_all_energy[i, :])
         arr_combined_std_patterns[i] = np.std(arr_mean_patterns[:, i])
 
-    np.savetxt("../Text/Perm_decay/energy.txt", arr_combined_mean_energy)
-    np.savetxt("../Text/Perm_decay/error.txt", arr_combined_mean_error)
-    np.savetxt("../Text/Perm_decay/epoch.txt", arr_combined_mean_epoch)
-    np.savetxt("../Text/Perm_decay/patterns.txt", arr_combined_mean_patterns)
-    np.savetxt("../Text/Perm_decay/std_epoch.txt", arr_combined_std_epoch)
-    np.savetxt("../Text/Perm_decay/std_energy.txt", arr_combined_std_energy)
-    np.savetxt("../Text/Perm_decay/std_patterns.txt", arr_combined_std_patterns)
+    np.savetxt(output_path + Constants.ENERGY_FILE, arr_combined_mean_energy)
+    np.savetxt(output_path + Constants.ERROR_FILE, arr_combined_mean_error)
+    np.savetxt(output_path + Constants.EPOCH_FILE, arr_combined_mean_epoch)
+    np.savetxt(output_path + Constants.PATTERNS_FILE, arr_combined_mean_patterns)
+    np.savetxt(output_path + Constants.STD_EPOCH_FILE, arr_combined_std_epoch)
+    np.savetxt(output_path + Constants.STD_ENERGY_FILE, arr_combined_std_energy)
+    np.savetxt(output_path + Constants.STD_PATTERNS_FILE, arr_combined_std_patterns)
 
 
-nProcess = 5
-# pool = mp.Pool(nProcess)
-# pool.map(perm_decay_rates, [iProcess for iProcess in range(nProcess)])
-# pool.close()
-# np.savetxt("../Text/Perm_decay/decay_rates.txt", decay_rates_lLTP)
-# np.savetxt("../Text/Perm_decay/variables.txt", (nDimension, nPattern, nRun, learning_rate, energy_scale_lLTP,
-#                                                 energy_scale_maintenance, synapse_threshold_max, decay_eLTP))
-combine_results(nProcess)
+def wrapper_process(**kwargs):
+    nProcess = 5
+    args = [iProcess for iProcess in range(nProcess)]
+    pool = mp.Pool(nProcess)
+    pool.map(partial(perm_decay_rates, **kwargs), args)
+    pool.close()
+
+    # Combine the results from all the processes
+    combine_results(nProcess, **kwargs)
+
+
+def main():
+    nDimension = 200
+    nPattern = 400
+    iPattern_init = 20
+    step_size = 5
+    decay_rates_lLTP = np.logspace(-6, -4, 30)
+    output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension)
+    wrapper_process(nDimension=nDimension, nPattern=nPattern, iPattern_init=iPattern_init, step_size=step_size,
+                    decay_rates_lLTP=decay_rates_lLTP, output_path=output_path)
+    np.savetxt(output_path + Constants.DECAY_RATES_FILE, decay_rates_lLTP)
+
+
+if __name__ == '__main__':
+    main()

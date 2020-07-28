@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
 from collections import OrderedDict
+import Code.MyConstants as Constants
 
 arr_color = ["black", "red", "lawngreen", "cyan", "purple"]
 marker_types = ['.', ',', 'o', 'v', 'd']
@@ -42,7 +43,7 @@ def plot_perm_decay_rates():
     plt.close()
 
 
-def perm_decay_patterns():
+def perm_decay_patterns_combine():
     Path("../Plot/Perm_decay").mkdir(parents=True, exist_ok=True)
     lineStyle = {"linestyle": "-", "linewidth": 2, "markeredgewidth": 2, "elinewidth": 1, "capsize": 3,
                  "ecolor": "gray"}
@@ -65,8 +66,9 @@ def perm_decay_patterns():
     logx = np.log(x)
     y = np.array([*dict_patterns.values()])
     coeff = np.polyfit(logx, y, 1)
+    print('Coefficients:', coeff)
     poly1d_fn = np.poly1d(coeff)
-    
+
     plt.errorbar([*dict_patterns.keys()], [*dict_patterns.values()], yerr=[*dict_std_patterns.values()], **lineStyle,
                  color=arr_color[4])
     plt.plot(x, poly1d_fn(logx))
@@ -117,5 +119,68 @@ def perm_decay_patterns():
     plt.close()
 
 
-perm_decay_patterns()
-plot_perm_decay_rates()
+def perm_decay_patterns(output_path, plot_path):
+    Path(plot_path).mkdir(parents=True, exist_ok=True)
+    lineStyle = {"linestyle": "-", "linewidth": 2, "markeredgewidth": 2, "elinewidth": 1, "capsize": 3,
+                 "ecolor": "gray"}
+
+    # Plot the maximum number of patterns that a perceptron can learn for a decay value.
+    decay_rates_lLTP = np.loadtxt(output_path + Constants.DECAY_RATES_FILE)
+    arr_patterns = np.loadtxt(output_path + Constants.PATTERNS_FILE)
+    arr_std_patterns = np.loadtxt(output_path + Constants.STD_PATTERNS_FILE)
+
+    # Fit a straight line to the plot
+    x = np.array(decay_rates_lLTP)
+    logx = np.log(x)
+    coeff = np.polyfit(logx, arr_patterns, 1)
+    print('Coefficients:', coeff)
+    poly1d_fn = np.poly1d(coeff)
+
+    plt.errorbar(x, arr_patterns, yerr=arr_std_patterns, **lineStyle, color=arr_color[4])
+    plt.plot(x, poly1d_fn(logx))
+    plt.xscale('log')
+    plt.xlabel("Decay rate", fontsize=16)
+    plt.ylabel("# Patterns", fontsize=16)
+    plt.tight_layout()
+    plt.savefig(plot_path + Constants.PATTERNS_PLOT)
+    plt.close()
+
+    # Plot the energy consumed for the max number of patterns trained
+    arr_energy = np.loadtxt(output_path + Constants.ENERGY_FILE)
+    arr_std_energy = np.loadtxt(output_path + Constants.STD_ENERGY_FILE)
+
+    plt.errorbar(decay_rates_lLTP, arr_energy, yerr=arr_std_energy, **lineStyle, color=arr_color[4])
+    plt.xscale('log')
+    plt.xlabel("Decay rate", fontsize=16)
+    plt.ylabel("Energy", fontsize=16)
+    plt.tight_layout()
+    plt.savefig(plot_path + Constants.ENERGY_PLOT)
+    plt.close()
+
+    # Plot the epochs for the max patterns trained
+    arr_epoch = np.loadtxt(output_path + Constants.EPOCH_FILE)
+    arr_std_epoch = np.loadtxt(output_path + Constants.STD_EPOCH_FILE)
+
+    plt.errorbar(decay_rates_lLTP, arr_epoch, yerr=arr_std_epoch, **lineStyle, color=arr_color[4])
+    plt.xscale('log')
+    plt.xlabel("Decay rate", fontsize=16)
+    plt.ylabel("Epoch", fontsize=16)
+    plt.tight_layout()
+    plt.savefig(plot_path + Constants.EPOCH_PLOT)
+    plt.close()
+
+
+def main():
+    nDimensions = [500, 200]
+    for i in range(len(nDimensions)):
+        nDimension = nDimensions[i]
+        output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension)
+        plot_path = Constants.PERM_DECAY_PLOT_PATH + '/dim_' + str(nDimension)
+        perm_decay_patterns(output_path, plot_path)
+
+    # perm_decay_patterns_combine()
+    # plot_perm_decay_rates()
+
+
+if __name__ == "__main__":
+    main()
