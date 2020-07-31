@@ -171,7 +171,7 @@ def perm_decay_patterns(output_path, plot_path):
 
 
 def main():
-    nDimensions = [500, 200]
+    nDimensions = [1500, 500, 200]
     for i in range(len(nDimensions)):
         nDimension = nDimensions[i]
         output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension)

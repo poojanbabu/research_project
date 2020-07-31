@@ -11,6 +11,7 @@ class Perceptron():
         self.pattern_answer = pattern_answer
         self.weight_initial = weight_initial
         self.size_buffer = size_buffer
+        self.epoch_window = 200
         self.learning_rate = learning_rate
         self.energy_scale_lLTP = energy_scale_lLTP
         self.energy_detail = energy_detail
@@ -29,7 +30,13 @@ class Perceptron():
         self.arr_energy_eLTP_buffer = 999 * np.ones(size_buffer)
         self.arr_energy_lLTP_buffer = 999 * np.ones(size_buffer)
         self.arr_count_error_buffer = 999 * np.ones(size_buffer)
+        self.accuracy_window_buffer = -999 * np.ones(self.epoch_window)
+        self.error_window_buffer = -999 * np.ones(self.epoch_window)
+        self.mean_accuracy_buffer = []
+        self.mean_error_buffer = []
         self.count_error = 999
+        self.count_correctly_classified = 999
+        self.accuracy = 999
 
         self.var_energy = 0.
         self.var_energy_eLTP = 0.
@@ -50,7 +57,13 @@ class Perceptron():
         self.arr_energy_eLTP_buffer = 999 * np.ones(self.size_buffer)
         self.arr_energy_lLTP_buffer = 999 * np.ones(self.size_buffer)
         self.arr_count_error_buffer = 999 * np.ones(self.size_buffer)
+        self.accuracy_window_buffer = -999 * np.ones(self.epoch_window)
+        self.error_window_buffer = -999 * np.ones(self.epoch_window)
         self.count_error = 999
+        self.count_correctly_classified = 999
+        self.accuracy = 999
+        self.mean_accuracy_buffer = []
+        self.mean_error_buffer = []
 
     def CalculateOutput(self, iPattern):
         # adding maintenance cost into var_energy and var_energy_eLTP
@@ -74,6 +87,14 @@ class Perceptron():
 
     def BreakLoop(self):
         tmp = self.var_epoch % self.size_buffer
+        tmp_epoch = self.var_epoch % self.epoch_window
+        self.accuracy = self.count_correctly_classified / self.nPattern
+        mean_accuracy = np.mean(self.accuracy_window_buffer)
+        mean_error = np.mean(self.error_window_buffer)
+        self.mean_accuracy_buffer.append(mean_accuracy)
+        self.mean_error_buffer.append(mean_error)
+        print('Count error:', self.count_error, 'Mean error:', mean_error, 'Accuracy:', self.accuracy,
+              'Mean accuracy:', mean_accuracy, 'Epoch:', self.var_epoch)
         if self.count_error >= self.arr_count_error_buffer[tmp]:
             self.var_epoch -= self.size_buffer
             self.arr_weight = self.arr_weight_buffer[tmp]
@@ -81,7 +102,14 @@ class Perceptron():
             self.var_energy_eLTP = self.arr_energy_eLTP_buffer[tmp]
             self.var_energy_lLTP = self.arr_energy_lLTP_buffer[tmp]
             return True  # when error rate doesn't improve anymore
+        # elif mean_accuracy > 0 and mean_accuracy > self.accuracy:
+        #     # return True  # when the accuracy doesn't improve anymore
+        #     self.var_epoch += 1
+
         else:
+            self.accuracy_window_buffer[tmp_epoch] = self.accuracy
+            self.error_window_buffer[tmp_epoch] = self.count_error
+
             self.arr_count_error_buffer[tmp] = self.count_error
             self.arr_weight_buffer[tmp] = self.arr_weight
             self.arr_energy_buffer[tmp] = self.var_energy
@@ -104,7 +132,8 @@ class Perceptron():
         if self.energy_detail is None:
             return self.var_energy, self.var_error, self.var_epoch
         else:
-            return self.var_energy, self.var_energy_eLTP, self.var_energy_lLTP, self.var_error, self.var_epoch
+            return self.var_energy, self.var_energy_eLTP, self.var_energy_lLTP, self.var_error, self.var_epoch, \
+                   self.mean_error_buffer, self.mean_accuracy_buffer
 
     ####################################################
     #                                                  #
@@ -116,8 +145,8 @@ class Perceptron():
     def AlgoStandard(self):
         self.Initialise()
         while self.count_error != 0:
-            self.count_error = 0.;
-            if_spike = 0
+            self.count_error = 0.
+            self.count_correctly_classified = 0.
             self.arr_deltaW = np.zeros(self.nDim + 1)
             for iPattern in range(0, self.nPattern):
                 difference = self.CalculateOutput(iPattern)
@@ -125,6 +154,8 @@ class Perceptron():
                     self.arr_deltaW = self.learning_rate * difference * self.pattern[iPattern]
                     self.SaveChange()
                     self.count_error += 1.
+                else:
+                    self.count_correctly_classified += 1
             if self.BreakLoop():
                 break
         self.Finalise()

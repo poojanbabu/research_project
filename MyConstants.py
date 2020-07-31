@@ -19,8 +19,8 @@ PATTERNS_FILE_PROC = "/patterns_{}.txt"
 
 # Values from all runs from individual process
 ENERGY_FILE_PROC_ALL = '/energy_all_{}.txt'
-ENERGY_ELTP_FILE_PROC_ALL = 'energy_eLTP_all_{}.txt'
-ENERGY_LLTP_FILE_PROC_ALL = 'energy_lLTP_all_{}.txt'
+ENERGY_ELTP_FILE_PROC_ALL = '/energy_eLTP_all_{}.txt'
+ENERGY_LLTP_FILE_PROC_ALL = '/energy_lLTP_all_{}.txt'
 ERROR_FILE_PROC_ALL = "/error_all_{}.txt"
 EPOCH_FILE_PROC_ALL = '/epoch_all_{}.txt'
 
