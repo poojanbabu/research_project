@@ -93,8 +93,8 @@ class Perceptron():
         mean_error = np.mean(self.error_window_buffer)
         self.mean_accuracy_buffer.append(mean_accuracy)
         self.mean_error_buffer.append(mean_error)
-        print('Count error:', self.count_error, 'Mean error:', mean_error, 'Accuracy:', self.accuracy,
-              'Mean accuracy:', mean_accuracy, 'Epoch:', self.var_epoch)
+        # print('Count error:', self.count_error, 'Mean error:', mean_error, 'Accuracy:', self.accuracy,
+        #       'Mean accuracy:', mean_accuracy, 'Epoch:', self.var_epoch)
         if self.count_error >= self.arr_count_error_buffer[tmp]:
             self.var_epoch -= self.size_buffer
             self.arr_weight = self.arr_weight_buffer[tmp]

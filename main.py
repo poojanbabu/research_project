@@ -155,7 +155,8 @@ def perm_decay_rates(iProcess, **kwargs):
             for iRun in range(nRun):
                 Per.pattern = pattern[iRun]
                 Per.pattern_answer = pattern_answer[iRun]
-                energy[iRun], energy_eLTP[iRun], energy_lLTP[iRun], error[iRun], epoch[iRun] = Per.AlgoStandard()
+                energy[iRun], energy_eLTP[iRun], energy_lLTP[iRun], error[iRun], epoch[iRun], error_buffer, \
+                    accuracy_buffer = Per.AlgoStandard()
                 logger.info(f"Process: {iProcess} Run: {iRun} energy: {energy[iRun]} energy_eLTP: {energy_eLTP[iRun]} "
                             f"energy_lLTP: {energy_lLTP[iRun]} error: {error[iRun]} epoch: {epoch[iRun]}")
 
@@ -336,10 +337,10 @@ def perm_decay_wrapper_process(**kwargs):
 
 
 def perm_decay_wrapper():
-    nDimension = 1500
+    nDimension = 250
     nPattern = 2 * nDimension  # max capacity of the perceptron
-    iPattern_init = 100
-    step_size = 20
+    iPattern_init = 20
+    step_size = 5
     decay_rates_lLTP = np.logspace(-6, -4, 30)
     output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension)
     perm_decay_wrapper_process(nDimension=nDimension, nPattern=nPattern, iPattern_init=iPattern_init,
@@ -358,30 +359,30 @@ def perceptron_accuracy_wrapper():
 
 
 def main():
-    # perm_decay_wrapper()
+    perm_decay_wrapper()
     # perceptron_accuracy_wrapper()
-    window_size = [10, 50, 100, 150, 200]
-    output_path = Constants.PERM_DECAY_PATH + '/accuracy'
-    Path(output_path).mkdir(parents=True, exist_ok=True)
-    for size in window_size:
-        arr_accuracy = np.loadtxt(output_path + '/accuracy_' + str(size) + '.txt')
-        x = np.arange(size, len(arr_accuracy))
-        plt.plot(x, arr_accuracy[size:], label='Window size:' + str(size))
-    plt.xlabel('Epoch')
-    plt.ylabel('Accuracy')
-    plt.legend(fontsize=10, loc=4)
-    plt.savefig(output_path + '/accuracy.png')
-    plt.close()
-
-    for size in window_size:
-        arr_error = np.loadtxt(output_path + '/error_' + str(size) + '.txt')
-        x = np.arange(size, len(arr_error))
-        plt.plot(x, arr_error[size:], label='Window size:' + str(size))
-    plt.xlabel('Epoch')
-    plt.ylabel('Error')
-    plt.legend(fontsize=10, loc=1)
-    plt.savefig(output_path + '/error.png')
-    plt.close()
+    # window_size = [10, 50, 100, 150, 200]
+    # output_path = Constants.PERM_DECAY_PATH + '/accuracy'
+    # Path(output_path).mkdir(parents=True, exist_ok=True)
+    # for size in window_size:
+    #     arr_accuracy = np.loadtxt(output_path + '/accuracy_' + str(size) + '.txt')
+    #     x = np.arange(size, len(arr_accuracy))
+    #     plt.plot(x, arr_accuracy[size:], label='Window size:' + str(size))
+    # plt.xlabel('Epoch')
+    # plt.ylabel('Accuracy')
+    # plt.legend(fontsize=10, loc=4)
+    # plt.savefig(output_path + '/accuracy.png')
+    # plt.close()
+    #
+    # for size in window_size:
+    #     arr_error = np.loadtxt(output_path + '/error_' + str(size) + '.txt')
+    #     x = np.arange(size, len(arr_error))
+    #     plt.plot(x, arr_error[size:], label='Window size:' + str(size))
+    # plt.xlabel('Epoch')
+    # plt.ylabel('Error')
+    # plt.legend(fontsize=10, loc=1)
+    # plt.savefig(output_path + '/error.png')
+    # plt.close()
 
 
 if __name__ == '__main__':
