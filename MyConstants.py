@@ -8,6 +8,7 @@ ENERGY_FILE = '/energy.txt'
 ERROR_FILE = "/error.txt"
 EPOCH_FILE = '/epoch.txt'
 PATTERNS_FILE = "/patterns.txt"
+ACCURACY_FILE = '/accuracy.txt'
 
 # Mean values from individual process
 ENERGY_FILE_PROC = '/energy_{}.txt'
@@ -16,6 +17,7 @@ ENERGY_LLTP_FILE_PROC = '/energy_lLTP_{}.txt'
 ERROR_FILE_PROC = "/error_{}.txt"
 EPOCH_FILE_PROC = '/epoch_{}.txt'
 PATTERNS_FILE_PROC = "/patterns_{}.txt"
+ACCURACY_FILE_PROC = '/accuracy_{}.txt'
 
 # Values from all runs from individual process
 ENERGY_FILE_PROC_ALL = '/energy_all_{}.txt'
@@ -23,12 +25,15 @@ ENERGY_ELTP_FILE_PROC_ALL = '/energy_eLTP_all_{}.txt'
 ENERGY_LLTP_FILE_PROC_ALL = '/energy_lLTP_all_{}.txt'
 ERROR_FILE_PROC_ALL = "/error_all_{}.txt"
 EPOCH_FILE_PROC_ALL = '/epoch_all_{}.txt'
+ACCURACY_FILE_PROC_ALL = '/accuracy_all_{}.txt'
 
 # STD files
 STD_EPOCH_FILE_PROC = "/std_epoch_{}.txt"
 STD_EPOCH_FILE = "/std_epoch.txt"
 STD_ENERGY_FILE = "/std_energy.txt"
 STD_PATTERNS_FILE = "/std_patterns.txt"
+STD_ACCURACY_FILE = '/std_accuracy.txt'
+STD_ERROR_FILE = '/std_error.txt'
 
 ################ PLOT ###################
 BASE_PLOT_PATH = '/home/pooja/Research_Project/Shared/Plot'
@@ -41,3 +46,4 @@ ERROR_PLOT = '/error.png'
 EPOCH_PLOT = '/epoch.png'
 PATTERNS_PLOT = '/patterns.png'
 PATTERNS_SLOPE_PLOT = '/slope.png'
+ACCURACY_PLOT = '/accuracy.png'

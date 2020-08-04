@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-import math
 import numpy as np
+from collections import deque
+import itertools
 
 
 class Perceptron():
@@ -30,10 +31,12 @@ class Perceptron():
         self.arr_energy_eLTP_buffer = 999 * np.ones(size_buffer)
         self.arr_energy_lLTP_buffer = 999 * np.ones(size_buffer)
         self.arr_count_error_buffer = 999 * np.ones(size_buffer)
-        self.accuracy_window_buffer = -999 * np.ones(self.epoch_window)
-        self.error_window_buffer = -999 * np.ones(self.epoch_window)
-        self.mean_accuracy_buffer = []
-        self.mean_error_buffer = []
+        self.accuracy_window_buffer = deque((self.epoch_window * 2) * [0.], maxlen=self.epoch_window * 2)
+        self.error_window_buffer = deque((self.epoch_window * 2) * [0.], maxlen=self.epoch_window * 2)
+        # self.mean_accuracy_buffer = []
+        # self.prev_mean_accuracy_buffer = []
+        # self.mean_error_buffer = []
+        # self.prev_mean_error_buffer = []
         self.count_error = 999
         self.count_correctly_classified = 999
         self.accuracy = 999
@@ -57,13 +60,15 @@ class Perceptron():
         self.arr_energy_eLTP_buffer = 999 * np.ones(self.size_buffer)
         self.arr_energy_lLTP_buffer = 999 * np.ones(self.size_buffer)
         self.arr_count_error_buffer = 999 * np.ones(self.size_buffer)
-        self.accuracy_window_buffer = -999 * np.ones(self.epoch_window)
-        self.error_window_buffer = -999 * np.ones(self.epoch_window)
+        self.accuracy_window_buffer = deque((self.epoch_window * 2) * [0.], maxlen=self.epoch_window * 2)
+        self.error_window_buffer = deque((self.epoch_window * 2) * [0.], maxlen=self.epoch_window * 2)
         self.count_error = 999
         self.count_correctly_classified = 999
         self.accuracy = 999
-        self.mean_accuracy_buffer = []
-        self.mean_error_buffer = []
+        # self.mean_accuracy_buffer = []
+        # self.prev_mean_accuracy_buffer = []
+        # self.mean_error_buffer = []
+        # self.prev_mean_error_buffer = []
 
     def CalculateOutput(self, iPattern):
         # adding maintenance cost into var_energy and var_energy_eLTP
@@ -86,15 +91,13 @@ class Perceptron():
         self.arr_deltaW = np.zeros(self.nDim + 1)
 
     def BreakLoop(self):
-        tmp = self.var_epoch % self.size_buffer
-        tmp_epoch = self.var_epoch % self.epoch_window
         self.accuracy = self.count_correctly_classified / self.nPattern
-        mean_accuracy = np.mean(self.accuracy_window_buffer)
-        mean_error = np.mean(self.error_window_buffer)
-        self.mean_accuracy_buffer.append(mean_accuracy)
-        self.mean_error_buffer.append(mean_error)
-        # print('Count error:', self.count_error, 'Mean error:', mean_error, 'Accuracy:', self.accuracy,
-        #       'Mean accuracy:', mean_accuracy, 'Epoch:', self.var_epoch)
+        self.accuracy_window_buffer.append(self.accuracy)
+        self.error_window_buffer.append(self.count_error)
+
+        tmp = self.var_epoch % self.size_buffer
+        # tmp_epoch = self.var_epoch % (self.epoch_window * 2)
+
         if self.count_error >= self.arr_count_error_buffer[tmp]:
             self.var_epoch -= self.size_buffer
             self.arr_weight = self.arr_weight_buffer[tmp]
@@ -102,13 +105,9 @@ class Perceptron():
             self.var_energy_eLTP = self.arr_energy_eLTP_buffer[tmp]
             self.var_energy_lLTP = self.arr_energy_lLTP_buffer[tmp]
             return True  # when error rate doesn't improve anymore
-        # elif mean_accuracy > 0 and mean_accuracy > self.accuracy:
-        #     # return True  # when the accuracy doesn't improve anymore
-        #     self.var_epoch += 1
-
         else:
-            self.accuracy_window_buffer[tmp_epoch] = self.accuracy
-            self.error_window_buffer[tmp_epoch] = self.count_error
+            # self.accuracy_window_buffer[tmp_epoch] = self.accuracy
+            # self.error_window_buffer[tmp_epoch] = self.count_error
 
             self.arr_count_error_buffer[tmp] = self.count_error
             self.arr_weight_buffer[tmp] = self.arr_weight
@@ -116,6 +115,24 @@ class Perceptron():
             self.arr_energy_eLTP_buffer[tmp] = self.var_energy_eLTP
             self.arr_energy_lLTP_buffer[tmp] = self.var_energy_lLTP
             self.var_epoch += 1
+
+            if self.var_epoch >= (2 * self.epoch_window):
+                mean_accuracy = np.mean(
+                    np.fromiter(itertools.islice(self.accuracy_window_buffer, self.epoch_window, None), float))
+                mean_accuracy_prev = np.mean(
+                    np.fromiter(itertools.islice(self.accuracy_window_buffer, self.epoch_window), float))
+                # mean_error = np.mean(np.fromiter(itertools.islice(self.error_window_buffer, self.epoch_window, None), float))
+                # mean_error_prev = np.mean(np.fromiter(itertools.islice(self.error_window_buffer, self.epoch_window), float))
+                # self.mean_accuracy_buffer.append(mean_accuracy)
+                # self.prev_mean_accuracy_buffer.append(mean_accuracy_prev)
+                # self.mean_error_buffer.append(mean_error)
+                # self.prev_mean_error_buffer.append(mean_error_prev)
+                # print('Count error:', self.count_error, 'Mean prev error', mean_error_prev, 'Mean error:', mean_error, 'Accuracy:', self.accuracy,
+                #     'Mean prev accuracy', mean_accuracy_prev, 'Mean accuracy:', mean_accuracy, 'Epoch:', self.var_epoch)
+
+                if mean_accuracy_prev > mean_accuracy:
+                    return True
+
             return False
 
     def Finalise(self):
@@ -133,7 +150,8 @@ class Perceptron():
             return self.var_energy, self.var_error, self.var_epoch
         else:
             return self.var_energy, self.var_energy_eLTP, self.var_energy_lLTP, self.var_error, self.var_epoch, \
-                   self.mean_error_buffer, self.mean_accuracy_buffer
+                   self.accuracy
+                   # self.mean_error_buffer, self.prev_mean_error_buffer, self.mean_accuracy_buffer, self.prev_mean_accuracy_buffer
 
     ####################################################
     #                                                  #

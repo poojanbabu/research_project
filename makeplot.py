@@ -196,10 +196,10 @@ def perm_decay_patterns_nd(nDimensions):
         # Fit a straight line to the plot
         x = np.array(decay_rates_lLTP)
         logx = np.log(x)
-        # if nDimensions[i] == 250:
-        #     arr_patterns = arr_patterns[8:]
-        #     logx = logx[8:]
-        #     x = x[8:]
+        if nDimensions[i] == 250:
+            arr_patterns = arr_patterns[10:]
+            logx = logx[10:]
+            x = x[10:]
         coeff = np.polyfit(logx, arr_patterns, 1)
         coefficients[i] = coeff[0]
         print('Coefficients:', coeff)
@@ -226,12 +226,71 @@ def perm_decay_patterns_nd(nDimensions):
     fig_patterns.savefig(Constants.BASE_PLOT_PATH + Constants.PATTERNS_PLOT)
     fig_energy.savefig(Constants.BASE_PLOT_PATH + Constants.ENERGY_PLOT)
 
+    coeff = np.polyfit(nDimensions, coefficients, 1)
+    print('Coefficients:', coeff)
+    poly1d_fn = np.poly1d(coeff)
     plt.figure(3)
-    plt.plot(nDimensions, coefficients, color=palette(6))
+    plt.scatter(nDimensions, coefficients, color='red', marker='x')
+    plt.plot(nDimensions, poly1d_fn(nDimensions), color=palette(8))
     plt.xlabel('# Synapses')
     plt.ylabel('Slope')
     plt.tight_layout()
     plt.savefig(Constants.BASE_PLOT_PATH + Constants.PATTERNS_SLOPE_PLOT)
+
+
+def plot_perceptron_accuracy():
+    output_path = Constants.PERM_DECAY_PATH + '/accuracy'
+    plot_path = Constants.PERM_DECAY_PLOT_PATH + '/accuracy'
+
+    Path(plot_path).mkdir(parents=True, exist_ok=True)
+    lineStyle = {"linestyle": "-", "linewidth": 2, "markeredgewidth": 2, "elinewidth": 1, "capsize": 3,
+                 "ecolor": "gray"}
+
+    decay_rates_lLTP = np.loadtxt(output_path + Constants.DECAY_RATES_FILE)
+    arr_accuracy = np.loadtxt(output_path + Constants.ACCURACY_FILE)
+    arr_error = np.loadtxt(output_path + Constants.ERROR_FILE)
+    arr_energy = np.loadtxt(output_path + Constants.ENERGY_FILE)
+    arr_epoch = np.loadtxt(output_path + Constants.EPOCH_FILE)
+
+    arr_std_accuracy = np.loadtxt(output_path + Constants.STD_ACCURACY_FILE)
+    arr_std_error = np.loadtxt(output_path + Constants.STD_ERROR_FILE)
+    arr_std_energy = np.loadtxt(output_path + Constants.STD_ENERGY_FILE)
+    arr_std_epoch = np.loadtxt(output_path + Constants.STD_EPOCH_FILE)
+
+    plt.style.use('seaborn-darkgrid')
+    palette = plt.get_cmap('Dark2')
+
+    plt.errorbar(decay_rates_lLTP, arr_accuracy, yerr=arr_std_accuracy, **lineStyle, color=palette(0))
+    plt.xlabel('Decay rates')
+    plt.ylabel('Accuracy')
+    plt.xscale('log')
+    plt.tight_layout()
+    plt.savefig(plot_path + Constants.ACCURACY_PLOT)
+    plt.close()
+
+    plt.errorbar(decay_rates_lLTP, arr_error, yerr=arr_std_error, **lineStyle, color=palette(1))
+    plt.xlabel('Decay rates')
+    plt.ylabel('Error')
+    plt.xscale('log')
+    plt.tight_layout()
+    plt.savefig(plot_path + Constants.ERROR_PLOT)
+    plt.close()
+
+    plt.errorbar(decay_rates_lLTP, arr_energy, yerr=arr_std_energy, **lineStyle, color=palette(2))
+    plt.xlabel('Decay rates')
+    plt.ylabel('Energy')
+    plt.xscale('log')
+    plt.tight_layout()
+    plt.savefig(plot_path + Constants.ENERGY_PLOT)
+    plt.close()
+
+    plt.errorbar(decay_rates_lLTP, arr_epoch, yerr=arr_std_epoch, **lineStyle, color=palette(3))
+    plt.xlabel('Decay rates')
+    plt.ylabel('Epoch')
+    plt.xscale('log')
+    plt.tight_layout()
+    plt.savefig(plot_path + Constants.EPOCH_PLOT)
+    plt.close()
 
 
 def main():
@@ -245,7 +304,8 @@ def main():
     # perm_decay_patterns_combine()
     # plot_perm_decay_rates()
 
-    perm_decay_patterns_nd(nDimensions)
+    # perm_decay_patterns_nd(nDimensions)
+    plot_perceptron_accuracy()
 
 
 if __name__ == "__main__":
