@@ -238,9 +238,7 @@ def perm_decay_patterns_nd(nDimensions):
     plt.savefig(Constants.BASE_PLOT_PATH + Constants.PATTERNS_SLOPE_PLOT)
 
 
-def plot_perceptron_accuracy():
-    output_path = Constants.PERM_DECAY_PATH + '/accuracy'
-    plot_path = Constants.PERM_DECAY_PLOT_PATH + '/accuracy'
+def plot_perceptron_accuracy(output_path, plot_path):
 
     Path(plot_path).mkdir(parents=True, exist_ok=True)
     lineStyle = {"linestyle": "-", "linewidth": 2, "markeredgewidth": 2, "elinewidth": 1, "capsize": 3,
@@ -293,6 +291,68 @@ def plot_perceptron_accuracy():
     plt.close()
 
 
+def plot_epoch_updates():
+    output_path = Constants.PERM_DECAY_PATH + '/accuracy_epoch_update'
+    plot_path = Constants.PERM_DECAY_PLOT_PATH + '/accuracy_epoch_update'
+    Path(plot_path).mkdir(parents=True, exist_ok=True)
+    plt.style.use('seaborn-darkgrid')
+    palette = plt.get_cmap('Dark2')
+
+    decay_rates_lLTP = np.loadtxt(output_path + Constants.DECAY_RATES_FILE)
+    arr_epoch_updates = np.load(output_path + Constants.EPOCH_UPDATES_ALL, allow_pickle=True)
+    arr_energy_updates = np.load(output_path + Constants.ENERGY_UPDATES_ALL, allow_pickle=True)
+
+    for i in range(arr_epoch_updates.shape[0]):
+        arr_epoch = arr_epoch_updates[i]
+        arr_energy = arr_energy_updates[i]
+        for j in range(arr_epoch.shape[0]):
+            epochs = arr_epoch[j]
+            plt.figure(1)
+            plt.plot(range(len(epochs)), epochs, color=palette(i), label='Decay rate: ' + str(decay_rates_lLTP[i]))
+
+            energy = arr_energy[j]
+            plt.figure(2)
+            plt.plot(range(len(energy)), energy, color=palette(i), label='Decay rate: ' + str(decay_rates_lLTP[i]))
+
+    plt.figure(1)
+    plt.xlabel('Epoch')
+    plt.ylabel('# Updates')
+    plt.tight_layout()
+    handles, labels = plt.gca().get_legend_handles_labels()
+    by_label = OrderedDict(zip(labels, handles))
+    plt.legend(by_label.values(), by_label.keys())
+    plt.savefig(plot_path + Constants.EPOCH_UPDATES_PLOT)
+    plt.close()
+
+    plt.figure(2)
+    plt.xlabel('Energy')
+    plt.ylabel('# Updates')
+    plt.tight_layout()
+    handles, labels = plt.gca().get_legend_handles_labels()
+    by_label = OrderedDict(zip(labels, handles))
+    plt.legend(by_label.values(), by_label.keys())
+    plt.savefig(plot_path + Constants.ENERGY_UPDATES_PLOT)
+    plt.close()
+
+    arr_energy = np.loadtxt(output_path + Constants.ENERGY_FILE)
+    plt.plot(decay_rates_lLTP, arr_energy, color=palette(4))
+    plt.xlabel('Decay rates')
+    plt.ylabel('Energy')
+    plt.xscale('log')
+    plt.tight_layout()
+    plt.savefig(plot_path + Constants.ENERGY_PLOT)
+    plt.close()
+
+    arr_epoch = np.loadtxt(output_path + Constants.EPOCH_FILE)
+    plt.plot(decay_rates_lLTP, arr_epoch, color=palette(4))
+    plt.xlabel('Decay rates')
+    plt.ylabel('Epoch')
+    plt.xscale('log')
+    plt.tight_layout()
+    plt.savefig(plot_path + Constants.EPOCH_PLOT)
+    plt.close()
+
+
 def main():
     nDimensions = [1500, 1000, 500, 250]
     # for i in range(len(nDimensions)):
@@ -305,7 +365,10 @@ def main():
     # plot_perm_decay_rates()
 
     # perm_decay_patterns_nd(nDimensions)
-    plot_perceptron_accuracy()
+    output_path = Constants.PERM_DECAY_PATH + '/accuracy_combined'
+    plot_path = Constants.PERM_DECAY_PLOT_PATH + '/accuracy_combined'
+    plot_perceptron_accuracy(output_path, plot_path)
+    # plot_epoch_updates()
 
 
 if __name__ == "__main__":

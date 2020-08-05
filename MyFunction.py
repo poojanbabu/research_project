@@ -4,10 +4,10 @@ from collections import deque
 import itertools
 
 
-class Perceptron():
+class Perceptron:
 
     def __init__(self, pattern, pattern_answer, weight_initial, size_buffer,
-                 learning_rate, energy_scale_lLTP, energy_detail=None):
+                 learning_rate, energy_scale_lLTP, energy_detail=None, use_accuracy=True):
         self.pattern = pattern
         self.pattern_answer = pattern_answer
         self.weight_initial = weight_initial
@@ -22,6 +22,7 @@ class Perceptron():
         self.energy_scale_maintenance = 0.
         self.decay_eLTP = 0.
         self.decay_lLTP = 0.
+        self.use_accuracy = use_accuracy
 
         self.arr_weight = np.zeros(self.nDim + 1)
         self.arr_deltaW = np.zeros(self.nDim + 1)
@@ -37,6 +38,9 @@ class Perceptron():
         # self.prev_mean_accuracy_buffer = []
         # self.mean_error_buffer = []
         # self.prev_mean_error_buffer = []
+        self.count_updates = 999
+        self.arr_epoch_updates = []
+        self.arr_energy_updates = []
         self.count_error = 999
         self.count_correctly_classified = 999
         self.accuracy = 999
@@ -69,6 +73,9 @@ class Perceptron():
         # self.prev_mean_accuracy_buffer = []
         # self.mean_error_buffer = []
         # self.prev_mean_error_buffer = []
+        self.count_updates = 999
+        self.arr_epoch_updates = []
+        self.arr_energy_updates = []
 
     def CalculateOutput(self, iPattern):
         # adding maintenance cost into var_energy and var_energy_eLTP
@@ -89,31 +96,17 @@ class Perceptron():
         self.var_energy_lLTP += self.energy_scale_lLTP * np.sum(
             np.fabs(self.arr_deltaW[np.arange(0, self.nDim)]))  # assume changing bias costs no energy
         self.arr_deltaW = np.zeros(self.nDim + 1)
+        self.count_updates += 1
 
     def BreakLoop(self):
-        self.accuracy = self.count_correctly_classified / self.nPattern
-        self.accuracy_window_buffer.append(self.accuracy)
-        self.error_window_buffer.append(self.count_error)
+        if self.use_accuracy:
+            # Use the value of accuracy to quit training
+            self.accuracy = self.count_correctly_classified / self.nPattern
+            self.accuracy_window_buffer.append(self.accuracy)
+            self.error_window_buffer.append(self.count_error)
 
-        tmp = self.var_epoch % self.size_buffer
-        # tmp_epoch = self.var_epoch % (self.epoch_window * 2)
-
-        if self.count_error >= self.arr_count_error_buffer[tmp]:
-            self.var_epoch -= self.size_buffer
-            self.arr_weight = self.arr_weight_buffer[tmp]
-            self.var_energy = self.arr_energy_buffer[tmp]
-            self.var_energy_eLTP = self.arr_energy_eLTP_buffer[tmp]
-            self.var_energy_lLTP = self.arr_energy_lLTP_buffer[tmp]
-            return True  # when error rate doesn't improve anymore
-        else:
-            # self.accuracy_window_buffer[tmp_epoch] = self.accuracy
-            # self.error_window_buffer[tmp_epoch] = self.count_error
-
-            self.arr_count_error_buffer[tmp] = self.count_error
-            self.arr_weight_buffer[tmp] = self.arr_weight
-            self.arr_energy_buffer[tmp] = self.var_energy
-            self.arr_energy_eLTP_buffer[tmp] = self.var_energy_eLTP
-            self.arr_energy_lLTP_buffer[tmp] = self.var_energy_lLTP
+            self.arr_epoch_updates.append(self.count_updates)
+            self.arr_energy_updates.append(self.var_energy[0])
             self.var_epoch += 1
 
             if self.var_epoch >= (2 * self.epoch_window):
@@ -134,6 +127,25 @@ class Perceptron():
                     return True
 
             return False
+        else:
+            # Quit the training when the training error doesn't improve
+            tmp = self.var_epoch % self.size_buffer
+            if self.count_error >= self.arr_count_error_buffer[tmp]:
+                self.var_epoch -= self.size_buffer
+                self.arr_weight = self.arr_weight_buffer[tmp]
+                self.var_energy = self.arr_energy_buffer[tmp]
+                self.var_energy_eLTP = self.arr_energy_eLTP_buffer[tmp]
+                self.var_energy_lLTP = self.arr_energy_lLTP_buffer[tmp]
+                return True  # when error rate doesn't improve anymore
+            else:
+                self.arr_count_error_buffer[tmp] = self.count_error
+                self.arr_weight_buffer[tmp] = self.arr_weight
+                self.arr_energy_buffer[tmp] = self.var_energy
+                self.arr_energy_eLTP_buffer[tmp] = self.var_energy_eLTP
+                self.arr_energy_lLTP_buffer[tmp] = self.var_energy_lLTP
+                self.var_epoch += 1
+
+                return False
 
     def Finalise(self):
         self.var_error += self.count_error / self.nPattern
@@ -149,9 +161,11 @@ class Perceptron():
         if self.energy_detail is None:
             return self.var_energy, self.var_error, self.var_epoch
         else:
-            return self.var_energy, self.var_energy_eLTP, self.var_energy_lLTP, self.var_error, self.var_epoch, \
-                   self.accuracy
-                   # self.mean_error_buffer, self.prev_mean_error_buffer, self.mean_accuracy_buffer, self.prev_mean_accuracy_buffer
+            if self.use_accuracy:
+                return self.var_energy, self.var_energy_eLTP, self.var_energy_lLTP, self.var_error, self.var_epoch, \
+                       self.accuracy, self.arr_epoch_updates, self.arr_energy_updates
+            else:
+                return self.var_energy, self.var_energy_eLTP, self.var_energy_lLTP, self.var_error, self.var_epoch
 
     ####################################################
     #                                                  #
@@ -165,6 +179,7 @@ class Perceptron():
         while self.count_error != 0:
             self.count_error = 0.
             self.count_correctly_classified = 0.
+            self.count_updates = 0.
             self.arr_deltaW = np.zeros(self.nDim + 1)
             for iPattern in range(0, self.nPattern):
                 difference = self.CalculateOutput(iPattern)
@@ -186,8 +201,7 @@ class Perceptron():
             synapse_threshold = self.synapse_threshold
         self.Initialise()
         while self.count_error != 0:
-            self.count_error = 0.;
-            if_spike = 0
+            self.count_error = 0.
             for iPattern in range(0, self.nPattern):
                 difference = self.CalculateOutput(iPattern)
                 if difference != 0:
@@ -215,8 +229,7 @@ class Perceptron():
             synapse_threshold = self.synapse_threshold
         self.Initialise()
         while self.count_error != 0:
-            self.count_error = 0.;
-            if_spike = 0
+            self.count_error = 0.
             for iPattern in range(0, self.nPattern):
                 difference = self.CalculateOutput(iPattern)
                 if difference != 0:

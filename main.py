@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from collections import OrderedDict
+
 import numpy as np
 import Code.MyFunction as MyF
 from pathlib import Path
@@ -143,7 +145,7 @@ def perm_decay_rates(iProcess, **kwargs):
             weight_initial = np.zeros(nDimension + 1)  # +1 is for bias
             pattern, pattern_answer = create_patterns(iPattern, nDimension)
             Per = MyF.Perceptron(pattern[0], pattern_answer[0], weight_initial, size_buffer, learning_rate,
-                                 energy_scale_lLTP, energy_detail=True)
+                                 energy_scale_lLTP, energy_detail=True, use_accuracy=False)
             Per.energy_scale_maintenance = energy_scale_maintenance
             Per.decay_lLTP = decay_lLTP
 
@@ -155,8 +157,7 @@ def perm_decay_rates(iProcess, **kwargs):
             for iRun in range(nRun):
                 Per.pattern = pattern[iRun]
                 Per.pattern_answer = pattern_answer[iRun]
-                energy[iRun], energy_eLTP[iRun], energy_lLTP[iRun], error[iRun], epoch[iRun], error_buffer, \
-                    accuracy_buffer = Per.AlgoStandard()
+                energy[iRun], energy_eLTP[iRun], energy_lLTP[iRun], error[iRun], epoch[iRun] = Per.AlgoStandard()
                 logger.info(f"Process: {iProcess} Run: {iRun} energy: {energy[iRun]} energy_eLTP: {energy_eLTP[iRun]} "
                             f"energy_lLTP: {energy_lLTP[iRun]} error: {error[iRun]} epoch: {epoch[iRun]}")
 
@@ -271,7 +272,6 @@ def combine_perm_decay_results(nProcess, **kwargs):
         for j in range(nProcess):
             std_sum += arr_std_epoch[j][i] ** 2 + (arr_mean_epoch[j][i] - arr_combined_mean_epoch[i]) ** 2
         arr_combined_std_epoch[i] = np.sqrt(std_sum / nProcess)
-        # print('Combined std:', arr_combined_std_epoch[i], 'Original std:', np.std(arr_all_epoch[i, :]))
 
         arr_combined_std_energy[i] = np.std(arr_all_energy[i, :])
         arr_combined_std_patterns[i] = np.std(arr_mean_patterns[:, i])
@@ -295,6 +295,7 @@ def perceptron_accuracy(iProcess, **kwargs):
     nPattern = kwargs['nPattern']
     decay_rates_lLTP = kwargs['decay_rates_lLTP']
     output_path = kwargs['output_path']
+    nRun = kwargs['nRun']
     Path(output_path).mkdir(parents=True, exist_ok=True)
 
     window_size = kwargs['window_size']
@@ -302,7 +303,7 @@ def perceptron_accuracy(iProcess, **kwargs):
     weight_initial = np.zeros(nDimension + 1)  # +1 is for bias
     pattern, pattern_answer = create_patterns(nPattern, nDimension)
     Per = MyF.Perceptron(pattern[0], pattern_answer[0], weight_initial, size_buffer, learning_rate,
-                         energy_scale_lLTP, energy_detail=True)
+                         energy_scale_lLTP, energy_detail=True, use_accuracy=True)
     Per.energy_scale_maintenance = energy_scale_maintenance
 
     arr_mean_accuracy = np.nan * np.ones(shape=(len(decay_rates_lLTP)))
@@ -313,6 +314,9 @@ def perceptron_accuracy(iProcess, **kwargs):
     arr_all_error = np.nan * np.ones(shape=(len(decay_rates_lLTP), nRun))
     arr_all_epoch = np.nan * np.ones(shape=(len(decay_rates_lLTP), nRun))
     arr_all_accuracy = np.nan * np.ones(shape=(len(decay_rates_lLTP), nRun))
+
+    # arr_all_epoch_updates = []
+    # arr_all_energy_updates = []
 
     for j in range(len(decay_rates_lLTP)):
         decay_lLTP = decay_rates_lLTP[j]
@@ -326,10 +330,13 @@ def perceptron_accuracy(iProcess, **kwargs):
         error = np.nan * np.ones(nRun)
         epoch = np.nan * np.ones(nRun)
         accuracy = np.nan * np.ones(nRun)
+        epoch_updates = [[] for i in range(nRun)]
+        energy_updates = [[] for i in range(nRun)]
         for iRun in range(nRun):
             Per.pattern = pattern[iRun]
             Per.pattern_answer = pattern_answer[iRun]
-            energy[iRun], energy_eLTP[iRun], energy_lLTP[iRun], error[iRun], epoch[iRun], accuracy[iRun] = Per.AlgoStandard()
+            energy[iRun], energy_eLTP[iRun], energy_lLTP[iRun], error[iRun], epoch[iRun], accuracy[iRun], \
+            epoch_updates[iRun], energy_updates[iRun] = Per.AlgoStandard()
             # np.savetxt(output_path + '/accuracy_' + str(size) + '.txt', arr_mean_accuracy)
             # np.savetxt(output_path + '/error_' + str(size) + '.txt', arr_mean_error)
             # np.savetxt(output_path + '/accuracy_prev_' + str(size) + '.txt', arr_mean_accuracy_prev)
@@ -343,6 +350,9 @@ def perceptron_accuracy(iProcess, **kwargs):
         arr_all_epoch[j] = epoch
         arr_all_accuracy[j] = accuracy
 
+        # arr_all_epoch_updates.append(epoch_updates)
+        # arr_all_energy_updates.append(energy_updates)
+
         arr_mean_accuracy[j] = np.mean(accuracy)
         arr_mean_error[j] = np.mean(error)
 
@@ -353,6 +363,10 @@ def perceptron_accuracy(iProcess, **kwargs):
     np.savetxt(output_path + Constants.ERROR_FILE_PROC_ALL.format((str(iProcess))), arr_all_error)
     np.savetxt(output_path + Constants.ENERGY_FILE_PROC_ALL.format((str(iProcess))), arr_all_energy)
     np.savetxt(output_path + Constants.EPOCH_FILE_PROC_ALL.format((str(iProcess))), arr_all_epoch)
+
+    # np.save(output_path + Constants.EPOCH_UPDATES_ALL, np.array(arr_all_epoch_updates, dtype=object),
+    # allow_pickle=True) np.save(output_path + Constants.ENERGY_UPDATES_ALL, np.array(arr_all_energy_updates,
+    # dtype=object), allow_pickle=True)
 
 
 def combine_perceptron_accuracy_results(nProcess, **kwargs):
@@ -433,6 +447,50 @@ def combine_perceptron_accuracy_results(nProcess, **kwargs):
     np.savetxt(output_path + Constants.STD_EPOCH_FILE, arr_combined_std_epoch)
 
 
+def combine_results(output_path_1, output_path_2, keys):
+    arr = np.loadtxt(output_path_1)
+    arr = np.concatenate((arr, np.loadtxt(output_path_2)))
+    dict_combined = dict(zip(keys, arr))
+    dict_combined = OrderedDict(sorted(dict_combined.items()))
+
+    return dict_combined
+
+
+def combine_perceptron_accuracy_decay_results(output_path_1, output_path_2, res_output_path):
+    Path(res_output_path).mkdir(parents=True, exist_ok=True)
+    decay_rates_lLTP = np.loadtxt(output_path_1 + Constants.DECAY_RATES_FILE)
+    decay_rates_lLTP = np.concatenate((decay_rates_lLTP, np.loadtxt(output_path_2 + Constants.DECAY_RATES_FILE)))
+
+    # Accuracy
+    dict_accuracy = combine_results(output_path_1 + Constants.ACCURACY_FILE, output_path_2 + Constants.ACCURACY_FILE, decay_rates_lLTP)
+    np.savetxt(res_output_path + Constants.DECAY_RATES_FILE, [*dict_accuracy.keys()])
+    np.savetxt(res_output_path + Constants.ACCURACY_FILE, [*dict_accuracy.values()])
+
+    dict_std_accuracy = combine_results(output_path_1 + Constants.STD_ACCURACY_FILE, output_path_2 + Constants.STD_ACCURACY_FILE, decay_rates_lLTP)
+    np.savetxt(res_output_path + Constants.STD_ACCURACY_FILE, [*dict_std_accuracy.values()])
+
+    # Energy
+    dict_energy = combine_results(output_path_1 + Constants.ENERGY_FILE, output_path_2 + Constants.ENERGY_FILE, decay_rates_lLTP)
+    np.savetxt(res_output_path + Constants.ENERGY_FILE, [*dict_energy.values()])
+
+    dict_std_energy = combine_results(output_path_1 + Constants.STD_ENERGY_FILE, output_path_2 + Constants.STD_ENERGY_FILE, decay_rates_lLTP)
+    np.savetxt(res_output_path + Constants.STD_ENERGY_FILE, [*dict_std_energy.values()])
+
+    # Error
+    dict_error = combine_results(output_path_1 + Constants.ERROR_FILE, output_path_2 + Constants.ERROR_FILE, decay_rates_lLTP)
+    np.savetxt(res_output_path + Constants.ERROR_FILE, [*dict_error.values()])
+
+    dict_std_error = combine_results(output_path_1 + Constants.STD_ERROR_FILE, output_path_2 + Constants.STD_ERROR_FILE, decay_rates_lLTP)
+    np.savetxt(res_output_path + Constants.STD_ERROR_FILE, [*dict_std_error.values()])
+
+    # Epoch
+    dict_epoch = combine_results(output_path_1 + Constants.EPOCH_FILE, output_path_2 + Constants.EPOCH_FILE, decay_rates_lLTP)
+    np.savetxt(res_output_path + Constants.EPOCH_FILE, [*dict_epoch.values()])
+
+    dict_std_epoch = combine_results(output_path_1 + Constants.STD_EPOCH_FILE, output_path_2 + Constants.STD_EPOCH_FILE, decay_rates_lLTP)
+    np.savetxt(res_output_path + Constants.STD_EPOCH_FILE, [*dict_std_epoch.values()])
+
+
 def perm_decay_wrapper_process(**kwargs):
     nProcess = 5
     args = [iProcess for iProcess in range(nProcess)]
@@ -460,8 +518,9 @@ def perm_decay_wrapper():
     nPattern = 2 * nDimension  # max capacity of the perceptron
     iPattern_init = 20
     step_size = 5
-    decay_rates_lLTP = np.logspace(-6, -4, 30)
-    output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension)
+    # decay_rates_lLTP = np.logspace(-6, -4, 30)
+    decay_rates_lLTP = np.logspace(-8, -6, 30)
+    output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension) + 'low_decay'
     perm_decay_wrapper_process(nDimension=nDimension, nPattern=nPattern, iPattern_init=iPattern_init,
                                step_size=step_size,
                                decay_rates_lLTP=decay_rates_lLTP, output_path=output_path)
@@ -471,20 +530,22 @@ def perm_decay_wrapper():
 def perceptron_accuracy_wrapper():
     nDimension = 1000
     nPattern = 1600
-    decay_rates_lLTP = np.logspace(-6, -4, 30)
-    output_path = Constants.PERM_DECAY_PATH + '/accuracy'
+    # decay_rates_lLTP = np.logspace(-6, -4, 30)
+    # decay_rates_lLTP = np.array([1e-6, 1e-5, 1e-4])
+    decay_rates_lLTP = np.logspace(-4, -2, 30)
+    output_path = Constants.PERM_DECAY_PATH + '/accuracy_higher_decay'
     perceptron_accuracy_wrapper_process(nDimension=nDimension, nPattern=nPattern, decay_rates_lLTP=decay_rates_lLTP,
-                                        output_path=output_path, window_size=25)
+                                        output_path=output_path, window_size=25, nRun=10)
     np.savetxt(output_path + Constants.DECAY_RATES_FILE, decay_rates_lLTP)
 
 
 def main():
-    # perm_decay_wrapper()
+    perm_decay_wrapper()
     # window_size = [5, 7, 10, 12, 15, 17, 20, 22, 25, 27, 30]  # , 50, 100, 150, 200]
-    perceptron_accuracy_wrapper()
-
-    output_path = Constants.PERM_DECAY_PATH + '/accuracy'
-    Path(output_path).mkdir(parents=True, exist_ok=True)
+    # perceptron_accuracy_wrapper()
+    #
+    # output_path = Constants.PERM_DECAY_PATH + '/accuracy_old_logic'
+    # Path(output_path).mkdir(parents=True, exist_ok=True)
     # for size in window_size:
     #     arr_accuracy = np.loadtxt(output_path + '/accuracy_' + str(size) + '.txt')
     #     arr_accuracy_prev = np.loadtxt(output_path + '/accuracy_prev_' + str(size) + '.txt')

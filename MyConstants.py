@@ -27,6 +27,9 @@ ERROR_FILE_PROC_ALL = "/error_all_{}.txt"
 EPOCH_FILE_PROC_ALL = '/epoch_all_{}.txt'
 ACCURACY_FILE_PROC_ALL = '/accuracy_all_{}.txt'
 
+EPOCH_UPDATES_ALL = '/epoch_updates.npy'
+ENERGY_UPDATES_ALL = '/energy_updates.npy'
+
 # STD files
 STD_EPOCH_FILE_PROC = "/std_epoch_{}.txt"
 STD_EPOCH_FILE = "/std_epoch.txt"
@@ -47,3 +50,5 @@ EPOCH_PLOT = '/epoch.png'
 PATTERNS_PLOT = '/patterns.png'
 PATTERNS_SLOPE_PLOT = '/slope.png'
 ACCURACY_PLOT = '/accuracy.png'
+EPOCH_UPDATES_PLOT = '/epoch_updates.png'
+ENERGY_UPDATES_PLOT = '/energy_updates.png'
