@@ -2,6 +2,9 @@
 import numpy as np
 from collections import deque
 import itertools
+import logging
+
+logger = logging.getLogger('Perceptron')
 
 
 class Perceptron:
@@ -124,6 +127,8 @@ class Perceptron:
                 #     'Mean prev accuracy', mean_accuracy_prev, 'Mean accuracy:', mean_accuracy, 'Epoch:', self.var_epoch)
 
                 if mean_accuracy_prev > mean_accuracy:
+                    logger.info(f'No improvement in mean accuracy. Quitting! Mean accuracy: {mean_accuracy} Mean '
+                                f'previous accuracy: {mean_accuracy_prev}')
                     return True
 
             return False

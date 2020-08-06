@@ -1,6 +1,7 @@
 ############## TEXT OUTPUT ################
 BASE_OUTPUT_PATH = '/home/pooja/Research_Project/Shared/Text'
 PERM_DECAY_PATH = BASE_OUTPUT_PATH + '/Perm_decay'
+PERM_DECAY_ACCURACY_PATH = PERM_DECAY_PATH + '/accuracy'
 
 # Files for different measures
 DECAY_RATES_FILE = '/decay_rates.txt'

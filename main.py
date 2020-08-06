@@ -394,6 +394,8 @@ def combine_perceptron_accuracy_results(nProcess, **kwargs):
     arr_all_energy = None
     arr_all_epoch = None
 
+    axis = 1 if len(decay_rates_lLTP) > 1 else 0
+
     for iProcess in range(nProcess):
         arr_mean_accuracy[iProcess] = np.loadtxt(output_path + Constants.ACCURACY_FILE_PROC.format(str(iProcess)))
         arr_mean_error[iProcess] = np.loadtxt(output_path + Constants.ERROR_FILE_PROC.format(str(iProcess)))
@@ -406,35 +408,47 @@ def combine_perceptron_accuracy_results(nProcess, **kwargs):
         if arr_all_accuracy is None:
             arr_all_accuracy = new_arr_accuracy
         else:
-            arr_all_accuracy = np.append(arr_all_accuracy, new_arr_accuracy, axis=1)
+            arr_all_accuracy = np.append(arr_all_accuracy, new_arr_accuracy, axis=axis)
 
         if arr_all_error is None:
             arr_all_error = new_arr_error
         else:
-            arr_all_error = np.append(arr_all_error, new_arr_error, axis=1)
+            arr_all_error = np.append(arr_all_error, new_arr_error, axis=axis)
 
         if arr_all_energy is None:
             arr_all_energy = new_arr_energy
         else:
-            arr_all_energy = np.append(arr_all_energy, new_arr_energy, axis=1)
+            arr_all_energy = np.append(arr_all_energy, new_arr_energy, axis=axis)
 
         if arr_all_epoch is None:
             arr_all_epoch = new_arr_epoch
         else:
-            arr_all_epoch = np.append(arr_all_epoch, new_arr_epoch, axis=1)
+            arr_all_epoch = np.append(arr_all_epoch, new_arr_epoch, axis=axis)
 
-    # Calculate the overall mean
-    for i in range(len(decay_rates_lLTP)):
-        arr_combined_mean_accuracy[i] = np.mean(arr_mean_accuracy[:, i])
-        arr_combined_mean_error[i] = np.mean(arr_mean_error[:, i])
+    if len(decay_rates_lLTP) == 1:
+        arr_combined_mean_accuracy[0] = np.mean(arr_all_accuracy)
+        arr_combined_mean_error[0] = np.mean(arr_all_error)
 
-        arr_combined_mean_energy[i] = np.mean(arr_all_energy[i, :])
-        arr_combined_mean_epoch[i] = np.mean(arr_all_epoch[i, :])
+        arr_combined_mean_energy[0] = np.mean(arr_all_energy)
+        arr_combined_mean_epoch[0] = np.mean(arr_all_epoch)
 
-        arr_combined_std_accuracy[i] = np.std(arr_all_accuracy[i, :])
-        arr_combined_std_error[i] = np.std(arr_all_error[i, :])
-        arr_combined_std_energy[i] = np.std(arr_all_energy[i, :])
-        arr_combined_std_epoch[i] = np.std(arr_all_epoch[i, :])
+        arr_combined_std_accuracy[0] = np.std(arr_all_accuracy)
+        arr_combined_std_error[0] = np.std(arr_all_error)
+        arr_combined_std_energy[0] = np.std(arr_all_energy)
+        arr_combined_std_epoch[0] = np.std(arr_all_epoch)
+    else:
+        # Calculate the overall mean
+        for i in range(len(decay_rates_lLTP)):
+            arr_combined_mean_accuracy[i] = np.mean(arr_mean_accuracy[:, i])
+            arr_combined_mean_error[i] = np.mean(arr_mean_error[:, i])
+
+            arr_combined_mean_energy[i] = np.mean(arr_all_energy[i, :])
+            arr_combined_mean_epoch[i] = np.mean(arr_all_epoch[i, :])
+
+            arr_combined_std_accuracy[i] = np.std(arr_all_accuracy[i, :])
+            arr_combined_std_error[i] = np.std(arr_all_error[i, :])
+            arr_combined_std_energy[i] = np.std(arr_all_energy[i, :])
+            arr_combined_std_epoch[i] = np.std(arr_all_epoch[i, :])
 
     np.savetxt(output_path + Constants.ACCURACY_FILE, arr_combined_mean_accuracy)
     np.savetxt(output_path + Constants.ERROR_FILE, arr_combined_mean_error)
@@ -456,38 +470,58 @@ def combine_results(output_path_1, output_path_2, keys):
     return dict_combined
 
 
-def combine_perceptron_accuracy_decay_results(output_path_1, output_path_2, res_output_path):
+def combine_perceptron_decay_results(output_path_1, output_path_2, res_output_path, is_accuracy=True):
     Path(res_output_path).mkdir(parents=True, exist_ok=True)
     decay_rates_lLTP = np.loadtxt(output_path_1 + Constants.DECAY_RATES_FILE)
     decay_rates_lLTP = np.concatenate((decay_rates_lLTP, np.loadtxt(output_path_2 + Constants.DECAY_RATES_FILE)))
 
-    # Accuracy
-    dict_accuracy = combine_results(output_path_1 + Constants.ACCURACY_FILE, output_path_2 + Constants.ACCURACY_FILE, decay_rates_lLTP)
-    np.savetxt(res_output_path + Constants.DECAY_RATES_FILE, [*dict_accuracy.keys()])
-    np.savetxt(res_output_path + Constants.ACCURACY_FILE, [*dict_accuracy.values()])
+    if is_accuracy:
+        # Accuracy
+        dict_accuracy = combine_results(output_path_1 + Constants.ACCURACY_FILE,
+                                        output_path_2 + Constants.ACCURACY_FILE, decay_rates_lLTP)
+        np.savetxt(res_output_path + Constants.DECAY_RATES_FILE, [*dict_accuracy.keys()])
+        np.savetxt(res_output_path + Constants.ACCURACY_FILE, [*dict_accuracy.values()])
 
-    dict_std_accuracy = combine_results(output_path_1 + Constants.STD_ACCURACY_FILE, output_path_2 + Constants.STD_ACCURACY_FILE, decay_rates_lLTP)
-    np.savetxt(res_output_path + Constants.STD_ACCURACY_FILE, [*dict_std_accuracy.values()])
+        dict_std_accuracy = combine_results(output_path_1 + Constants.STD_ACCURACY_FILE,
+                                            output_path_2 + Constants.STD_ACCURACY_FILE, decay_rates_lLTP)
+        np.savetxt(res_output_path + Constants.STD_ACCURACY_FILE, [*dict_std_accuracy.values()])
+    else:
+        # Max number of patterns
+        dict_patterns = combine_results(output_path_1 + Constants.PATTERNS_FILE,
+                                        output_path_2 + Constants.PATTERNS_FILE, decay_rates_lLTP)
+        np.savetxt(res_output_path + Constants.DECAY_RATES_FILE, [*dict_patterns.keys()])
+        np.savetxt(res_output_path + Constants.PATTERNS_FILE, [*dict_patterns.values()])
+
+        dict_std_patterns = combine_results(output_path_1 + Constants.STD_PATTERNS_FILE,
+                                            output_path_2 + Constants.STD_PATTERNS_FILE, decay_rates_lLTP)
+        np.savetxt(res_output_path + Constants.STD_PATTERNS_FILE, [*dict_std_patterns.values()])
 
     # Energy
-    dict_energy = combine_results(output_path_1 + Constants.ENERGY_FILE, output_path_2 + Constants.ENERGY_FILE, decay_rates_lLTP)
+    dict_energy = combine_results(output_path_1 + Constants.ENERGY_FILE, output_path_2 + Constants.ENERGY_FILE,
+                                  decay_rates_lLTP)
     np.savetxt(res_output_path + Constants.ENERGY_FILE, [*dict_energy.values()])
 
-    dict_std_energy = combine_results(output_path_1 + Constants.STD_ENERGY_FILE, output_path_2 + Constants.STD_ENERGY_FILE, decay_rates_lLTP)
+    dict_std_energy = combine_results(output_path_1 + Constants.STD_ENERGY_FILE,
+                                      output_path_2 + Constants.STD_ENERGY_FILE, decay_rates_lLTP)
     np.savetxt(res_output_path + Constants.STD_ENERGY_FILE, [*dict_std_energy.values()])
 
     # Error
-    dict_error = combine_results(output_path_1 + Constants.ERROR_FILE, output_path_2 + Constants.ERROR_FILE, decay_rates_lLTP)
-    np.savetxt(res_output_path + Constants.ERROR_FILE, [*dict_error.values()])
+    if is_accuracy:
+        dict_error = combine_results(output_path_1 + Constants.ERROR_FILE, output_path_2 + Constants.ERROR_FILE,
+                                     decay_rates_lLTP)
+        np.savetxt(res_output_path + Constants.ERROR_FILE, [*dict_error.values()])
 
-    dict_std_error = combine_results(output_path_1 + Constants.STD_ERROR_FILE, output_path_2 + Constants.STD_ERROR_FILE, decay_rates_lLTP)
-    np.savetxt(res_output_path + Constants.STD_ERROR_FILE, [*dict_std_error.values()])
+        dict_std_error = combine_results(output_path_1 + Constants.STD_ERROR_FILE,
+                                         output_path_2 + Constants.STD_ERROR_FILE, decay_rates_lLTP)
+        np.savetxt(res_output_path + Constants.STD_ERROR_FILE, [*dict_std_error.values()])
 
     # Epoch
-    dict_epoch = combine_results(output_path_1 + Constants.EPOCH_FILE, output_path_2 + Constants.EPOCH_FILE, decay_rates_lLTP)
+    dict_epoch = combine_results(output_path_1 + Constants.EPOCH_FILE, output_path_2 + Constants.EPOCH_FILE,
+                                 decay_rates_lLTP)
     np.savetxt(res_output_path + Constants.EPOCH_FILE, [*dict_epoch.values()])
 
-    dict_std_epoch = combine_results(output_path_1 + Constants.STD_EPOCH_FILE, output_path_2 + Constants.STD_EPOCH_FILE, decay_rates_lLTP)
+    dict_std_epoch = combine_results(output_path_1 + Constants.STD_EPOCH_FILE, output_path_2 + Constants.STD_EPOCH_FILE,
+                                     decay_rates_lLTP)
     np.savetxt(res_output_path + Constants.STD_EPOCH_FILE, [*dict_std_epoch.values()])
 
 
@@ -519,8 +553,8 @@ def perm_decay_wrapper():
     iPattern_init = 20
     step_size = 5
     # decay_rates_lLTP = np.logspace(-6, -4, 30)
-    decay_rates_lLTP = np.logspace(-8, -6, 30)
-    output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension) + 'low_decay'
+    decay_rates_lLTP = np.logspace(-4, -2, 30)
+    output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension) + '/high_decay'
     perm_decay_wrapper_process(nDimension=nDimension, nPattern=nPattern, iPattern_init=iPattern_init,
                                step_size=step_size,
                                decay_rates_lLTP=decay_rates_lLTP, output_path=output_path)
@@ -532,17 +566,27 @@ def perceptron_accuracy_wrapper():
     nPattern = 1600
     # decay_rates_lLTP = np.logspace(-6, -4, 30)
     # decay_rates_lLTP = np.array([1e-6, 1e-5, 1e-4])
-    decay_rates_lLTP = np.logspace(-4, -2, 30)
-    output_path = Constants.PERM_DECAY_PATH + '/accuracy_higher_decay'
+    # decay_rates_lLTP = np.logspace(-4, -2, 30)
+    # decay_rates_lLTP = [0.0]
+    decay_rates_lLTP = np.logspace(-8, -6, 30)
+    output_path = Constants.PERM_DECAY_ACCURACY_PATH + '/low_decay'
     perceptron_accuracy_wrapper_process(nDimension=nDimension, nPattern=nPattern, decay_rates_lLTP=decay_rates_lLTP,
                                         output_path=output_path, window_size=25, nRun=10)
     np.savetxt(output_path + Constants.DECAY_RATES_FILE, decay_rates_lLTP)
 
 
 def main():
-    perm_decay_wrapper()
+    ################### Max number of patterns vs decay rates ##############################
+    # perm_decay_wrapper()
+    # nDimension = 250
+    # output_path_1 = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension) + '/high_decay'
+    # output_path_2 = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension) + '/mid_decay'
+    # res_output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension) + '/combined'
+    # combine_perceptron_decay_results(output_path_1, output_path_2, res_output_path, is_accuracy=False)
+
+    ################### Perceptron accuracy ##############################
     # window_size = [5, 7, 10, 12, 15, 17, 20, 22, 25, 27, 30]  # , 50, 100, 150, 200]
-    # perceptron_accuracy_wrapper()
+    perceptron_accuracy_wrapper()
     #
     # output_path = Constants.PERM_DECAY_PATH + '/accuracy_old_logic'
     # Path(output_path).mkdir(parents=True, exist_ok=True)

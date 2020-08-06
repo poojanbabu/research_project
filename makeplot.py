@@ -365,10 +365,16 @@ def main():
     # plot_perm_decay_rates()
 
     # perm_decay_patterns_nd(nDimensions)
-    output_path = Constants.PERM_DECAY_PATH + '/accuracy_combined'
-    plot_path = Constants.PERM_DECAY_PLOT_PATH + '/accuracy_combined'
-    plot_perceptron_accuracy(output_path, plot_path)
+
+    # Accuracy and other measures for decay rates from 1e-6 to 1e-2
+    # output_path = Constants.PERM_DECAY_PATH + '/accuracy_combined'
+    # plot_path = Constants.PERM_DECAY_PLOT_PATH + '/accuracy_combined'
+    # plot_perceptron_accuracy(output_path, plot_path)
     # plot_epoch_updates()
+
+    output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(250) + '/combined'
+    plot_path = Constants.PERM_DECAY_PLOT_PATH + '/dim_' + str(250) + '/combined'
+    perm_decay_patterns(output_path, plot_path)
 
 
 if __name__ == "__main__":
