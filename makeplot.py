@@ -299,9 +299,9 @@ def plot_perceptron_accuracy(output_path, plot_path, output_path_zero_decay=None
     plt.close()
 
 
-def plot_epoch_updates():
-    output_path = Constants.PERM_DECAY_PATH + '/accuracy_epoch_update'
-    plot_path = Constants.PERM_DECAY_PLOT_PATH + '/accuracy_epoch_update'
+def plot_epoch_updates(output_path, plot_path):
+    # output_path = Constants.PERM_DECAY_PATH + '/accuracy_epoch_update'
+    # plot_path = Constants.PERM_DECAY_PLOT_PATH + '/accuracy_epoch_update'
     Path(plot_path).mkdir(parents=True, exist_ok=True)
     plt.style.use('seaborn-darkgrid')
     palette = plt.get_cmap('Dark2')
@@ -379,8 +379,6 @@ def main():
     # output_path = Constants.PERM_DECAY_ACCURACY_PATH + '/combined'
     # plot_path = Constants.PERM_DECAY_ACCURACY_PLOT_PATH + '/combined'
     # plot_perceptron_accuracy(output_path, plot_path, output_path_zero_decay)
-
-    # plot_epoch_updates()
 
     # #patterns vs decay rates plot
     output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(250) + '/combined'

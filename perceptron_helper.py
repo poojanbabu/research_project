@@ -2,29 +2,18 @@
 from collections import OrderedDict
 
 import numpy as np
-import Code.MyFunction as MyF
+import Code.Perceptron as Perceptron
+import Code.log_helper as log_helper
 from pathlib import Path
 import multiprocessing as mp
-import logging.handlers
-import sys
 import time
 from functools import partial
 import Code.MyConstants as Constants
 import matplotlib.pyplot as plt
 
-# Initialize logger
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-log_formatter = logging.Formatter('%(asctime)s - %(process)d - %(name)s - %(levelname)s - %(message)s')
-c_handler = logging.StreamHandler(sys.stdout)
-c_handler.setFormatter(log_formatter)
-f_handler = logging.handlers.RotatingFileHandler(filename='../out.log', maxBytes=(1048576 * 5), backupCount=10)
-f_handler.setFormatter(log_formatter)
-logger.addHandler(c_handler)
-logger.addHandler(f_handler)
+logger = log_helper.get_logger('perceptron_helper')
 
 # Global variables
-nRun = 10  # one file contains events with one hyperplane solution
 learning_rate = 1.0
 size_buffer = 1000
 energy_scale_lLTP = 1.0
@@ -37,12 +26,12 @@ decay_eLTP = 0.001
 #####################################
 
 
-def create_patterns(nPattern, nDimension):
+def create_patterns(nPattern, nDimension, nRun):
     pattern = np.array([None] * nRun)
     pattern_answer = np.array([None] * nRun)
     for iRun in range(nRun):
-        pattern[iRun], pattern_answer[iRun] = MyF.MakePattern(nPattern, nDimension, is_pattern_integer=True,
-                                                              is_plus_minus_one=True)
+        pattern[iRun], pattern_answer[iRun] = Perceptron.MakePattern(nPattern, nDimension, is_pattern_integer=True,
+                                                                     is_plus_minus_one=True)
     return pattern, pattern_answer
 
 
@@ -51,6 +40,7 @@ def create_patterns(nPattern, nDimension):
 #####################################
 
 def perm_decay_patterns():
+    nRun = 10
     nDimension = 1000
     nPatterns = np.arange(1000, 780, -20)  # Array of number of patterns
     decay_lLTP = 0.00001
@@ -66,10 +56,10 @@ def perm_decay_patterns():
 
     for idx in range(len(nPatterns)):
         weight_initial = np.zeros(nDimension + 1)  # +1 is for bias
-        pattern, pattern_answer = create_patterns(nPatterns[idx], nDimension)
-        Per = MyF.Perceptron(pattern[0], pattern_answer[0], weight_initial, \
-                             size_buffer, learning_rate, energy_scale_lLTP, \
-                             energy_detail=True)
+        pattern, pattern_answer = create_patterns(nPatterns[idx], nDimension, nRun)
+        Per = Perceptron.Perceptron(pattern[0], pattern_answer[0], weight_initial, \
+                                    size_buffer, learning_rate, energy_scale_lLTP, \
+                                    energy_detail=True)
         Per.energy_scale_maintenance = energy_scale_maintenance
         Per.decay_lLTP = decay_lLTP
 
@@ -116,6 +106,7 @@ def perm_decay_rates(iProcess, **kwargs):
     iPattern_init = kwargs['iPattern_init']
     step_size = kwargs['step_size']
     output_path = kwargs['output_path']
+    nRun = kwargs['nRun']
 
     # Arrays to store the mean/std values of different measurements from all the runs
     arr_mean_energy = np.nan * np.ones(len(decay_rates_lLTP))  # total energy
@@ -143,9 +134,9 @@ def perm_decay_rates(iProcess, **kwargs):
         while iPattern <= nPattern:
             logger.info(f'Process: {iProcess} Trying for patterns: {iPattern}')
             weight_initial = np.zeros(nDimension + 1)  # +1 is for bias
-            pattern, pattern_answer = create_patterns(iPattern, nDimension)
-            Per = MyF.Perceptron(pattern[0], pattern_answer[0], weight_initial, size_buffer, learning_rate,
-                                 energy_scale_lLTP, energy_detail=True, use_accuracy=False)
+            pattern, pattern_answer = create_patterns(iPattern, nDimension, nRun)
+            Per = Perceptron.Perceptron(pattern[0], pattern_answer[0], weight_initial, size_buffer, learning_rate,
+                                        energy_scale_lLTP, energy_detail=True, use_accuracy=False)
             Per.energy_scale_maintenance = energy_scale_maintenance
             Per.decay_lLTP = decay_lLTP
 
@@ -214,9 +205,10 @@ def perm_decay_rates(iProcess, **kwargs):
     np.savetxt(output_path + Constants.STD_EPOCH_FILE_PROC.format(str(iProcess)), arr_std_epoch)
 
 
-def combine_perm_decay_results(nProcess, **kwargs):
+def combine_perm_decay_results(**kwargs):
     decay_rates_lLTP = kwargs['decay_rates_lLTP']
     output_path = kwargs['output_path']
+    nProcess = kwargs['nProcess']
 
     # Combined mean and standard deviations
     arr_combined_mean_energy = np.nan * np.ones(len(decay_rates_lLTP))
@@ -296,14 +288,15 @@ def perceptron_accuracy(iProcess, **kwargs):
     decay_rates_lLTP = kwargs['decay_rates_lLTP']
     output_path = kwargs['output_path']
     nRun = kwargs['nRun']
+    epoch_updates = kwargs['epoch_updates']
     Path(output_path).mkdir(parents=True, exist_ok=True)
 
     window_size = kwargs['window_size']
 
     weight_initial = np.zeros(nDimension + 1)  # +1 is for bias
-    pattern, pattern_answer = create_patterns(nPattern, nDimension)
-    Per = MyF.Perceptron(pattern[0], pattern_answer[0], weight_initial, size_buffer, learning_rate,
-                         energy_scale_lLTP, energy_detail=True, use_accuracy=True)
+    pattern, pattern_answer = create_patterns(nPattern, nDimension, nRun)
+    Per = Perceptron.Perceptron(pattern[0], pattern_answer[0], weight_initial, size_buffer, learning_rate,
+                                energy_scale_lLTP, energy_detail=True, use_accuracy=True)
     Per.energy_scale_maintenance = energy_scale_maintenance
 
     arr_mean_accuracy = np.nan * np.ones(shape=(len(decay_rates_lLTP)))
@@ -315,8 +308,9 @@ def perceptron_accuracy(iProcess, **kwargs):
     arr_all_epoch = np.nan * np.ones(shape=(len(decay_rates_lLTP), nRun))
     arr_all_accuracy = np.nan * np.ones(shape=(len(decay_rates_lLTP), nRun))
 
-    # arr_all_epoch_updates = []
-    # arr_all_energy_updates = []
+    if epoch_updates:
+        arr_all_epoch_updates = []
+        arr_all_energy_updates = []
 
     for j in range(len(decay_rates_lLTP)):
         decay_lLTP = decay_rates_lLTP[j]
@@ -336,11 +330,7 @@ def perceptron_accuracy(iProcess, **kwargs):
             Per.pattern = pattern[iRun]
             Per.pattern_answer = pattern_answer[iRun]
             energy[iRun], energy_eLTP[iRun], energy_lLTP[iRun], error[iRun], epoch[iRun], accuracy[iRun], \
-            epoch_updates[iRun], energy_updates[iRun] = Per.AlgoStandard()
-            # np.savetxt(output_path + '/accuracy_' + str(size) + '.txt', arr_mean_accuracy)
-            # np.savetxt(output_path + '/error_' + str(size) + '.txt', arr_mean_error)
-            # np.savetxt(output_path + '/accuracy_prev_' + str(size) + '.txt', arr_mean_accuracy_prev)
-            # np.savetxt(output_path + '/error_prev_' + str(size) + '.txt', arr_mean_error_prev)
+                epoch_updates[iRun], energy_updates[iRun] = Per.AlgoStandard()
             logger.info(f"Process: {iProcess} Run: {iRun} energy: {energy[iRun]} energy_eLTP: {energy_eLTP[iRun]} "
                         f"energy_lLTP: {energy_lLTP[iRun]} error: {error[iRun]} epoch: {epoch[iRun]} "
                         f"accuracy: {accuracy[iRun]}")
@@ -350,8 +340,9 @@ def perceptron_accuracy(iProcess, **kwargs):
         arr_all_epoch[j] = epoch
         arr_all_accuracy[j] = accuracy
 
-        # arr_all_epoch_updates.append(epoch_updates)
-        # arr_all_energy_updates.append(energy_updates)
+        if epoch_updates:
+            arr_all_epoch_updates.append(epoch_updates)
+            arr_all_energy_updates.append(energy_updates)
 
         arr_mean_accuracy[j] = np.mean(accuracy)
         arr_mean_error[j] = np.mean(error)
@@ -364,14 +355,17 @@ def perceptron_accuracy(iProcess, **kwargs):
     np.savetxt(output_path + Constants.ENERGY_FILE_PROC_ALL.format((str(iProcess))), arr_all_energy)
     np.savetxt(output_path + Constants.EPOCH_FILE_PROC_ALL.format((str(iProcess))), arr_all_epoch)
 
-    # np.save(output_path + Constants.EPOCH_UPDATES_ALL, np.array(arr_all_epoch_updates, dtype=object),
-    # allow_pickle=True) np.save(output_path + Constants.ENERGY_UPDATES_ALL, np.array(arr_all_energy_updates,
-    # dtype=object), allow_pickle=True)
+    if epoch_updates:
+        np.save(output_path + Constants.EPOCH_UPDATES_ALL, np.array(arr_all_epoch_updates, dtype=object),
+                allow_pickle=True)
+        np.save(output_path + Constants.ENERGY_UPDATES_ALL, np.array(arr_all_energy_updates,
+                dtype=object), allow_pickle=True)
 
 
-def combine_perceptron_accuracy_results(nProcess, **kwargs):
+def combine_perceptron_accuracy_results(**kwargs):
     decay_rates_lLTP = kwargs['decay_rates_lLTP']
     output_path = kwargs['output_path']
+    nProcess = kwargs['nProcess']
 
     # Combined mean and std values
     arr_combined_mean_accuracy = np.nan * np.ones(shape=len(decay_rates_lLTP))
@@ -526,67 +520,55 @@ def combine_perceptron_decay_results(output_path_1, output_path_2, res_output_pa
 
 
 def perm_decay_wrapper_process(**kwargs):
-    nProcess = 5
+    nProcess = kwargs['nProcess']
     args = [iProcess for iProcess in range(nProcess)]
     pool = mp.Pool(nProcess)
     pool.map(partial(perm_decay_rates, **kwargs), args)
     pool.close()
 
     # Combine the results from all the processes
-    combine_perm_decay_results(nProcess, **kwargs)
+    combine_perm_decay_results(**kwargs)
 
 
 def perceptron_accuracy_wrapper_process(**kwargs):
-    nProcess = 5
+    nProcess = kwargs['nProcess']
     args = [iProcess for iProcess in range(nProcess)]
     pool = mp.Pool(nProcess)
     pool.map(partial(perceptron_accuracy, **kwargs), args)
     pool.close()
 
     # Combine the results from all the processes
-    combine_perceptron_accuracy_results(nProcess, **kwargs)
+    combine_perceptron_accuracy_results(**kwargs)
 
 
-def perm_decay_wrapper():
-    nDimension = 250
+def perm_decay_wrapper(nDimension, iPattern_init, step_size, decay_rates_lLTP, dir_name):
     nPattern = 2 * nDimension  # max capacity of the perceptron
-    iPattern_init = 20
-    step_size = 5
     # decay_rates_lLTP = np.logspace(-6, -4, 30)
     # decay_rates_lLTP = np.logspace(-4, -2, 30)
-    decay_rates_lLTP = np.logspace(-2, -1, 10)
-    output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension) + '/higher_decay'
+    # decay_rates_lLTP = np.logspace(-2, -1, 10)
+    output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension) + dir_name
     perm_decay_wrapper_process(nDimension=nDimension, nPattern=nPattern, iPattern_init=iPattern_init,
                                step_size=step_size,
-                               decay_rates_lLTP=decay_rates_lLTP, output_path=output_path)
+                               decay_rates_lLTP=decay_rates_lLTP, output_path=output_path, nRun=10, nProcess=5)
     np.savetxt(output_path + Constants.DECAY_RATES_FILE, decay_rates_lLTP)
 
 
-def perceptron_accuracy_wrapper():
-    nDimension = 1000
-    nPattern = 1600
+def perceptron_accuracy_wrapper(nDimension, nPattern, decay_rates_lLTP, dir_name, epoch_updates=False):
     # decay_rates_lLTP = np.logspace(-6, -4, 30)
     # decay_rates_lLTP = np.array([1e-6, 1e-5, 1e-4])
     # decay_rates_lLTP = np.logspace(-4, -2, 30)
     # decay_rates_lLTP = [0.0]
-    decay_rates_lLTP = np.logspace(-8, -6, 30)
-    output_path = Constants.PERM_DECAY_ACCURACY_PATH + '/low_decay'
+    # decay_rates_lLTP = np.logspace(-8, -6, 30)
+    output_path = Constants.PERM_DECAY_ACCURACY_PATH + dir_name  # '/low_decay'
     perceptron_accuracy_wrapper_process(nDimension=nDimension, nPattern=nPattern, decay_rates_lLTP=decay_rates_lLTP,
-                                        output_path=output_path, window_size=25, nRun=10)
+                                        output_path=output_path, window_size=25, nRun=10, nProcess=5,
+                                        epoch_updates=epoch_updates)
     np.savetxt(output_path + Constants.DECAY_RATES_FILE, decay_rates_lLTP)
 
 
 def main():
-    ################### Max number of patterns vs decay rates ##############################
-    perm_decay_wrapper()
-    nDimension = 250
-    output_path_1 = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension) + '/higher_decay'
-    output_path_2 = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension) + '/combined/old'
-    res_output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension) + '/combined'
-    combine_perceptron_decay_results(output_path_1, output_path_2, res_output_path, is_accuracy=False)
-
     ################### Perceptron accuracy ##############################
-    # window_size = [5, 7, 10, 12, 15, 17, 20, 22, 25, 27, 30]  # , 50, 100, 150, 200]
+    window_size = [5, 7, 10, 12, 15, 17, 20, 22, 25, 27, 30]  # , 50, 100, 150, 200]
     # perceptron_accuracy_wrapper()
     # output_path_1 = Constants.PERM_DECAY_ACCURACY_PATH + '/low_decay'
     # output_path_2 = Constants.PERM_DECAY_ACCURACY_PATH + '/combined'

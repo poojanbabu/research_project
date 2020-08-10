@@ -2,9 +2,9 @@
 import numpy as np
 from collections import deque
 import itertools
-import logging
+import Code.log_helper as log_helper
 
-logger = logging.getLogger('Perceptron')
+logger = log_helper.get_logger('Perceptron')
 
 
 class Perceptron:
@@ -202,7 +202,7 @@ class Perceptron:
     # only change individual synapse w when deltaW is large
     def AlgoSynapse(self, synapse_threshold=None):
         if synapse_threshold is None:
-            print("Warning: synapse threshold is not set manually!")
+            logger.warn("Warning: synapse threshold is not set manually!")
             synapse_threshold = self.synapse_threshold
         self.Initialise()
         while self.count_error != 0:
@@ -230,7 +230,7 @@ class Perceptron:
     # update w (all synapses) when an individual synapse reaches the threshold
     def AlgoSynapseAll(self, synapse_threshold=None):
         if synapse_threshold is None:
-            print("Warning: synapse threshold is not set manually!")
+            logger.warn("Warning: synapse threshold is not set manually!")
             synapse_threshold = self.synapse_threshold
         self.Initialise()
         while self.count_error != 0:
