@@ -553,8 +553,9 @@ def perm_decay_wrapper():
     iPattern_init = 20
     step_size = 5
     # decay_rates_lLTP = np.logspace(-6, -4, 30)
-    decay_rates_lLTP = np.logspace(-4, -2, 30)
-    output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension) + '/high_decay'
+    # decay_rates_lLTP = np.logspace(-4, -2, 30)
+    decay_rates_lLTP = np.logspace(-2, -1, 10)
+    output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension) + '/higher_decay'
     perm_decay_wrapper_process(nDimension=nDimension, nPattern=nPattern, iPattern_init=iPattern_init,
                                step_size=step_size,
                                decay_rates_lLTP=decay_rates_lLTP, output_path=output_path)
@@ -577,16 +578,20 @@ def perceptron_accuracy_wrapper():
 
 def main():
     ################### Max number of patterns vs decay rates ##############################
-    # perm_decay_wrapper()
-    # nDimension = 250
-    # output_path_1 = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension) + '/high_decay'
-    # output_path_2 = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension) + '/mid_decay'
-    # res_output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension) + '/combined'
-    # combine_perceptron_decay_results(output_path_1, output_path_2, res_output_path, is_accuracy=False)
+    perm_decay_wrapper()
+    nDimension = 250
+    output_path_1 = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension) + '/higher_decay'
+    output_path_2 = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension) + '/combined/old'
+    res_output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimension) + '/combined'
+    combine_perceptron_decay_results(output_path_1, output_path_2, res_output_path, is_accuracy=False)
 
     ################### Perceptron accuracy ##############################
     # window_size = [5, 7, 10, 12, 15, 17, 20, 22, 25, 27, 30]  # , 50, 100, 150, 200]
-    perceptron_accuracy_wrapper()
+    # perceptron_accuracy_wrapper()
+    # output_path_1 = Constants.PERM_DECAY_ACCURACY_PATH + '/low_decay'
+    # output_path_2 = Constants.PERM_DECAY_ACCURACY_PATH + '/combined'
+    # res_output_path = Constants.PERM_DECAY_ACCURACY_PATH + '/combined'
+    # combine_perceptron_decay_results(output_path_1, output_path_2, res_output_path, is_accuracy=True)
     #
     # output_path = Constants.PERM_DECAY_PATH + '/accuracy_old_logic'
     # Path(output_path).mkdir(parents=True, exist_ok=True)

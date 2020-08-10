@@ -42,6 +42,7 @@ STD_ERROR_FILE = '/std_error.txt'
 ################ PLOT ###################
 BASE_PLOT_PATH = '/home/pooja/Research_Project/Shared/Plot'
 PERM_DECAY_PLOT_PATH = BASE_PLOT_PATH + '/Perm_decay'
+PERM_DECAY_ACCURACY_PLOT_PATH = PERM_DECAY_PLOT_PATH + '/accuracy'
 
 ENERGY_PLOT = '/energy.png'
 ENERGY_ELTP_PLOT = '/energy_eLTP.png'

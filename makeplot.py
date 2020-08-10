@@ -147,7 +147,7 @@ def perm_decay_patterns(output_path, plot_path):
     poly1d_fn = np.poly1d(coeff)
 
     plt.errorbar(x, arr_patterns, yerr=arr_std_patterns, **lineStyle, color=arr_color[4])
-    plt.plot(x, poly1d_fn(logx))
+    # plt.plot(x, poly1d_fn(logx))
     plt.xscale('log')
     plt.xlabel("Decay rate", fontsize=16)
     plt.ylabel("# Patterns", fontsize=16)
@@ -189,11 +189,18 @@ def perm_decay_patterns_nd(nDimensions):
 
     for i in range(len(nDimensions)):
         print('N = ', nDimensions[i])
-        output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimensions[i])
+        if nDimensions[i] == 250:
+            output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimensions[i]) + '/mid_decay'
+        else:
+            output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(nDimensions[i])
         decay_rates_lLTP = np.loadtxt(output_path + Constants.DECAY_RATES_FILE)
         arr_patterns = np.loadtxt(output_path + Constants.PATTERNS_FILE)
 
         # Fit a straight line to the plot
+        plt.figure(1)
+        plt.plot(decay_rates_lLTP, arr_patterns, color=palette(i), linestyle='-.', linewidth=2,
+                 label='N =' + str(nDimensions[i]))
+
         x = np.array(decay_rates_lLTP)
         logx = np.log(x)
         if nDimensions[i] == 250:
@@ -205,8 +212,6 @@ def perm_decay_patterns_nd(nDimensions):
         print('Coefficients:', coeff)
         poly1d_fn = np.poly1d(coeff)
 
-        plt.figure(1)
-        plt.plot(x, arr_patterns, color=palette(i), linestyle='-.', linewidth=2, label='N =' + str(nDimensions[i]))
         plt.plot(x, poly1d_fn(logx), color=palette(i))
         plt.xlabel('Decay rates')
         plt.ylabel('# Patterns')
@@ -223,8 +228,8 @@ def perm_decay_patterns_nd(nDimensions):
         plt.legend()
         plt.tight_layout()
 
-    fig_patterns.savefig(Constants.BASE_PLOT_PATH + Constants.PATTERNS_PLOT)
-    fig_energy.savefig(Constants.BASE_PLOT_PATH + Constants.ENERGY_PLOT)
+    fig_patterns.savefig(Constants.PERM_DECAY_PLOT_PATH + Constants.PATTERNS_PLOT)
+    fig_energy.savefig(Constants.PERM_DECAY_PLOT_PATH + Constants.ENERGY_PLOT)
 
     coeff = np.polyfit(nDimensions, coefficients, 1)
     print('Coefficients:', coeff)
@@ -235,11 +240,10 @@ def perm_decay_patterns_nd(nDimensions):
     plt.xlabel('# Synapses')
     plt.ylabel('Slope')
     plt.tight_layout()
-    plt.savefig(Constants.BASE_PLOT_PATH + Constants.PATTERNS_SLOPE_PLOT)
+    plt.savefig(Constants.PERM_DECAY_PLOT_PATH + Constants.PATTERNS_SLOPE_PLOT)
 
 
-def plot_perceptron_accuracy(output_path, plot_path):
-
+def plot_perceptron_accuracy(output_path, plot_path, output_path_zero_decay=None):
     Path(plot_path).mkdir(parents=True, exist_ok=True)
     lineStyle = {"linestyle": "-", "linewidth": 2, "markeredgewidth": 2, "elinewidth": 1, "capsize": 3,
                  "ecolor": "gray"}
@@ -274,11 +278,15 @@ def plot_perceptron_accuracy(output_path, plot_path):
     plt.savefig(plot_path + Constants.ERROR_PLOT)
     plt.close()
 
+    if output_path_zero_decay is not None:
+        energy_zero_decay = np.loadtxt(output_path_zero_decay + Constants.ENERGY_FILE)
+        plt.axhline(y=energy_zero_decay, color='gray', lineStyle='--', linewidth=2, label='Decay rate: 0')
     plt.errorbar(decay_rates_lLTP, arr_energy, yerr=arr_std_energy, **lineStyle, color=palette(2))
     plt.xlabel('Decay rates')
     plt.ylabel('Energy')
     plt.xscale('log')
     plt.tight_layout()
+    plt.legend()
     plt.savefig(plot_path + Constants.ENERGY_PLOT)
     plt.close()
 
@@ -367,11 +375,14 @@ def main():
     # perm_decay_patterns_nd(nDimensions)
 
     # Accuracy and other measures for decay rates from 1e-6 to 1e-2
-    # output_path = Constants.PERM_DECAY_PATH + '/accuracy_combined'
-    # plot_path = Constants.PERM_DECAY_PLOT_PATH + '/accuracy_combined'
-    # plot_perceptron_accuracy(output_path, plot_path)
+    # output_path_zero_decay = Constants.PERM_DECAY_ACCURACY_PATH + '/zero_decay'
+    # output_path = Constants.PERM_DECAY_ACCURACY_PATH + '/combined'
+    # plot_path = Constants.PERM_DECAY_ACCURACY_PLOT_PATH + '/combined'
+    # plot_perceptron_accuracy(output_path, plot_path, output_path_zero_decay)
+
     # plot_epoch_updates()
 
+    # #patterns vs decay rates plot
     output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(250) + '/combined'
     plot_path = Constants.PERM_DECAY_PLOT_PATH + '/dim_' + str(250) + '/combined'
     perm_decay_patterns(output_path, plot_path)
