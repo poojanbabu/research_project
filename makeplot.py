@@ -183,6 +183,8 @@ def perm_decay_patterns(output_path, plot_path):
 def perm_decay_patterns_nd(nDimensions):
     fig_patterns = plt.figure(1)
     fig_energy = plt.figure(2)
+    fig_energy_per_pattern = plt.figure(3)
+    fig_energy_per_synapse = plt.figure(4)
     coefficients = np.ones(shape=len(nDimensions))
     plt.style.use('seaborn-darkgrid')
     palette = plt.get_cmap('Dark2')
@@ -203,11 +205,12 @@ def perm_decay_patterns_nd(nDimensions):
 
         x = np.array(decay_rates_lLTP)
         logx = np.log(x)
+        arr_patterns_fit = arr_patterns
         if nDimensions[i] == 250:
-            arr_patterns = arr_patterns[10:]
+            arr_patterns_fit = arr_patterns[10:]
             logx = logx[10:]
             x = x[10:]
-        coeff = np.polyfit(logx, arr_patterns, 1)
+        coeff = np.polyfit(logx, arr_patterns_fit, 1)
         coefficients[i] = coeff[0]
         print('Coefficients:', coeff)
         poly1d_fn = np.poly1d(coeff)
@@ -228,13 +231,33 @@ def perm_decay_patterns_nd(nDimensions):
         plt.legend()
         plt.tight_layout()
 
+        energy_per_pattern = np.divide(arr_energy, arr_patterns)
+        plt.figure(3)
+        plt.plot(decay_rates_lLTP, energy_per_pattern, color=palette(i), label='N = ' + str(nDimensions[i]))
+        plt.xlabel('Decay rates')
+        plt.ylabel('Energy per pattern')
+        plt.xscale('log')
+        plt.legend()
+        plt.tight_layout()
+
+        energy_per_synapse = np.divide(arr_energy, arr_patterns) / nDimensions[i]
+        plt.figure(4)
+        plt.plot(decay_rates_lLTP, energy_per_synapse, color=palette(i), label='N = ' + str(nDimensions[i]))
+        plt.xlabel('Decay rates')
+        plt.ylabel('Energy per pattern per synapse')
+        plt.xscale('log')
+        plt.legend()
+        plt.tight_layout()
+
     fig_patterns.savefig(Constants.PERM_DECAY_PLOT_PATH + Constants.PATTERNS_PLOT)
     fig_energy.savefig(Constants.PERM_DECAY_PLOT_PATH + Constants.ENERGY_PLOT)
+    fig_energy_per_pattern.savefig(Constants.PERM_DECAY_PLOT_PATH + Constants.ENERGY_PER_PATTERN_PLOT)
+    fig_energy_per_synapse.savefig(Constants.PERM_DECAY_PLOT_PATH + Constants.ENERGY_PER_SYNAPSE_PLOT)
 
     coeff = np.polyfit(nDimensions, coefficients, 1)
     print('Coefficients:', coeff)
     poly1d_fn = np.poly1d(coeff)
-    plt.figure(3)
+    plt.figure(5)
     plt.scatter(nDimensions, coefficients, color='red', marker='x')
     plt.plot(nDimensions, poly1d_fn(nDimensions), color=palette(8))
     plt.xlabel('# Synapses')
@@ -372,7 +395,7 @@ def main():
     # perm_decay_patterns_combine()
     # plot_perm_decay_rates()
 
-    # perm_decay_patterns_nd(nDimensions)
+    perm_decay_patterns_nd(nDimensions)
 
     # Accuracy and other measures for decay rates from 1e-6 to 1e-2
     # output_path_zero_decay = Constants.PERM_DECAY_ACCURACY_PATH + '/zero_decay'
@@ -381,9 +404,9 @@ def main():
     # plot_perceptron_accuracy(output_path, plot_path, output_path_zero_decay)
 
     # #patterns vs decay rates plot
-    output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(250) + '/combined'
-    plot_path = Constants.PERM_DECAY_PLOT_PATH + '/dim_' + str(250) + '/combined'
-    perm_decay_patterns(output_path, plot_path)
+    # output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(250) + '/combined'
+    # plot_path = Constants.PERM_DECAY_PLOT_PATH + '/dim_' + str(250) + '/combined'
+    # perm_decay_patterns(output_path, plot_path)
 
 
 if __name__ == "__main__":
