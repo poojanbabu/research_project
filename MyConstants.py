@@ -2,23 +2,28 @@
 BASE_OUTPUT_PATH = '/home/pooja/Research_Project/Shared/Text'
 PERM_DECAY_PATH = BASE_OUTPUT_PATH + '/Perm_decay'
 PERM_DECAY_ACCURACY_PATH = PERM_DECAY_PATH + '/accuracy'
+PERM_DECAY_FORGETTING_PATH = PERM_DECAY_PATH + '/forgetting'
 
 # Files for different measures
 DECAY_RATES_FILE = '/decay_rates.txt'
 ENERGY_FILE = '/energy.txt'
+ENERGY_WITHOUT_DECAY_FILE = '/energy_without_decay.txt'
 ERROR_FILE = "/error.txt"
 EPOCH_FILE = '/epoch.txt'
 PATTERNS_FILE = "/patterns.txt"
 ACCURACY_FILE = '/accuracy.txt'
+ACCURACY_WITHOUT_DECAY_FILE = '/accuracy_without_decay.txt'
 
 # Mean values from individual process
 ENERGY_FILE_PROC = '/energy_{}.txt'
+ENERGY_FILE_WITHOUT_DECAY_PROC = '/energy_without_decay_{}.txt'
 ENERGY_ELTP_FILE_PROC = '/energy_eLTP_{}.txt'
 ENERGY_LLTP_FILE_PROC = '/energy_lLTP_{}.txt'
 ERROR_FILE_PROC = "/error_{}.txt"
 EPOCH_FILE_PROC = '/epoch_{}.txt'
 PATTERNS_FILE_PROC = "/patterns_{}.txt"
 ACCURACY_FILE_PROC = '/accuracy_{}.txt'
+ACCURACY_FILE_WITHOUT_DECAY_PROC = '/accuracy_without_decay_{}.txt'
 
 # Values from all runs from individual process
 ENERGY_FILE_PROC_ALL = '/energy_all_{}.txt'
@@ -29,7 +34,9 @@ EPOCH_FILE_PROC_ALL = '/epoch_all_{}.txt'
 ACCURACY_FILE_PROC_ALL = '/accuracy_all_{}.txt'
 
 EPOCH_UPDATES_ALL = '/epoch_updates.npy'
+EPOCH_UPDATES_WITHOUT_DECAY_ALL = '/epoch_updates_without_decay.npy'
 ENERGY_UPDATES_ALL = '/energy_updates.npy'
+ENERGY_UPDATES_WITHOUT_DECAY_ALL = '/energy_updates_without_decay.npy'
 
 # STD files
 STD_EPOCH_FILE_PROC = "/std_epoch_{}.txt"
@@ -43,6 +50,7 @@ STD_ERROR_FILE = '/std_error.txt'
 BASE_PLOT_PATH = '/home/pooja/Research_Project/Shared/Plot'
 PERM_DECAY_PLOT_PATH = BASE_PLOT_PATH + '/Perm_decay'
 PERM_DECAY_ACCURACY_PLOT_PATH = PERM_DECAY_PLOT_PATH + '/accuracy'
+PERM_DECAY_FORGETTING_PLOT_PATH = PERM_DECAY_PLOT_PATH + '/forgetting'
 
 ENERGY_PLOT = '/energy.png'
 ENERGY_ELTP_PLOT = '/energy_eLTP.png'

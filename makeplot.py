@@ -167,6 +167,16 @@ def perm_decay_patterns(output_path, plot_path):
     plt.savefig(plot_path + Constants.ENERGY_PLOT)
     plt.close()
 
+    # Plot the energy per pattern
+    energy_per_pattern = np.divide(arr_energy, arr_patterns)
+    plt.plot(decay_rates_lLTP, energy_per_pattern, color=arr_color[4])
+    plt.xscale('log')
+    plt.xlabel('Decay rate')
+    plt.ylabel('Energy per pattern')
+    plt.tight_layout()
+    plt.savefig(plot_path +  Constants.ENERGY_PER_PATTERN_PLOT)
+    plt.close()
+
     # Plot the epochs for the max patterns trained
     arr_epoch = np.loadtxt(output_path + Constants.EPOCH_FILE)
     arr_std_epoch = np.loadtxt(output_path + Constants.STD_EPOCH_FILE)
@@ -384,6 +394,71 @@ def plot_epoch_updates(output_path, plot_path):
     plt.close()
 
 
+def plot_forgetting(output_path, plot_path):
+    Path(plot_path).mkdir(parents=True, exist_ok=True)
+    plt.style.use('seaborn-darkgrid')
+    palette = plt.get_cmap('tab10')
+
+    arr_epoch_updates = np.load(output_path + Constants.EPOCH_UPDATES_ALL, allow_pickle=True)
+    arr_energy_updates = np.load(output_path + Constants.ENERGY_UPDATES_ALL, allow_pickle=True)
+
+    arr_epoch_updates_wo_decay = np.load(output_path + Constants.EPOCH_UPDATES_WITHOUT_DECAY_ALL, allow_pickle=True)
+    arr_energy_updates_wo_decay = np.load(output_path + Constants.ENERGY_UPDATES_WITHOUT_DECAY_ALL, allow_pickle=True)
+
+    for i in range(int(arr_epoch_updates.shape[0]/3)):
+        arr_epoch = arr_epoch_updates[i]
+        arr_epoch_wo_decay = arr_epoch_updates_wo_decay[i]
+        arr_energy = arr_energy_updates[i]
+        arr_energy_wo_decay = arr_energy_updates_wo_decay[i]
+        plt.figure(1)
+        plt.plot(range(len(arr_epoch)), arr_epoch, color=palette(i), label='Decay: 1e-6')
+        plt.plot(range(len(arr_epoch_wo_decay)), arr_epoch_wo_decay, color=palette(i), linestyle='--', label='Decay: 0.0')
+
+        plt.figure(2)
+        plt.plot(range(len(arr_energy)), arr_energy, color=palette(i), label='Decay: 1e-6')
+        plt.plot(range(len(arr_energy_wo_decay)), arr_energy_wo_decay, color=palette(i), linestyle='--', label='Decay: 0.0')
+
+    plt.figure(1)
+    plt.xlabel('Training time')
+    plt.ylabel('# Epoch Updates')
+    plt.tight_layout()
+    handles, labels = plt.gca().get_legend_handles_labels()
+    by_label = OrderedDict(zip(labels, handles))
+    plt.legend(by_label.values(), by_label.keys())
+    plt.savefig(plot_path + Constants.EPOCH_UPDATES_PLOT)
+    plt.close()
+
+    plt.figure(2)
+    plt.xlabel('Training time')
+    plt.ylabel('# Energy Updates')
+    plt.tight_layout()
+    handles, labels = plt.gca().get_legend_handles_labels()
+    by_label = OrderedDict(zip(labels, handles))
+    plt.legend(by_label.values(), by_label.keys())
+    plt.savefig(plot_path + Constants.ENERGY_UPDATES_PLOT)
+    plt.close()
+
+    arr_energy = np.loadtxt(output_path + Constants.ENERGY_FILE)
+    arr_energy_without_decay = np.loadtxt(output_path + Constants.ENERGY_WITHOUT_DECAY_FILE)
+    plt.plot(range(len(arr_energy)), arr_energy, color=palette(0))
+    plt.plot(range(len(arr_energy_without_decay)), arr_energy_without_decay, color='gray', linestyle='--')
+    # plt.axhline(y=energy_without_decay, color='gray', lineStyle='--', linewidth=2, label='Decay rate: 0')
+    plt.xlabel('Iterations')
+    plt.ylabel('Energy')
+    # plt.xticks(range(len(arr_energy)))
+    plt.tight_layout()
+    plt.savefig(plot_path + Constants.ENERGY_PLOT)
+    plt.close()
+
+    arr_accuracy = np.loadtxt(output_path + Constants.ACCURACY_FILE)
+    plt.plot(range(len(arr_accuracy)), arr_accuracy, color=palette(3))
+    plt.xlabel('Iterations')
+    plt.ylabel('Accuracy')
+    plt.tight_layout()
+    plt.savefig(plot_path + Constants.ACCURACY_PLOT)
+    plt.close()
+
+
 def main():
     nDimensions = [1500, 1000, 500, 250]
     # for i in range(len(nDimensions)):
@@ -395,7 +470,7 @@ def main():
     # perm_decay_patterns_combine()
     # plot_perm_decay_rates()
 
-    perm_decay_patterns_nd(nDimensions)
+    # perm_decay_patterns_nd(nDimensions)
 
     # Accuracy and other measures for decay rates from 1e-6 to 1e-2
     # output_path_zero_decay = Constants.PERM_DECAY_ACCURACY_PATH + '/zero_decay'
@@ -404,9 +479,9 @@ def main():
     # plot_perceptron_accuracy(output_path, plot_path, output_path_zero_decay)
 
     # #patterns vs decay rates plot
-    # output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(250) + '/combined'
-    # plot_path = Constants.PERM_DECAY_PLOT_PATH + '/dim_' + str(250) + '/combined'
-    # perm_decay_patterns(output_path, plot_path)
+    output_path = Constants.PERM_DECAY_PATH + '/dim_' + str(250) + '/combined'
+    plot_path = Constants.PERM_DECAY_PLOT_PATH + '/dim_' + str(250) + '/combined'
+    perm_decay_patterns(output_path, plot_path)
 
 
 if __name__ == "__main__":

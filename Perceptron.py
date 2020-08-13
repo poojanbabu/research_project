@@ -11,8 +11,8 @@ class Perceptron:
 
     def __init__(self, pattern, pattern_answer, weight_initial, size_buffer,
                  learning_rate, energy_scale_lLTP, energy_detail=None, use_accuracy=True):
-        self.pattern = pattern
-        self.pattern_answer = pattern_answer
+        self.pattern = np.copy(pattern)
+        self.pattern_answer = np.copy(pattern_answer)
         self.weight_initial = weight_initial
         self.size_buffer = size_buffer
         self.epoch_window = 200
@@ -26,6 +26,7 @@ class Perceptron:
         self.decay_eLTP = 0.
         self.decay_lLTP = 0.
         self.use_accuracy = use_accuracy
+        self.initialize_weights = True
 
         self.arr_weight = np.zeros(self.nDim + 1)
         self.arr_deltaW = np.zeros(self.nDim + 1)
@@ -37,10 +38,7 @@ class Perceptron:
         self.arr_count_error_buffer = 999 * np.ones(size_buffer)
         self.accuracy_window_buffer = deque((self.epoch_window * 2) * [0.], maxlen=self.epoch_window * 2)
         self.error_window_buffer = deque((self.epoch_window * 2) * [0.], maxlen=self.epoch_window * 2)
-        # self.mean_accuracy_buffer = []
-        # self.prev_mean_accuracy_buffer = []
-        # self.mean_error_buffer = []
-        # self.prev_mean_error_buffer = []
+
         self.count_updates = 999
         self.arr_epoch_updates = []
         self.arr_energy_updates = []
@@ -60,7 +58,10 @@ class Perceptron:
         self.var_energy_lLTP = 0.
         self.var_error = 0.
         self.var_epoch = 0
-        self.arr_weight = np.copy(self.weight_initial)
+
+        if self.initialize_weights:
+            self.arr_weight = np.copy(self.weight_initial)
+
         self.arr_deltaW = np.zeros(self.nDim + 1)
         self.arr_weight_buffer = -999 * np.ones(shape=(self.size_buffer, self.nDim + 1))
         self.arr_energy_buffer = 999 * np.ones(self.size_buffer)
@@ -72,10 +73,7 @@ class Perceptron:
         self.count_error = 999
         self.count_correctly_classified = 999
         self.accuracy = 999
-        # self.mean_accuracy_buffer = []
-        # self.prev_mean_accuracy_buffer = []
-        # self.mean_error_buffer = []
-        # self.prev_mean_error_buffer = []
+
         self.count_updates = 999
         self.arr_epoch_updates = []
         self.arr_energy_updates = []
@@ -117,14 +115,6 @@ class Perceptron:
                     np.fromiter(itertools.islice(self.accuracy_window_buffer, self.epoch_window, None), float))
                 mean_accuracy_prev = np.mean(
                     np.fromiter(itertools.islice(self.accuracy_window_buffer, self.epoch_window), float))
-                # mean_error = np.mean(np.fromiter(itertools.islice(self.error_window_buffer, self.epoch_window, None), float))
-                # mean_error_prev = np.mean(np.fromiter(itertools.islice(self.error_window_buffer, self.epoch_window), float))
-                # self.mean_accuracy_buffer.append(mean_accuracy)
-                # self.prev_mean_accuracy_buffer.append(mean_accuracy_prev)
-                # self.mean_error_buffer.append(mean_error)
-                # self.prev_mean_error_buffer.append(mean_error_prev)
-                # print('Count error:', self.count_error, 'Mean prev error', mean_error_prev, 'Mean error:', mean_error, 'Accuracy:', self.accuracy,
-                #     'Mean prev accuracy', mean_accuracy_prev, 'Mean accuracy:', mean_accuracy, 'Epoch:', self.var_epoch)
 
                 if mean_accuracy_prev > mean_accuracy:
                     logger.info(f'No improvement in mean accuracy. Quitting! Mean accuracy: {mean_accuracy} Mean '
