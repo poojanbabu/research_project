@@ -34,7 +34,9 @@ EPOCH_FILE_PROC_ALL = '/epoch_all_{}.txt'
 ACCURACY_FILE_PROC_ALL = '/accuracy_all_{}.txt'
 
 EPOCH_UPDATES_ALL = '/epoch_updates.npy'
+EPOCH_UPDATES_NP_ALL = '/epoch_updates_np.npy'
 EPOCH_UPDATES_WITHOUT_DECAY_ALL = '/epoch_updates_without_decay.npy'
+EPOCH_UPDATES_NP_WITHOUT_DECAY_ALL = '/epoch_updates_np_without_decay.npy'
 ENERGY_UPDATES_ALL = '/energy_updates.npy'
 ENERGY_UPDATES_WITHOUT_DECAY_ALL = '/energy_updates_without_decay.npy'
 

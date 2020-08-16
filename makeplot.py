@@ -397,26 +397,40 @@ def plot_epoch_updates(output_path, plot_path):
 def plot_forgetting(output_path, plot_path):
     Path(plot_path).mkdir(parents=True, exist_ok=True)
     plt.style.use('seaborn-darkgrid')
-    palette = plt.get_cmap('tab10')
+    palette = plt.get_cmap('tab20')
 
     arr_epoch_updates = np.load(output_path + Constants.EPOCH_UPDATES_ALL, allow_pickle=True)
-    arr_energy_updates = np.load(output_path + Constants.ENERGY_UPDATES_ALL, allow_pickle=True)
+    arr_epoch_updates_np = np.load(output_path + Constants.EPOCH_UPDATES_NP_ALL, allow_pickle=True)
 
     arr_epoch_updates_wo_decay = np.load(output_path + Constants.EPOCH_UPDATES_WITHOUT_DECAY_ALL, allow_pickle=True)
+    arr_epoch_updates_np_wo_decay = np.load(output_path + Constants.EPOCH_UPDATES_NP_WITHOUT_DECAY_ALL, allow_pickle=True)
+
+    arr_energy_updates = np.load(output_path + Constants.ENERGY_UPDATES_ALL, allow_pickle=True)
     arr_energy_updates_wo_decay = np.load(output_path + Constants.ENERGY_UPDATES_WITHOUT_DECAY_ALL, allow_pickle=True)
 
-    for i in range(int(arr_epoch_updates.shape[0]/3)):
+    # n_iters = int(arr_epoch_updates.shape[0]/3)
+    n_iters = 1
+    for i in range(n_iters):
         arr_epoch = arr_epoch_updates[i]
+        arr_epoch_np = arr_epoch_updates_np[i]
         arr_epoch_wo_decay = arr_epoch_updates_wo_decay[i]
+        arr_epoch_np_wo_decay = arr_epoch_updates_np_wo_decay[i]
+
         arr_energy = arr_energy_updates[i]
         arr_energy_wo_decay = arr_energy_updates_wo_decay[i]
         plt.figure(1)
-        plt.plot(range(len(arr_epoch)), arr_epoch, color=palette(i), label='Decay: 1e-6')
-        plt.plot(range(len(arr_epoch_wo_decay)), arr_epoch_wo_decay, color=palette(i), linestyle='--', label='Decay: 0.0')
+        plt.plot(range(len(arr_epoch)), arr_epoch, color=palette(0), label='Decay - all updates')
+        plt.plot(range(len(arr_epoch_np)), arr_epoch_np, color=palette(1), linestyle='--',
+                 label='Decay - new pattern updates')
+
+        plt.plot(range(len(arr_epoch_wo_decay)), arr_epoch_wo_decay, color=palette(2),
+                 label='No decay - all updates')
+        plt.plot(range(len(arr_epoch_np_wo_decay)), arr_epoch_np_wo_decay, color=palette(3), linestyle='--',
+                 label='No decay - new pattern updates')
 
         plt.figure(2)
-        plt.plot(range(len(arr_energy)), arr_energy, color=palette(i), label='Decay: 1e-6')
-        plt.plot(range(len(arr_energy_wo_decay)), arr_energy_wo_decay, color=palette(i), linestyle='--', label='Decay: 0.0')
+        plt.plot(range(len(arr_energy)), arr_energy, color=palette(0), label='Decay: 1e-5')
+        plt.plot(range(len(arr_energy_wo_decay)), arr_energy_wo_decay, color=palette(2), label='No decay')
 
     plt.figure(1)
     plt.xlabel('Training time')
@@ -440,18 +454,19 @@ def plot_forgetting(output_path, plot_path):
 
     arr_energy = np.loadtxt(output_path + Constants.ENERGY_FILE)
     arr_energy_without_decay = np.loadtxt(output_path + Constants.ENERGY_WITHOUT_DECAY_FILE)
-    plt.plot(range(len(arr_energy)), arr_energy, color=palette(0))
-    plt.plot(range(len(arr_energy_without_decay)), arr_energy_without_decay, color='gray', linestyle='--')
+    plt.plot(range(len(arr_energy)), arr_energy, color=palette(0), label='Decay: 1e-5')
+    plt.plot(range(len(arr_energy_without_decay)), arr_energy_without_decay, color=palette(2), label='No decay')
     # plt.axhline(y=energy_without_decay, color='gray', lineStyle='--', linewidth=2, label='Decay rate: 0')
     plt.xlabel('Iterations')
     plt.ylabel('Energy')
+    plt.legend()
     # plt.xticks(range(len(arr_energy)))
     plt.tight_layout()
     plt.savefig(plot_path + Constants.ENERGY_PLOT)
     plt.close()
 
     arr_accuracy = np.loadtxt(output_path + Constants.ACCURACY_FILE)
-    plt.plot(range(len(arr_accuracy)), arr_accuracy, color=palette(3))
+    plt.plot(range(len(arr_accuracy)), arr_accuracy, color=palette(4))
     plt.xlabel('Iterations')
     plt.ylabel('Accuracy')
     plt.tight_layout()

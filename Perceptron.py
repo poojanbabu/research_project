@@ -40,7 +40,9 @@ class Perceptron:
         self.error_window_buffer = deque((self.epoch_window * 2) * [0.], maxlen=self.epoch_window * 2)
 
         self.count_updates = 999
+        self.count_updates_np = 999
         self.arr_epoch_updates = []
+        self.arr_epoch_updates_np = []
         self.arr_energy_updates = []
         self.count_error = 999
         self.count_correctly_classified = 999
@@ -75,7 +77,9 @@ class Perceptron:
         self.accuracy = 999
 
         self.count_updates = 999
+        self.count_updates_np = 999
         self.arr_epoch_updates = []
+        self.arr_epoch_updates_np = []
         self.arr_energy_updates = []
 
     def CalculateOutput(self, iPattern):
@@ -107,6 +111,7 @@ class Perceptron:
             self.error_window_buffer.append(self.count_error)
 
             self.arr_epoch_updates.append(self.count_updates)
+            self.arr_epoch_updates_np.append(self.count_updates_np)
             self.arr_energy_updates.append(self.var_energy[0])
             self.var_epoch += 1
 
@@ -169,12 +174,17 @@ class Perceptron:
     ####################################################
 
     # standard perceptron
-    def AlgoStandard(self):
+    def AlgoStandard(self, start_index=None, end_index=None):
+        if start_index is None:
+            start_index = 0
+        if end_index is None:
+            end_index = self.nPattern - 1
         self.Initialise()
         while self.count_error != 0:
             self.count_error = 0.
             self.count_correctly_classified = 0.
             self.count_updates = 0.
+            self.count_updates_np = 0.
             self.arr_deltaW = np.zeros(self.nDim + 1)
             for iPattern in range(0, self.nPattern):
                 difference = self.CalculateOutput(iPattern)
@@ -182,6 +192,8 @@ class Perceptron:
                     self.arr_deltaW = self.learning_rate * difference * self.pattern[iPattern]
                     self.SaveChange()
                     self.count_error += 1.
+                    if start_index <= iPattern < end_index:
+                        self.count_updates_np += 1
                 else:
                     self.count_correctly_classified += 1
             if self.BreakLoop():
