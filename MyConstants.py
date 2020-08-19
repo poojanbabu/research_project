@@ -48,6 +48,14 @@ STD_PATTERNS_FILE = "/std_patterns.txt"
 STD_ACCURACY_FILE = '/std_accuracy.txt'
 STD_ERROR_FILE = '/std_error.txt'
 
+# Forgetting directories
+BENCHMARK_FORGETTING = '/benchmark'
+CAT_FORGETTING_1 = '/cat_forgetting_1'
+CAT_FORGETTING_2 = '/cat_forgetting_2'
+CAT_FORGETTING_3 = '/cat_forgetting_3'
+ACTIVE_FORGETTING_1 = '/active_forgetting_1'
+ACTIVE_FORGETTING_2 = '/active_forgetting_2'
+
 ################ PLOT ###################
 BASE_PLOT_PATH = '/home/pooja/Research_Project/Shared/Plot'
 PERM_DECAY_PLOT_PATH = BASE_PLOT_PATH + '/Perm_decay'
