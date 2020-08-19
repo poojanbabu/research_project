@@ -174,7 +174,7 @@ def perm_decay_patterns(output_path, plot_path):
     plt.xlabel('Decay rate')
     plt.ylabel('Energy per pattern')
     plt.tight_layout()
-    plt.savefig(plot_path +  Constants.ENERGY_PER_PATTERN_PLOT)
+    plt.savefig(plot_path + Constants.ENERGY_PER_PATTERN_PLOT)
     plt.close()
 
     # Plot the epochs for the max patterns trained
@@ -403,7 +403,8 @@ def plot_forgetting(output_path, plot_path):
     arr_epoch_updates_np = np.load(output_path + Constants.EPOCH_UPDATES_NP_ALL, allow_pickle=True)
 
     arr_epoch_updates_wo_decay = np.load(output_path + Constants.EPOCH_UPDATES_WITHOUT_DECAY_ALL, allow_pickle=True)
-    arr_epoch_updates_np_wo_decay = np.load(output_path + Constants.EPOCH_UPDATES_NP_WITHOUT_DECAY_ALL, allow_pickle=True)
+    arr_epoch_updates_np_wo_decay = np.load(output_path + Constants.EPOCH_UPDATES_NP_WITHOUT_DECAY_ALL,
+                                            allow_pickle=True)
 
     arr_energy_updates = np.load(output_path + Constants.ENERGY_UPDATES_ALL, allow_pickle=True)
     arr_energy_updates_wo_decay = np.load(output_path + Constants.ENERGY_UPDATES_WITHOUT_DECAY_ALL, allow_pickle=True)
@@ -471,6 +472,33 @@ def plot_forgetting(output_path, plot_path):
     plt.ylabel('Accuracy')
     plt.tight_layout()
     plt.savefig(plot_path + Constants.ACCURACY_PLOT)
+    plt.close()
+
+
+def plot_forgetting_all_types(output_path, plot_path):
+    Path(plot_path).mkdir(parents=True, exist_ok=True)
+    plt.style.use('seaborn-darkgrid')
+    palette = plt.get_cmap('tab20')
+
+    # Plot energy
+    energy_arr = [np.loadtxt(output_path + Constants.BENCHMARK_FORGETTING + Constants.ENERGY_FILE),
+                  np.loadtxt(output_path + Constants.CAT_FORGETTING_1 + Constants.ENERGY_FILE),
+                  np.loadtxt(output_path + Constants.CAT_FORGETTING_2 + Constants.ENERGY_FILE),
+                  np.loadtxt(output_path + Constants.CAT_FORGETTING_3 + Constants.ENERGY_FILE)[1],
+                  np.loadtxt(output_path + Constants.ACTIVE_FORGETTING_1 + Constants.ENERGY_FILE),
+                  np.loadtxt(output_path + Constants.ACTIVE_FORGETTING_2 + Constants.ENERGY_FILE)[1]]
+
+    x = ['Benchmark', 'Cat forgetting 1', 'Cat forgetting 2', 'Cat forgetting 3', 'Active forgetting 1',
+         'Active forgetting 2']
+    x_pos = [i for i, _ in enumerate(x)]
+
+    for i in range(len(x_pos)):
+        plt.bar(x_pos[i], energy_arr[i], color=palette(i * 2), label=x[i])
+    plt.ylabel('Energy')
+    plt.ylim(0, 1e6)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(plot_path + Constants.ENERGY_PLOT)
     plt.close()
 
 

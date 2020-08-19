@@ -261,7 +261,6 @@ def combine_perm_decay_results(**kwargs):
         arr_combined_mean_epoch[i] = np.mean(arr_mean_epoch[:, i])
         arr_combined_mean_patterns[i] = np.mean(arr_mean_patterns[:, i])
 
-        # print('Combined mean:', arr_combined_mean_epoch[i], 'Original mean: ', np.mean(arr_all_epoch[i, :]))
         # Standard deviation
         std_sum = 0
         for j in range(nProcess):
@@ -333,7 +332,7 @@ def perceptron_accuracy(iProcess, **kwargs):
             Per.pattern = pattern[iRun]
             Per.pattern_answer = pattern_answer[iRun]
             energy[iRun], energy_eLTP[iRun], energy_lLTP[iRun], error[iRun], epoch[iRun], accuracy[iRun], \
-            epoch_updates[iRun], energy_updates[iRun] = Per.AlgoStandard()
+                epoch_updates[iRun], energy_updates[iRun] = Per.AlgoStandard()
             logger.info(f"Process: {iProcess} Run: {iRun} energy: {energy[iRun]} energy_eLTP: {energy_eLTP[iRun]} "
                         f"energy_lLTP: {energy_lLTP[iRun]} error: {error[iRun]} epoch: {epoch[iRun]} "
                         f"accuracy: {accuracy[iRun]}")
@@ -407,21 +406,21 @@ def perceptron_forget_and_learn(Per, nDimension, n_iter, new_patterns_count):
 
 
 def perceptron_forgetting_benchmark(iProcess, iRun, nDimension, new_patterns_count, Per):
-
     # Train the perceptron with x new patterns
     Per.initialize_weights = False
     pattern, pattern_answer = create_patterns(new_patterns_count, nDimension, 1)
-    Per.pattern = np.concatenate((Per.pattern, pattern))
-    Per.pattern_answer = np.concatenate((Per.pattern_answer, pattern_answer))
+    Per.pattern = np.concatenate((Per.pattern, pattern[0]))
+    Per.pattern_answer = np.concatenate((Per.pattern_answer, pattern_answer[0]))
+    Per.nPattern = len(Per.pattern_answer)
 
     energy, energy_eLTP, energy_lLTP, error, epoch, accuracy, epoch_updates, energy_updates = Per.AlgoStandard()
-    logger.info(f"Process: {iProcess} perceptron_forgetting_benchmark: Run: {iRun} energy: {energy} accuracy: {accuracy}")
+    logger.info(
+        f"Process: {iProcess} perceptron_forgetting_benchmark: Run: {iRun} energy: {energy} accuracy: {accuracy}")
 
     return accuracy, energy
 
 
 def perceptron_cat_forgetting_1(iProcess, iRun, nDimension, new_patterns_count, Per):
-
     # Randomly select y old patterns and add x new patterns to train the perceptron
     Per.initialize_weights = False
 
@@ -435,8 +434,9 @@ def perceptron_cat_forgetting_1(iProcess, iRun, nDimension, new_patterns_count, 
     pattern, pattern_answer = create_patterns(new_patterns_count, nDimension, 1)
 
     # Concatenate the randomly chosen patterns with the new patterns
-    Per.pattern = np.concatenate((new_patterns, pattern))
-    Per.pattern_answer = np.concatenate((new_pattern_answers, pattern_answer))
+    Per.pattern = np.concatenate((new_patterns, pattern[0]))
+    Per.pattern_answer = np.concatenate((new_pattern_answers, pattern_answer[0]))
+    Per.nPattern = len(Per.pattern_answer)
 
     energy, energy_eLTP, energy_lLTP, error, epoch, accuracy, epoch_updates, energy_updates = Per.AlgoStandard()
     logger.info(
@@ -446,13 +446,13 @@ def perceptron_cat_forgetting_1(iProcess, iRun, nDimension, new_patterns_count, 
 
 
 def perceptron_cat_forgetting_2(iProcess, iRun, nDimension, new_patterns_count, Per):
-
     Per.initialize_weights = False
 
     # Generate new patterns
     pattern, pattern_answer = create_patterns(new_patterns_count, nDimension, 1)
-    Per.pattern = pattern
-    Per.pattern_answer = pattern_answer
+    Per.pattern = pattern[0]
+    Per.pattern_answer = pattern_answer[0]
+    Per.nPattern = len(Per.pattern_answer)
 
     energy, energy_eLTP, energy_lLTP, error, epoch, accuracy, epoch_updates, energy_updates = Per.AlgoStandard()
     logger.info(
@@ -462,7 +462,6 @@ def perceptron_cat_forgetting_2(iProcess, iRun, nDimension, new_patterns_count, 
 
 
 def perceptron_cat_forgetting_3(iProcess, iRun, nDimension, n_iter, new_patterns_count, Per):
-
     # Train the perceptron without any decay and learn new patterns
     Per.initialize_weights = False
     accuracy, energy, epoch_updates, energy_updates, epoch_updates_np = \
@@ -486,8 +485,9 @@ def perceptron_active_forgetting_1(iProcess, iRun, nDimension, n_iter, new_patte
 
     # Generate new patterns
     pattern, pattern_answer = create_patterns(new_patterns_count, nDimension, 1)
-    Per.pattern = np.concatenate((Per.pattern, pattern))
-    Per.pattern_answer = np.concatenate((Per.pattern_answer, pattern_answer))
+    Per.pattern = np.concatenate((Per.pattern, pattern[0]))
+    Per.pattern_answer = np.concatenate((Per.pattern_answer, pattern_answer[0]))
+    Per.nPattern = len(Per.pattern_answer)
 
     energy, energy_eLTP, energy_lLTP, error, epoch, accuracy, epoch_updates, energy_updates = Per.AlgoStandard()
     logger.info(
@@ -534,22 +534,22 @@ def perceptron_forgetting(iProcess, **kwargs):
     pattern, pattern_answer = create_patterns(nPattern, nDimension, nRun)
 
     # Benchmark
-    benchmark_forgetting = Forgetting(nRun, n_iter, output_path + Constants.BENCHMARK_FORGETTING)
+    benchmark_forgetting = Forgetting(nRun, output_path + Constants.BENCHMARK_FORGETTING)
 
     # Catastrophic forgetting 1
-    cat_forgetting_1 = Forgetting(nRun, n_iter, output_path + Constants.CAT_FORGETTING_1)
+    cat_forgetting_1 = Forgetting(nRun, output_path + Constants.CAT_FORGETTING_1)
 
     # Catastrophic forgetting 2
-    cat_forgetting_2 = Forgetting(nRun, n_iter, output_path + Constants.CAT_FORGETTING_2)
+    cat_forgetting_2 = Forgetting(nRun, output_path + Constants.CAT_FORGETTING_2)
 
     # Active forgetting 1
-    active_forgetting_1 = Forgetting(nRun, n_iter, output_path + Constants.ACTIVE_FORGETTING_1)
+    active_forgetting_1 = Forgetting(nRun, output_path + Constants.ACTIVE_FORGETTING_1)
 
     # Active forgetting 2
-    active_forgetting_2 = Forgetting(nRun, n_iter, output_path + Constants.ACTIVE_FORGETTING_2)
+    active_forgetting_2 = Forgetting(nRun, output_path + Constants.ACTIVE_FORGETTING_2, n_iter)
 
     # Catastrophic forgetting 3
-    cat_forgetting_3 = Forgetting(nRun, n_iter, output_path + Constants.CAT_FORGETTING_3)
+    cat_forgetting_3 = Forgetting(nRun, output_path + Constants.CAT_FORGETTING_3, n_iter)
 
     for iRun in range(nRun):
         ####### Base training ######
@@ -609,6 +609,7 @@ def perceptron_forgetting(iProcess, **kwargs):
         active_forgetting_2.energy[iRun] = energy
 
     # Save all the output values to files.
+    benchmark_forgetting.save_proc_output(iProcess)
     cat_forgetting_1.save_proc_output(iProcess)
     cat_forgetting_2.save_proc_output(iProcess)
     cat_forgetting_3.save_proc_output(iProcess)
@@ -619,12 +620,8 @@ def perceptron_forgetting(iProcess, **kwargs):
 def combine_perceptron_forgetting_results(**kwargs):
     output_path = kwargs['output_path']
     nProcess = kwargs['nProcess']
-    new_patterns_count = kwargs['new_patterns_count']
-    nPattern = kwargs['nPattern']
     nRun = kwargs['nRun']
     n_iter = kwargs['n_iter']
-
-    # n_iter = int(nPattern / new_patterns_count)
 
     arr_mean_energy_wo_decay = np.nan * np.ones(shape=n_iter)
     arr_mean_accuracy_wo_decay = np.nan * np.ones(shape=n_iter)
@@ -632,41 +629,106 @@ def combine_perceptron_forgetting_results(**kwargs):
     arr_mean_energy_decay = np.nan * np.ones(shape=n_iter)
     arr_mean_accuracy_decay = np.nan * np.ones(shape=n_iter)
 
-    arr_all_energy_wo_decay = np.nan * np.ones(shape=(nProcess*nRun, n_iter))
-    arr_all_accuracy_wo_decay = np.nan * np.ones(shape=(nProcess * nRun, n_iter))
+    # Benchmark
+    benchmark_forgetting_all = Forgetting(nRun * nProcess, output_path + Constants.BENCHMARK_FORGETTING)
 
-    arr_all_energy_decay = np.nan * np.ones(shape=(nProcess * nRun, n_iter))
-    arr_all_accuracy_decay = np.nan * np.ones(shape=(nProcess * nRun, n_iter))
+    # Catastrophic forgetting 1
+    cat_forgetting_1_all = Forgetting(nRun * nProcess, output_path + Constants.CAT_FORGETTING_1)
+
+    # Catastrophic forgetting 2
+    cat_forgetting_2_all = Forgetting(nRun * nProcess, output_path + Constants.CAT_FORGETTING_2)
+
+    # Active forgetting 1
+    active_forgetting_1_all = Forgetting(nRun * nProcess, output_path + Constants.ACTIVE_FORGETTING_1)
+
+    # Active forgetting 2
+    active_forgetting_2_all = Forgetting(nRun * nProcess, output_path + Constants.ACTIVE_FORGETTING_2, n_iter)
+
+    # Catastrophic forgetting 3
+    cat_forgetting_3_all = Forgetting(nRun * nProcess, output_path + Constants.CAT_FORGETTING_3, n_iter)
 
     for iProcess in range(nProcess):
         start_index = iProcess * nRun
         end_index = start_index + nRun
 
-        arr_energy_wo_decay = np.loadtxt(output_path + Constants.CAT_FORGETTING_3 +
-                                         Constants.ENERGY_FILE_PROC.format(str(iProcess)))
-        arr_all_energy_wo_decay[start_index:end_index, :] = arr_energy_wo_decay
+        # 1. Benchmark
+        arr_energy = np.loadtxt(output_path + Constants.BENCHMARK_FORGETTING +
+                                Constants.ENERGY_FILE_PROC.format(str(iProcess)))
+        arr_accuracy = np.loadtxt(output_path + Constants.BENCHMARK_FORGETTING +
+                                  Constants.ACCURACY_FILE_PROC.format(str(iProcess)))
+        benchmark_forgetting_all.energy[start_index:end_index] = arr_energy.reshape(-1, 1)
+        benchmark_forgetting_all.accuracy[start_index:end_index] = arr_accuracy.reshape(-1, 1)
 
-        arr_accuracy_wo_decay = np.loadtxt(output_path + Constants.CAT_FORGETTING_3 +
-                                           Constants.ACCURACY_FILE_PROC.format(str(iProcess)))
-        arr_all_accuracy_wo_decay[start_index:end_index, :] = arr_accuracy_wo_decay
+        # 2. Catastrophic forgetting - 1
+        arr_energy = np.loadtxt(output_path + Constants.CAT_FORGETTING_1 +
+                                Constants.ENERGY_FILE_PROC.format(str(iProcess)))
+        arr_accuracy = np.loadtxt(output_path + Constants.CAT_FORGETTING_1 +
+                                  Constants.ACCURACY_FILE_PROC.format(str(iProcess)))
+        cat_forgetting_1_all.energy[start_index:end_index] = arr_energy.reshape(-1, 1)
+        cat_forgetting_1_all.accuracy[start_index:end_index] = arr_accuracy.reshape(-1, 1)
 
-        arr_energy_decay = np.loadtxt(output_path + Constants.ACTIVE_FORGETTING_2 +
-                                      Constants.ENERGY_FILE_PROC.format(str(iProcess)))
-        arr_all_energy_decay[start_index:end_index, :] = arr_energy_decay
+        # 3. Catastrophic forgetting - 2
+        arr_energy = np.loadtxt(output_path + Constants.CAT_FORGETTING_2 +
+                                Constants.ENERGY_FILE_PROC.format(str(iProcess)))
+        arr_accuracy = np.loadtxt(output_path + Constants.CAT_FORGETTING_2 +
+                                  Constants.ACCURACY_FILE_PROC.format(str(iProcess)))
+        cat_forgetting_2_all.energy[start_index:end_index] = arr_energy.reshape(-1, 1)
+        cat_forgetting_2_all.accuracy[start_index:end_index] = arr_accuracy.reshape(-1, 1)
 
-        arr_accuracy_decay = np.loadtxt(output_path + Constants.ACTIVE_FORGETTING_2 +
-                                        Constants.ACCURACY_FILE_PROC.format(str(iProcess)))
-        arr_all_accuracy_decay[start_index:end_index, :] = arr_accuracy_decay
+        # 4. Catastrophic forgetting - 3
+        arr_energy = np.loadtxt(output_path + Constants.CAT_FORGETTING_3 +
+                                Constants.ENERGY_FILE_PROC.format(str(iProcess)))
+        arr_accuracy = np.loadtxt(output_path + Constants.CAT_FORGETTING_3 +
+                                  Constants.ACCURACY_FILE_PROC.format(str(iProcess)))
+        cat_forgetting_3_all.energy[start_index:end_index, :] = arr_energy
+        cat_forgetting_3_all.accuracy[start_index:end_index, :] = arr_accuracy
+
+        # 5. Active forgetting - 1
+        arr_energy = np.loadtxt(output_path + Constants.ACTIVE_FORGETTING_1 +
+                                Constants.ENERGY_FILE_PROC.format(str(iProcess)))
+        arr_accuracy = np.loadtxt(output_path + Constants.ACTIVE_FORGETTING_1 +
+                                  Constants.ACCURACY_FILE_PROC.format(str(iProcess)))
+        active_forgetting_1_all.energy[start_index:end_index] = arr_energy.reshape(-1, 1)
+        active_forgetting_1_all.accuracy[start_index:end_index] = arr_accuracy.reshape(-1, 1)
+
+        # 6. Active forgetting - 2
+        arr_energy = np.loadtxt(output_path + Constants.ACTIVE_FORGETTING_2 +
+                                Constants.ENERGY_FILE_PROC.format(str(iProcess)))
+        arr_accuracy = np.loadtxt(output_path + Constants.ACTIVE_FORGETTING_2 +
+                                  Constants.ACCURACY_FILE_PROC.format(str(iProcess)))
+        active_forgetting_2_all.energy[start_index:end_index, :] = arr_energy
+        active_forgetting_2_all.accuracy[start_index:end_index, :] = arr_accuracy
 
     for i_iter in range(n_iter):
-        arr_mean_accuracy_wo_decay[i_iter] = np.mean(arr_all_accuracy_wo_decay[:, i_iter])
-        arr_mean_energy_wo_decay[i_iter] = np.mean(arr_all_energy_wo_decay[:, i_iter])
+        arr_mean_accuracy_wo_decay[i_iter] = np.mean(cat_forgetting_3_all.accuracy[:, i_iter])
+        arr_mean_energy_wo_decay[i_iter] = np.mean(cat_forgetting_3_all.energy[:, i_iter])
 
-        arr_mean_accuracy_decay[i_iter] = np.mean(arr_all_accuracy_decay[:, i_iter])
-        arr_mean_energy_decay[i_iter] = np.mean(arr_all_energy_decay[:, i_iter])
+        arr_mean_accuracy_decay[i_iter] = np.mean(active_forgetting_2_all.accuracy[:, i_iter])
+        arr_mean_energy_decay[i_iter] = np.mean(active_forgetting_2_all.energy[:, i_iter])
+
+    # Save the mean values from all the runs to files.
+    np.savetxt(output_path + Constants.BENCHMARK_FORGETTING + Constants.ENERGY_FILE,
+               np.array([np.mean(benchmark_forgetting_all.energy)]))
+    np.savetxt(output_path + Constants.BENCHMARK_FORGETTING + Constants.ACCURACY_FILE,
+               np.array([np.mean(benchmark_forgetting_all.accuracy)]))
+
+    np.savetxt(output_path + Constants.CAT_FORGETTING_1 + Constants.ENERGY_FILE,
+               np.array([np.mean(cat_forgetting_1_all.energy)]))
+    np.savetxt(output_path + Constants.CAT_FORGETTING_1 + Constants.ACCURACY_FILE,
+               np.array([np.mean(cat_forgetting_1_all.accuracy)]))
+
+    np.savetxt(output_path + Constants.CAT_FORGETTING_2 + Constants.ENERGY_FILE,
+               np.array([np.mean(cat_forgetting_2_all.energy)]))
+    np.savetxt(output_path + Constants.CAT_FORGETTING_2 + Constants.ACCURACY_FILE,
+               np.array([np.mean(cat_forgetting_2_all.accuracy)]))
 
     np.savetxt(output_path + Constants.CAT_FORGETTING_3 + Constants.ENERGY_FILE, arr_mean_energy_wo_decay)
     np.savetxt(output_path + Constants.CAT_FORGETTING_3 + Constants.ACCURACY_FILE, arr_mean_accuracy_wo_decay)
+
+    np.savetxt(output_path + Constants.ACTIVE_FORGETTING_1 + Constants.ENERGY_FILE,
+               np.array([np.mean(active_forgetting_1_all.energy)]))
+    np.savetxt(output_path + Constants.ACTIVE_FORGETTING_1 + Constants.ACCURACY_FILE,
+               np.array([np.mean(active_forgetting_1_all.accuracy)]))
 
     np.savetxt(output_path + Constants.ACTIVE_FORGETTING_2 + Constants.ENERGY_FILE, arr_mean_energy_decay)
     np.savetxt(output_path + Constants.ACTIVE_FORGETTING_2 + Constants.ACCURACY_FILE, arr_mean_accuracy_decay)
@@ -889,69 +951,6 @@ def perceptron_accuracy_wrapper(nDimension, nPattern, decay_rates_lLTP, dir_name
 
 def perceptron_forgetting_wrapper(nDimension, nPattern, dir_name, new_patterns=100, n_iter=10, decay_rate=1e-6):
     output_path = Constants.PERM_DECAY_FORGETTING_PATH + dir_name
-    perceptron_forgetting_wrapper_process(nDimension=nDimension, nPattern=nPattern,output_path=output_path,
+    perceptron_forgetting_wrapper_process(nDimension=nDimension, nPattern=nPattern, output_path=output_path,
                                           window_size=25, nRun=10, nProcess=5, new_patterns_count=new_patterns,
                                           n_iter=n_iter, decay_rate=decay_rate)
-
-
-def main():
-    ################### Perceptron accuracy ##############################
-    window_size = [5, 7, 10, 12, 15, 17, 20, 22, 25, 27, 30]  # , 50, 100, 150, 200]
-    # perceptron_accuracy_wrapper()
-    # output_path_1 = Constants.PERM_DECAY_ACCURACY_PATH + '/low_decay'
-    # output_path_2 = Constants.PERM_DECAY_ACCURACY_PATH + '/combined'
-    # res_output_path = Constants.PERM_DECAY_ACCURACY_PATH + '/combined'
-    # combine_perceptron_decay_results(output_path_1, output_path_2, res_output_path, is_accuracy=True)
-    #
-    # output_path = Constants.PERM_DECAY_PATH + '/accuracy_old_logic'
-    # Path(output_path).mkdir(parents=True, exist_ok=True)
-    # for size in window_size:
-    #     arr_accuracy = np.loadtxt(output_path + '/accuracy_' + str(size) + '.txt')
-    #     arr_accuracy_prev = np.loadtxt(output_path + '/accuracy_prev_' + str(size) + '.txt')
-    #     x = np.arange(len(arr_accuracy))
-    #     plt.plot(x, arr_accuracy, label='Window: ' + str(size))
-    #     # plt.plot(x, arr_accuracy_prev, label='Previous avg, Window: ' + str(size))
-    # plt.xlabel('Epoch')
-    # plt.ylabel('Accuracy')
-    # plt.legend(fontsize=10, loc=4)
-    # plt.savefig(output_path + '/accuracy.png')
-    # plt.close()
-    #
-    # for size in window_size:
-    #     arr_error = np.loadtxt(output_path + '/error_' + str(size) + '.txt')
-    #     arr_error_prev = np.loadtxt(output_path + '/error_prev_' + str(size) + '.txt')
-    #     x = np.arange(len(arr_error))
-    #     plt.plot(x, arr_error, label='Window: ' + str(size))
-    #     # plt.plot(x, arr_error_prev, label='Previous avg, Window: ' + str(size))
-    # plt.xlabel('Epoch')
-    # plt.ylabel('Error')
-    # plt.legend(fontsize=10, loc=1)
-    # plt.savefig(output_path + '/error.png')
-    # plt.close()
-
-    # arr_mean_accuracy = np.loadtxt(output_path + '/mean_accuracy.txt')
-    # arr_mean_error = np.loadtxt(output_path + '/mean_error.txt')
-    # decay_rates_lLTP = [1e-5, 1e-4]
-    # fig1 = plt.figure(1)
-    # fig2 = plt.figure(2)
-    # for i in range(len(decay_rates_lLTP)):
-    #     plt.figure()
-    #     plt.plot(window_size, arr_mean_accuracy[i], marker='.', label='Decay rate: ' + str(decay_rates_lLTP[i]))
-    #     plt.xlabel('Window sizes')
-    #     plt.ylabel('Accuracy')
-    #     plt.legend(fontsize=10, loc=1)
-    #     plt.savefig(output_path + '/accuracy_' + str(i+1) + '.png')
-    #
-    #     plt.figure()
-    #     plt.plot(window_size, arr_mean_error[i], marker='.', label='Decay rate: ' + str(decay_rates_lLTP[i]))
-    #     plt.xlabel('Window sizes')
-    #     plt.ylabel('Error')
-    #     plt.legend(fontsize=10, loc=1)
-    #     plt.savefig(output_path + '/error_' + str(i+1) + '.png')
-
-    # fig1.savefig(output_path + '/accuracy.png')
-    # fig2.savefig(output_path + '/error.png')
-
-
-if __name__ == '__main__':
-    main()

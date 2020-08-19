@@ -6,7 +6,7 @@ import Code.MyConstants as Constants
 
 
 class Forgetting:
-    def __init__(self, nRun, n_iter, output_path, initialize_all=False):
+    def __init__(self, nRun, output_path, n_iter=1, initialize_all=False):
         self.energy = np.nan * np.ones(shape=(nRun, n_iter))
         self.accuracy = np.nan * np.ones(shape=(nRun, n_iter))
         self.output_path = output_path

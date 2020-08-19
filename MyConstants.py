@@ -1,5 +1,10 @@
+from pathlib import Path
+
+HOME_DIR = str(Path.home())
+
 ############## TEXT OUTPUT ################
-BASE_OUTPUT_PATH = '/home/pooja/Research_Project/Shared/Text'
+
+BASE_OUTPUT_PATH = HOME_DIR + '/Research_Project/Shared/Text'
 PERM_DECAY_PATH = BASE_OUTPUT_PATH + '/Perm_decay'
 PERM_DECAY_ACCURACY_PATH = PERM_DECAY_PATH + '/accuracy'
 PERM_DECAY_FORGETTING_PATH = PERM_DECAY_PATH + '/forgetting'
@@ -57,7 +62,7 @@ ACTIVE_FORGETTING_1 = '/active_forgetting_1'
 ACTIVE_FORGETTING_2 = '/active_forgetting_2'
 
 ################ PLOT ###################
-BASE_PLOT_PATH = '/home/pooja/Research_Project/Shared/Plot'
+BASE_PLOT_PATH = HOME_DIR + '/Research_Project/Shared/Plot'
 PERM_DECAY_PLOT_PATH = BASE_PLOT_PATH + '/Perm_decay'
 PERM_DECAY_ACCURACY_PLOT_PATH = PERM_DECAY_PLOT_PATH + '/accuracy'
 PERM_DECAY_FORGETTING_PLOT_PATH = PERM_DECAY_PLOT_PATH + '/forgetting'
