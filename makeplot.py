@@ -479,24 +479,58 @@ def plot_forgetting_all_types(output_path, plot_path):
     Path(plot_path).mkdir(parents=True, exist_ok=True)
     plt.style.use('seaborn-darkgrid')
     palette = plt.get_cmap('tab20')
+    fig, ax = plt.subplots(figsize=(12, 7))
+
+    decay_rates_lLTP = np.loadtxt(output_path + Constants.DECAY_RATES_FILE)
+    benchmark_forgetting = np.loadtxt(output_path + Constants.BENCHMARK_FORGETTING + Constants.ENERGY_FILE)
+    cat_forgetting_1 = np.loadtxt(output_path + Constants.CAT_FORGETTING_1 + Constants.ENERGY_FILE)
+    cat_forgetting_2 = np.loadtxt(output_path + Constants.CAT_FORGETTING_2 + Constants.ENERGY_FILE)
+    cat_forgetting_3 = np.loadtxt(output_path + Constants.CAT_FORGETTING_3 + Constants.ENERGY_FILE)[0]
+    active_forgetting_1 = np.ones(len(decay_rates_lLTP))
+    active_forgetting_2 = np.ones(len(decay_rates_lLTP))
+
+    for index in range(len(decay_rates_lLTP)):
+        decay_rate = decay_rates_lLTP[index]
+
+        active_forgetting_1[index] = np.loadtxt(output_path + Constants.ACTIVE_FORGETTING_1 + '/' + str(decay_rate) +
+                                                Constants.ENERGY_FILE)
+        active_forgetting_2[index] = np.loadtxt(output_path + Constants.ACTIVE_FORGETTING_2 + '/' + str(decay_rate) +
+                                                Constants.ENERGY_FILE)[0]
 
     # Plot energy
-    energy_arr = [np.loadtxt(output_path + Constants.BENCHMARK_FORGETTING + Constants.ENERGY_FILE),
-                  np.loadtxt(output_path + Constants.CAT_FORGETTING_1 + Constants.ENERGY_FILE),
-                  np.loadtxt(output_path + Constants.CAT_FORGETTING_2 + Constants.ENERGY_FILE),
-                  np.loadtxt(output_path + Constants.CAT_FORGETTING_3 + Constants.ENERGY_FILE)[1],
-                  np.loadtxt(output_path + Constants.ACTIVE_FORGETTING_1 + Constants.ENERGY_FILE),
-                  np.loadtxt(output_path + Constants.ACTIVE_FORGETTING_2 + Constants.ENERGY_FILE)[1]]
+    # energy_arr = [np.loadtxt(output_path + Constants.BENCHMARK_FORGETTING + Constants.ENERGY_FILE),
+    #               np.loadtxt(output_path + Constants.CAT_FORGETTING_1 + Constants.ENERGY_FILE),
+    #               np.loadtxt(output_path + Constants.CAT_FORGETTING_2 + Constants.ENERGY_FILE),
+    #               np.loadtxt(output_path + Constants.CAT_FORGETTING_3 + Constants.ENERGY_FILE)[1],
+    #               np.loadtxt(output_path + Constants.ACTIVE_FORGETTING_1 + Constants.ENERGY_FILE),
+    #               np.loadtxt(output_path + Constants.ACTIVE_FORGETTING_2 + Constants.ENERGY_FILE)[1]]
 
     x = ['Benchmark', 'Cat forgetting 1', 'Cat forgetting 2', 'Cat forgetting 3', 'Active forgetting 1',
          'Active forgetting 2']
     x_pos = [i for i, _ in enumerate(x)]
 
-    for i in range(len(x_pos)):
-        plt.bar(x_pos[i], energy_arr[i], color=palette(i * 2), label=x[i])
+    pos = list(range(len(decay_rates_lLTP)))
+    width = 0.3
+    for i in range(len(decay_rates_lLTP)):
+        plt.bar(pos[i], active_forgetting_1[i], width=width, alpha=0.7, color=palette(0), label='Active forgetting 1')
+        plt.bar(pos[i] + width, active_forgetting_2[i], width=width, alpha=0.7, color=palette(12),
+                label='Active forgetting 2')
+
+    plt.axhline(y=benchmark_forgetting, color=palette(2), lineStyle='--', alpha=0.7, linewidth=2, label='Benchmark')
+    plt.axhline(y=cat_forgetting_1, color=palette(4), lineStyle='--', alpha=0.7, linewidth=2,
+                label='Catastrophic forgetting 1')
+    plt.axhline(y=cat_forgetting_2, color=palette(6), lineStyle='--', alpha=0.7, linewidth=2,
+                label='Catastrophic forgetting 2')
+    plt.axhline(y=cat_forgetting_3, color=palette(8), lineStyle='--', alpha=0.7, linewidth=2,
+                label='Catastrophic forgetting 3')
+
+    plt.xlabel('Decay rates')
     plt.ylabel('Energy')
+    plt.xticks(range(len(decay_rates_lLTP)), ['{:.3g}'.format(decay_rates_lLTP[i]) for i in range(len(decay_rates_lLTP))])
     plt.ylim(0, 1e6)
-    plt.legend()
+    handles, labels = plt.gca().get_legend_handles_labels()
+    by_label = OrderedDict(zip(labels, handles))
+    plt.legend(by_label.values(), by_label.keys())
     plt.tight_layout()
     plt.savefig(plot_path + Constants.ENERGY_PLOT)
     plt.close()

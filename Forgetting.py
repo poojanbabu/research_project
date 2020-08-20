@@ -6,11 +6,15 @@ import Code.MyConstants as Constants
 
 
 class Forgetting:
-    def __init__(self, nRun, output_path, n_iter=1, initialize_all=False):
+    def __init__(self, nRun, output_path, decay_rate=0.0, n_iter=1, initialize_all=False):
         self.energy = np.nan * np.ones(shape=(nRun, n_iter))
         self.accuracy = np.nan * np.ones(shape=(nRun, n_iter))
+        self.decay_lLTP = decay_rate
         self.output_path = output_path
         self.initialize_all = initialize_all
+
+        if self.decay_lLTP != 0.0:
+            self.output_path = self.output_path + '/' + str(self.decay_lLTP)
 
         if initialize_all:
             self.energy_eLTP = np.nan * np.ones(shape=(nRun, n_iter))
