@@ -486,9 +486,9 @@ def plot_forgetting_all_types(output_path, plot_path):
     cat_forgetting_1 = np.loadtxt(output_path + Constants.CAT_FORGETTING_1 + Constants.ENERGY_FILE)
     cat_forgetting_2 = np.loadtxt(output_path + Constants.CAT_FORGETTING_2 + Constants.ENERGY_FILE)
     cat_forgetting_3 = np.loadtxt(output_path + Constants.CAT_FORGETTING_3 + Constants.ENERGY_FILE)[0]
+
     active_forgetting_1 = np.ones(len(decay_rates_lLTP))
     active_forgetting_2 = np.ones(len(decay_rates_lLTP))
-
     for index in range(len(decay_rates_lLTP)):
         decay_rate = decay_rates_lLTP[index]
 
@@ -496,18 +496,6 @@ def plot_forgetting_all_types(output_path, plot_path):
                                                 Constants.ENERGY_FILE)
         active_forgetting_2[index] = np.loadtxt(output_path + Constants.ACTIVE_FORGETTING_2 + '/' + str(decay_rate) +
                                                 Constants.ENERGY_FILE)[0]
-
-    # Plot energy
-    # energy_arr = [np.loadtxt(output_path + Constants.BENCHMARK_FORGETTING + Constants.ENERGY_FILE),
-    #               np.loadtxt(output_path + Constants.CAT_FORGETTING_1 + Constants.ENERGY_FILE),
-    #               np.loadtxt(output_path + Constants.CAT_FORGETTING_2 + Constants.ENERGY_FILE),
-    #               np.loadtxt(output_path + Constants.CAT_FORGETTING_3 + Constants.ENERGY_FILE)[1],
-    #               np.loadtxt(output_path + Constants.ACTIVE_FORGETTING_1 + Constants.ENERGY_FILE),
-    #               np.loadtxt(output_path + Constants.ACTIVE_FORGETTING_2 + Constants.ENERGY_FILE)[1]]
-
-    x = ['Benchmark', 'Cat forgetting 1', 'Cat forgetting 2', 'Cat forgetting 3', 'Active forgetting 1',
-         'Active forgetting 2']
-    x_pos = [i for i, _ in enumerate(x)]
 
     pos = list(range(len(decay_rates_lLTP)))
     width = 0.3
@@ -527,7 +515,6 @@ def plot_forgetting_all_types(output_path, plot_path):
     plt.xlabel('Decay rates')
     plt.ylabel('Energy')
     plt.xticks(range(len(decay_rates_lLTP)), ['{:.3g}'.format(decay_rates_lLTP[i]) for i in range(len(decay_rates_lLTP))])
-    plt.ylim(0, 1e6)
     handles, labels = plt.gca().get_legend_handles_labels()
     by_label = OrderedDict(zip(labels, handles))
     plt.legend(by_label.values(), by_label.keys())
