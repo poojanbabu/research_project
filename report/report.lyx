@@ -1,0 +1,305 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass book
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "palatino" "EB Garamond"
+\font_sans "helvet" "Arial"
+\font_typewriter "courier" "Courier"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 11
+\spacing onehalf
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\headheight 2cm
+\headsep 2cm
+\footskip 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Does forgetting save the brain's metabolic energy for future learning?
+\end_layout
+
+\begin_layout Author
+Pooja Nagendra Babu (20216094)
+\end_layout
+
+\begin_layout Section*
+Results
+\end_layout
+
+\begin_layout Subsection*
+Learning through perceptron
+\end_layout
+
+\begin_layout Standard
+The metabolic energy expended due to synaptic plasticity during learning
+ is studied through perceptron.
+ A perceptron is a single neuron model which linearly classifies the input
+ patterns into binary classes.
+ In our case, the input patterns are random patterns each associated to
+ a randomly selected binary output.
+ The perceptron takes the input patterns and calculates the output which
+ is matched with the desired output.
+ The synaptic weights are updated when there is a mismatch between the actual
+ and desired output according to the perceptron learning rule.
+ The process is repeated for each pattern until all the patterns are correctly
+ classified 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "10.1007/978-3-642-70911-1_20"
+literal "false"
+
+\end_inset
+
+.
+ The learning time is measured as the time taken for the perceptron to learn
+ all the input patterns over multiple iterations, which is measured in epochs.
+\end_layout
+
+\begin_layout Standard
+The amount of metabolic energy required to modify a synapse during the learning
+ process is a parsimonious model 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Li714055"
+literal "false"
+
+\end_inset
+
+.
+ In this model, the metabolic energy for every modification of synaptic
+ weight is proportional to the amount of change of the weights.
+ The total metabolic cost M to train a perceptron is the sum of the changes
+ in the synaptic weights,
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+M=\mathop{\sum_{i=1}^{N}}\sum_{t=1}^{T}|w_{i}(t)-w_{i}(t-1)|^{\alpha}\label{eq:1}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $\left.N\right.$
+\end_inset
+
+ is the number of synapses, 
+\begin_inset Formula $w_{i}$
+\end_inset
+
+ is the weight of synapse 
+\begin_inset Formula $\left.i\right.,$
+\end_inset
+
+ and 
+\begin_inset Formula $\left.T\right.$
+\end_inset
+
+ is the total number of time-steps required for the perceptron to learn
+ the inputs.
+ The exponent 
+\begin_inset Formula $\left.\alpha\right.$
+\end_inset
+
+ is set to 1.
+ 
+\end_layout
+
+\begin_layout Standard
+The property of forgetting in the perceptron is implemented as a slow exponentia
+l decay of the synaptic weights.
+ With the decay in place, we first tried to check the capacity of the perceptron
+ which can be defined as the maximum number of patterns that the perceptron
+ could successfully train.
+ It is clear from the equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:1"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ that the energy required by the perceptron is directly proportional to
+ the number of input patterns to be classified.
+ The critical capacity of a perceptron with 
+\begin_inset Formula $\left.N\right.$
+\end_inset
+
+ synapses and 
+\begin_inset Formula $\left.P\right.$
+\end_inset
+
+ patterns is when 
+\begin_inset Formula $\left.P=2N\right.$
+\end_inset
+
+.
+ However, when there is a decay on the synaptic weights, the capacity of
+ the perceptron will be less than the critical value.
+ In order to test this, we trained the perceptron for different values of
+ synapses 
+\begin_inset Formula $\left.N\right.$
+\end_inset
+
+ and calculated the capacity as a function of decay rate (Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Maximum-capacity"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
+ 
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Shared/Plot/Perm_decay/patterns.png
+	scale 50
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename Shared/Plot/Perm_decay/energy.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\series bold
+Maximum capacity and energy consumed: 
+\series default
+(left) The maximum capacity of the perceptron as a function of decay rate.
+ This is calculated for different values of 
+\begin_inset Formula $\left.N\right.$
+\end_inset
+
+.
+ The dotted lines shows the actual curve and the solid line shows a straight
+ line fit to the curve.
+ (right) The energy required to train the maximum capacity of the perceptron
+ as a function of decay rate.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Maximum-capacity"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+btprint "btPrintCited"
+bibfiles "references/perceptron,references/energy-efficient-synaptic-plasticity"
+options "apalike"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
