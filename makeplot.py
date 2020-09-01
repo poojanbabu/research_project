@@ -479,7 +479,7 @@ def plot_forgetting_all_types(output_path, plot_path):
     Path(plot_path).mkdir(parents=True, exist_ok=True)
     plt.style.use('seaborn-darkgrid')
     palette = plt.get_cmap('tab20')
-    fig, ax = plt.subplots(figsize=(12, 7))
+    fig, ax = plt.subplots(figsize=(11, 7))
 
     decay_rates_lLTP = np.loadtxt(output_path + Constants.DECAY_RATES_FILE)
     benchmark_forgetting = np.loadtxt(output_path + Constants.BENCHMARK_FORGETTING + Constants.ENERGY_FILE)
@@ -503,8 +503,10 @@ def plot_forgetting_all_types(output_path, plot_path):
         plt.bar(pos[i], active_forgetting_1[i], width=width, alpha=0.7, color=palette(0), label='Active forgetting 1')
         plt.bar(pos[i] + width, active_forgetting_2[i], width=width, alpha=0.7, color=palette(12),
                 label='Active forgetting 2')
+    # plt.plot(decay_rates_lLTP, active_forgetting_1, color=palette(0), label='Active forgetting 1', marker='o')
+    # plt.plot(decay_rates_lLTP, active_forgetting_2, color=palette(12), label='Active forgetting 2', marker='o')
 
-    plt.axhline(y=benchmark_forgetting, color=palette(2), lineStyle='--', alpha=0.7, linewidth=2, label='Benchmark')
+    plt.axhline(y=benchmark_forgetting, color='gray', lineStyle='--', alpha=0.7, linewidth=2, label='Benchmark')
     plt.axhline(y=cat_forgetting_1, color=palette(4), lineStyle='--', alpha=0.7, linewidth=2,
                 label='Catastrophic forgetting 1')
     plt.axhline(y=cat_forgetting_2, color=palette(6), lineStyle='--', alpha=0.7, linewidth=2,
@@ -515,6 +517,7 @@ def plot_forgetting_all_types(output_path, plot_path):
     plt.xlabel('Decay rates')
     plt.ylabel('Energy')
     plt.xticks(range(len(decay_rates_lLTP)), ['{:.3g}'.format(decay_rates_lLTP[i]) for i in range(len(decay_rates_lLTP))])
+    # plt.xticks(decay_rates_lLTP)
     handles, labels = plt.gca().get_legend_handles_labels()
     by_label = OrderedDict(zip(labels, handles))
     plt.legend(by_label.values(), by_label.keys())
