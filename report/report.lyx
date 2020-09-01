@@ -229,7 +229,22 @@ noprefix "false"
 \end_inset
 
 ).
+ For the given range of decay rates, the maximum capacity of the perceptron
+ displays a linear relationship to the decay value.
+ As the decay value increases, the maximum capacity of the perceptron decreases
+ aiding to the decay of synaptic weights during the training period.
+ A similar relationship can be seen in the energy expended by the perceptron
+ for training the maximum number of patterns, where the total energy decreases
+ with increase in the decay value.
+ The relationship holds good for different values of 
+\begin_inset Formula $\left.N\right.$
+\end_inset
+
+.
  
+\end_layout
+
+\begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
