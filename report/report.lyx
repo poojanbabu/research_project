@@ -5,6 +5,10 @@
 \save_transient_properties true
 \origin unavailable
 \textclass book
+\begin_preamble
+\usepackage[font=scriptsize]{caption}
+\captionsetup[figure]{font=scriptsize}
+\end_preamble
 \use_default_options true
 \maintain_unincluded_children false
 \language english
@@ -110,8 +114,65 @@ The metabolic energy expended due to synaptic plasticity during learning
  The perceptron takes the input patterns and calculates the output which
  is matched with the desired output.
  The synaptic weights are updated when there is a mismatch between the actual
- and desired output according to the perceptron learning rule.
- The process is repeated for each pattern until all the patterns are correctly
+ and desired output according to the perceptron learning rule 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:1"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+f=\begin{cases}
+1 & if\sum_{i=0}^{N}w_{i}*x_{i}>0\\
+0 & otherwise
+\end{cases}\label{eq:1}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here 
+\begin_inset Formula $\left.w_{i}\right.$
+\end_inset
+
+ is the weight of synapse 
+\begin_inset Formula $\left.i\right.$
+\end_inset
+
+, 
+\begin_inset Formula $\left.x_{i}\right.$
+\end_inset
+
+ is the 
+\begin_inset Formula $\left.i^{th}\right.$
+\end_inset
+
+ input pattern, and 
+\begin_inset Formula $\left.N\right.$
+\end_inset
+
+ is the number of synapses.
+ 
+\begin_inset Formula $x_{0}$
+\end_inset
+
+ and 
+\begin_inset Formula $w_{0}$
+\end_inset
+
+ are the bias values which are set to 1 and 0 respectively.
+ The weights are updated for each pattern until all the patterns are correctly
  classified 
 \begin_inset CommandInset citation
 LatexCommand cite
@@ -145,7 +206,7 @@ literal "false"
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-M=\mathop{\sum_{i=1}^{N}}\sum_{t=1}^{T}|w_{i}(t)-w_{i}(t-1)|^{\alpha}\label{eq:1}
+M=\mathop{\sum_{i=1}^{N}}\sum_{t=1}^{T}|w_{i}(t)-w_{i}(t-1)|^{\alpha}\label{eq:2}
 \end{equation}
 
 \end_inset
@@ -189,7 +250,7 @@ l decay of the synaptic weights.
  It is clear from the equation 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "eq:1"
+reference "eq:2"
 plural "false"
 caps "false"
 noprefix "false"
@@ -213,6 +274,8 @@ noprefix "false"
 .
  However, when there is a decay on the synaptic weights, the capacity of
  the perceptron will be less than the critical value.
+ This is because the decay on the synaptic weights during the training process
+ would forget (or unlearn) some of the previously learned patterns.
  In order to test this, we trained the perceptron for different values of
  synapses 
 \begin_inset Formula $\left.N\right.$
@@ -229,7 +292,11 @@ noprefix "false"
 \end_inset
 
 ).
- For the given range of decay rates, the maximum capacity of the perceptron
+ 
+\end_layout
+
+\begin_layout Standard
+For the given range of decay rates, the maximum capacity of the perceptron
  displays a linear relationship to the decay value.
  As the decay value increases, the maximum capacity of the perceptron decreases
  aiding to the decay of synaptic weights during the training period.
@@ -241,7 +308,16 @@ noprefix "false"
 \end_inset
 
 .
+ This is because at zero decay on a log scale would yield the maximum capacity
  
+\begin_inset Formula $\left.P=2N\right.$
+\end_inset
+
+ and for higher decay 
+\begin_inset Formula $\left.P\right.$
+\end_inset
+
+ is always greater than 0.
 \end_layout
 
 \begin_layout Standard
@@ -251,15 +327,16 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
-	filename /home/pooja/Research_Project/Shared/Plot/Perm_decay/patterns.png
+	filename figures/patterns.png
 	scale 50
 
 \end_inset
 
 
 \begin_inset Graphics
-	filename /home/pooja/Research_Project/Shared/Plot/Perm_decay/energy.png
+	filename figures/energy.png
 	scale 50
 
 \end_inset
@@ -285,9 +362,411 @@ Maximum capacity and energy consumed:
  line fit to the curve.
  (right) The energy required to train the maximum capacity of the perceptron
  as a function of decay rate.
+ Each data point in both the graphs is an average of 50 runs.
+ 
 \begin_inset CommandInset label
 LatexCommand label
 name "fig:Maximum-capacity"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For the fitted lines in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Maximum-capacity"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, we calculated the slope of the lines and found a linear relationship between
+ the slope and the number of synapses, 
+\begin_inset Formula $\left.N\right.$
+\end_inset
+
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:slope"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ Note that for 
+\begin_inset Formula $\left.N=250\right.$
+\end_inset
+
+, a straight line is fit for the decay range 
+\begin_inset Formula $\left.4*e^{-6}\right.$
+\end_inset
+
+ to 
+\begin_inset Formula $\left.e^{-4}\right.$
+\end_inset
+
+.
+ The coefficients of the fitted lines for different 
+\begin_inset Formula $\left.N\right.$
+\end_inset
+
+ are shown in the table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Coefficients"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "c"
+hor_pos "c"
+has_inner_box 1
+inner_pos "c"
+use_parbox 0
+use_makebox 0
+width "40line%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figures/slope.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+A plot of slope of the fitted lines in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Maximum-capacity"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ vs the number of synapses N.
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:slope"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hspace{}
+\length 2cm
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "40line%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="5" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+N
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Slope
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Intercept
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1500
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-309.41380411
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-2346.92473118
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-210.26772697
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-1458.99595753
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+500
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-210.26772697
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-524.04731183
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+250
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-44.34603812
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-150.74210526
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Coefficients - slope and intercept values of fitted lines for different
+ N 
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Coefficients"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+However, we see this linear relationship between patterns and decay rates
+ for the medium range of decay values.
+ This does not hold true when we considered low and high range of decay
+ values, the curve tends to flatten for those values, resembling a sigmoid
+ curve.
+ We tested this for N=250 and the plot looks as shown in the Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:sigmoid"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/patterns_250.png
+	scale 60
+	rotateOrigin center
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Maximum number of patterns trained by a perceptron for N=250 and for a wide
+ range of decay values.
+ Each data point is an average of 50 runs and the error bar is the standard
+ deviation of the 50 runs.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:sigmoid"
 
 \end_inset
 
