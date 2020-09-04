@@ -34,7 +34,16 @@
 \index_command default
 \paperfontsize 11
 \spacing onehalf
-\use_hyperref false
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
 \papersize default
 \use_geometry true
 \use_package amsmath 1
@@ -94,6 +103,127 @@ Does forgetting save the brain's metabolic energy for future learning?
 
 \begin_layout Author
 Pooja Nagendra Babu (20216094)
+\end_layout
+
+\begin_layout Subsection*
+Forgetting
+\end_layout
+
+\begin_layout Standard
+The process of learning in the brain encodes information as memories which
+ helps us to adapt to the surroundings and makes us who we are.
+ Traditionally, forgetting in the brain is regarded as a slow and natural
+ decay of memories over time due to the general instability of biological
+ mechanisms.
+ This form of forgetting is referred to as 
+\emph on
+passive forgetting
+\emph default
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "DAVIS2017490"
+literal "false"
+
+\end_inset
+
+.
+ This may be due to the loss of context cues over time or interference due
+ to other similar memories.
+ This is translated to decay in weights over time in the context of neural
+ networks.
+ This kind of decay can improve generalization by suppressing irrelevant
+ components of the weight vector and can suppress some effects of static
+ noise on the targets 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "NIPS1991_563"
+literal "false"
+
+\end_inset
+
+.
+ It is also established that a Hebbian Learning rule with passive forgetting
+ in a chaotic neural network (CNN) acts as a fuzzy-like pattern classifier
+ that performs better than the ordinary CNN 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "LI2012412"
+literal "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Learning can also happen continually where the networks learn by accommodating
+ knowledge over time by learning a sequence of tasks.
+ This process called continual learning is the ability to learn consecutive
+ tasks without forgetting how to perform the previously learned tasks 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Kirkpatrick3521"
+literal "false"
+
+\end_inset
+
+.
+ This poses a problem for the networks to learn a sequence of tasks where
+ learning new information may degrade the performance due to the information
+ loss of the previously learned tasks.
+ This property of the networks to forget the old information when learning
+ the new information is called 
+\emph on
+catastrophic forgetting
+\emph default
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "MCCLOSKEY1989109"
+literal "false"
+
+\end_inset
+
+, which can be considered as a form of 
+\emph on
+active forgetting
+\emph default
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "DAVIS2017490"
+literal "false"
+
+\end_inset
+
+.
+ This can lead to a trade-off between the extent to which the system can
+ become plastic in order to learn new information and stable in order to
+ not catastrophically forget the old acquired knowledge, often referred
+ to as the stability-plasticity dilemma 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "ABRAHAM200573"
+literal "false"
+
+\end_inset
+
+.
+ In contrast, humans and other animals can learn in a continual fashion
+ in a lifelong manner.
+ There are experimental evidence to suggest that in order to prevent catastrophi
+c forgetting, there are specialized systems in the hippocampus that allows
+ for learning of new information which, over time, will be transferred to
+ the neocortical system for long-term storage 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "PARISI201954"
+literal "false"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Section*
@@ -238,12 +368,15 @@ where
 \end_inset
 
  is set to 1.
- 
+\end_layout
+
+\begin_layout Subsection*
+Forgetting in a perceptron
 \end_layout
 
 \begin_layout Standard
-The property of forgetting in the perceptron is implemented as a slow exponentia
-l decay of the synaptic weights.
+Firstly, we tried passive forgetting in the perceptron which is implemented
+ as a slow exponential decay of the synaptic weights.
  With the decay in place, we first tried to check the capacity of the perceptron
  which can be defined as the maximum number of patterns that the perceptron
  could successfully train.
@@ -399,7 +532,7 @@ noprefix "false"
 \begin_inset Formula $\left.N\right.$
 \end_inset
 
- 
+ (Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:slope"
@@ -409,7 +542,7 @@ noprefix "false"
 
 \end_inset
 
-.
+).
  Note that for 
 \begin_inset Formula $\left.N=250\right.$
 \end_inset
@@ -783,11 +916,124 @@ name "fig:sigmoid"
 
 \end_layout
 
+\begin_layout Subsection*
+Accuracy of a perceptron
+\end_layout
+
+\begin_layout Standard
+The accuracy of a perceptron is defined as the number of input patterns
+ that are correctly classified out of all the input patterns presented.
+ A perceptron with a passive decay on its weights may not always learn all
+ the patterns during the training process.
+ Depending on the value of the decay rate, the training process may reach
+ a point where there is no improvement in the accuracy of the perceptron.
+ So, it becomes imperative to quit the training early instead of trying
+ to train the perceptron over multiple epochs with no improvement in its
+ accuracy.
+ In order to achieve this, we devised a method to monitor the accuracy of
+ the perceptron over the training process and quit it when the accuracy
+ no longer improves.
+ In this method, we calculate the accuracy of the perceptron in each epoch
+ and quit the training when the mean accuracy of the last 
+\begin_inset Formula $\left.(n+1)\right.$
+\end_inset
+
+ to 
+\begin_inset Formula $\left.2n\right.$
+\end_inset
+
+ epochs exceeds mean accuracy of the last 
+\begin_inset Formula $\left.n\right.$
+\end_inset
+
+epochs.
+ We calculated the optimal value of 
+\begin_inset Formula $\left.n\right.$
+\end_inset
+
+, the window size, by training the perceptron with different values for
+ 
+\begin_inset Formula $\left.n\right.$
+\end_inset
+
+ and analysing the value of accuracy with which the perceptron quits the
+ training (Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:window_size"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
+ We decided on the value of 
+\begin_inset Formula $\left.n=25\right.$
+\end_inset
+
+ as the accuracy starts to plateau around that value.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/window_sizes.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Accuracy with which the perceptron quits for different 
+\begin_inset Formula $\left.n\right.$
+\end_inset
+
+ where 
+\begin_inset Formula $\left.n\right.$
+\end_inset
+
+ represents the window size.
+ The value of decay was fixed to 
+\begin_inset Formula $\left.1e^{-6}\right.$
+\end_inset
+
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:window_size"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
 btprint "btPrintCited"
-bibfiles "references/perceptron,references/energy-efficient-synaptic-plasticity"
+bibfiles "references/perceptron,references/energy-efficient-synaptic-plasticity,references/overcoming-catastrophic-forgetting-in-neural-networks,references/catastrophic-forgetting,references/stability-plasticity,references/continual-learning-review,references/biology_of_forgetting,references/a-simple-weight-decay-can-improve-generalization,references/chaotic_nn"
 options "apalike"
 
 \end_inset
