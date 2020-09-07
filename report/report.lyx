@@ -11,7 +11,7 @@
 \end_preamble
 \use_default_options true
 \maintain_unincluded_children false
-\language english
+\language british
 \language_package default
 \inputencoding auto
 \fontencoding global
@@ -83,7 +83,7 @@
 \paragraph_indentation default
 \is_math_indent 0
 \math_numbering_side default
-\quotes_style english
+\quotes_style british
 \dynamic_quotes 0
 \papercolumns 1
 \papersides 1
@@ -132,7 +132,7 @@ literal "false"
  to other similar memories.
  This is translated to decay in weights over time in the context of neural
  networks.
- This kind of decay can improve generalization by suppressing irrelevant
+ This kind of decay can improve generalisation by suppressing irrelevant
  components of the weight vector and can suppress some effects of static
  noise on the targets 
 \begin_inset CommandInset citation
@@ -213,7 +213,7 @@ literal "false"
  In contrast, humans and other animals can learn in a continual fashion
  in a lifelong manner.
  There are experimental evidence to suggest that in order to prevent catastrophi
-c forgetting, there are specialized systems in the hippocampus that allows
+c forgetting, there are specialised systems in the hippocampus that allows
  for learning of new information which, over time, will be transferred to
  the neocortical system for long-term storage 
 \begin_inset CommandInset citation
@@ -648,7 +648,7 @@ name "fig:slope"
 
 
 \begin_inset Box Frameless
-position "t"
+position "c"
 hor_pos "c"
 has_inner_box 1
 inner_pos "t"
@@ -664,6 +664,22 @@ shadowsize "4pt"
 framecolor "black"
 backgroundcolor "none"
 status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+captionsetup{type=table}
+\end_layout
+
+\end_inset
+
+
+\end_layout
 
 \begin_layout Plain Layout
 \begin_inset Tabular
@@ -881,7 +897,7 @@ status open
 \align center
 \begin_inset Graphics
 	filename figures/patterns_250.png
-	scale 60
+	scale 50
 	rotateOrigin center
 
 \end_inset
@@ -1021,6 +1037,433 @@ name "fig:window_size"
 
 \end_inset
 
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We then tested the behaviour of the perceptron by fixing the number of synapses
+ 
+\begin_inset Formula $\left.N=1000\right.$
+\end_inset
+
+ and the number of patterns to train as 1600.
+ We measured the accuracy, learning rate, and the energy consumed by the
+ perceptron for a decay range of 
+\begin_inset Formula $\left.1e-8\right.$
+\end_inset
+
+ to 
+\begin_inset Formula $\left.1e-2\right.$
+\end_inset
+
+ (Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Performance"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100line%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/accuracy.png
+	scale 50
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/epoch_accuracy.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset VSpace defskip
+\end_inset
+
+
+\begin_inset Box Frameless
+position "c"
+hor_pos "c"
+has_inner_box 1
+inner_pos "c"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/error.png
+	scale 50
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/energy_accuracy.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\series bold
+Performance of the perceptron: 
+\series default
+Different performance metrics along with energy consumed are measured for
+ the perceptron with a decay in weights, resulting in passive forgetting.
+ (Top left) Accuracy of the perceptron measured as the number of input patterns
+ that are correctly classified among all the input patterns.
+ (Top right) Epochs or the learning time of perceptron is the measure of
+ the time (in epochs) required for the perceptron to learn input patterns
+ until there is no further improvement in its accuracy.
+ (Bottom left) Error rate of the perceptron after the input patterns are
+ trained until there is no improvement in the accuracy.
+ (Bottom right) Energy expended during the training process.
+ The dashed line indicates the energy value required to train the perceptron
+ when there is no decay.
+ The results indicate the values obtained by training the perceptron with
+ 
+\begin_inset Formula $\left.N=1000\right.$
+\end_inset
+
+ and 1600 patterns over a decay range of 
+\begin_inset Formula $\left.1e-8\right.$
+\end_inset
+
+ to 
+\begin_inset Formula $\left.1e-2\right.$
+\end_inset
+
+.
+ Each data point is the average of 50 runs.
+ The uncertainty shown for each data point is the standard deviation of
+ 50 runs.
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Performance"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It can be seen from Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Performance"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ that with the increase in decay rate of the weights, the accuracy of the
+ perceptron decreases and plateaus for higher decay values.
+ A similar pattern can be observed for epochs or the learning time of the
+ perceptron, where the learning time is high for low decay rates as the
+ perceptron has a larger capacity, whereas as the decay value increases,
+ the perceptron capacity reduces and so does the learning time, until it
+ plateaus for high decay values.
+ On the contrary, the curve showing the error in training the perceptron
+ follows an opposite trend.
+ The total error of the perceptron is zero at low decay values as the perceptron
+ is able to train all the input patterns.
+ While the decay value increases, the error value also increases due to
+ the perceptron not being able to train all the patterns and the curve plateaus
+ at high decay values.
+\end_layout
+
+\begin_layout Standard
+However, the trend of the curve showing the energy required for the perceptron
+ to train the input patterns for a range of decay values is not straightforward
+ (Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Performance"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ bottom right).
+ The energy expended by the perceptron to learn the patterns increases as
+ the decay rate increases till the decay value reaches 
+\begin_inset Formula $\left.1e-5\right.$
+\end_inset
+
+ after which the energy decreases till the decay value becomes 
+\begin_inset Formula $\left.1e-4\right.$
+\end_inset
+
+ after which the value of energy increases again.
+ In order to gain more insight into this behaviour in the energy consumed,
+ we wanted to see how the weights of the perceptron are updated in each
+ epoch during the process of training as the value of total energy expended
+ is directly determined by the change its synaptic weights (Equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:2"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
+ Thus, we plotted the number of updates to the synaptic weights versus each
+ epoch in the training (Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:epoch-updates"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
+ 
+\end_layout
+
+\begin_layout Standard
+Even though the number of updates to the weights is more for the decay value
+ of 
+\begin_inset Formula $\left.1e-4\right.$
+\end_inset
+
+ (Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:epoch-updates"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ left), the perceptron has trained for a fewer epochs when compared to the
+ decay value of 
+\begin_inset Formula $\left.1e-5\right.$
+\end_inset
+
+.
+ So by the end of training, the perceptron has accumulated only a few synaptic
+ weight updates in the former case and hence a dip in the energy curve for
+ that decay value (Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Performance"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ bottom-right).
+ However, for the range of decay values in 
+\begin_inset Formula $\left.1e-4\right.$
+\end_inset
+
+ and 
+\begin_inset Formula $\left.1e-3\right.$
+\end_inset
+
+, the energy expended by the perceptron increases again with the increase
+ in decay.
+ Clearly, the number of updates to the synaptic weights is more for decay
+ value 
+\begin_inset Formula $\left.1e-3\right.$
+\end_inset
+
+ when compared to the decay value of 
+\begin_inset Formula $\left.1e-4\right.$
+\end_inset
+
+ even if there is not much of a difference in the number of epochs required
+ for training (Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:epoch-updates"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ right).
+ Also, accuracy of the perceptron is higher for the latter case (Figure
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Performance"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ top-left) accounting for fewer weight updates than the former case.
+ This explains why there in an increase in the energy curve in the decay
+ range 
+\begin_inset Formula $\left.1e-4\right.$
+\end_inset
+
+ and 
+\begin_inset Formula $\left.1e-3\right.$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/epoch_updates_1.png
+	scale 45
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/epoch_updates_2.png
+	scale 45
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+The number of updates to the synaptic weights of the perceptron during the
+ training process.
+ (Left) The number of updates to weights over multiple runs for the decay
+ values 
+\begin_inset Formula $\left.1e-6\right.$
+\end_inset
+
+, 
+\begin_inset Formula $\left.1e-5\right.$
+\end_inset
+
+, and 
+\begin_inset Formula $\left.1e-4\right.$
+\end_inset
+
+.
+ (Right) The number of updates to the synaptic weights over multiple runs
+ for the decay values 
+\begin_inset Formula $\left.1e-4\right.$
+\end_inset
+
+ and 
+\begin_inset Formula $\left.1e-3\right.$
+\end_inset
+
+.
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:epoch-updates"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
 
 \end_layout
 
