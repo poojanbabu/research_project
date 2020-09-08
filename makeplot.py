@@ -479,7 +479,7 @@ def plot_forgetting_all_types(output_path, plot_path):
     Path(plot_path).mkdir(parents=True, exist_ok=True)
     plt.style.use('seaborn-darkgrid')
     palette = plt.get_cmap('tab20')
-    fig, ax = plt.subplots(figsize=(11, 7))
+    fig, ax = plt.subplots(figsize=(7, 5))
 
     decay_rates_lLTP = np.loadtxt(output_path + Constants.DECAY_RATES_FILE)
     benchmark_forgetting = np.loadtxt(output_path + Constants.BENCHMARK_FORGETTING + Constants.ENERGY_FILE)
@@ -487,42 +487,82 @@ def plot_forgetting_all_types(output_path, plot_path):
     cat_forgetting_2 = np.loadtxt(output_path + Constants.CAT_FORGETTING_2 + Constants.ENERGY_FILE)
     cat_forgetting_3 = np.loadtxt(output_path + Constants.CAT_FORGETTING_3 + Constants.ENERGY_FILE)[0]
 
-    active_forgetting_1 = np.ones(len(decay_rates_lLTP))
-    active_forgetting_2 = np.ones(len(decay_rates_lLTP))
+    passive_forgetting_1 = np.ones(len(decay_rates_lLTP))
+    passive_forgetting_2 = np.ones(len(decay_rates_lLTP))
+
+    energy_arr = [benchmark_forgetting, cat_forgetting_1, cat_forgetting_2, cat_forgetting_3]
     for index in range(len(decay_rates_lLTP)):
         decay_rate = decay_rates_lLTP[index]
 
-        active_forgetting_1[index] = np.loadtxt(output_path + Constants.ACTIVE_FORGETTING_1 + '/' + str(decay_rate) +
-                                                Constants.ENERGY_FILE)
-        active_forgetting_2[index] = np.loadtxt(output_path + Constants.ACTIVE_FORGETTING_2 + '/' + str(decay_rate) +
-                                                Constants.ENERGY_FILE)[0]
+        passive_forgetting_1[index] = np.loadtxt(output_path + Constants.PASSIVE_FORGETTING_1 + '/' + str(decay_rate) +
+                                                 Constants.ENERGY_FILE)
+        passive_forgetting_2[index] = np.loadtxt(output_path + Constants.PASSIVE_FORGETTING_2 + '/' + str(decay_rate) +
+                                                 Constants.ENERGY_FILE)[0]
+        if decay_rate == 1e-6:
+            energy_arr.append(passive_forgetting_1[index])
+            energy_arr.append(passive_forgetting_2[index])
 
+    labels = ['Benchmark', 'Catastrophic forgetting 1', 'Catastrophic forgetting 2', 'Catastrophic forgetting 3',
+              'Passive forgetting 1', 'Passive forgetting 2']
+    x_pos = [i for i, _ in enumerate(labels)]
+    for i in range(len(x_pos)):
+        plt.bar(x_pos[i], energy_arr[i], color=palette(i * 2), label=labels[i])
+    plt.ylabel('Energy')
+    plt.ylim(0, 1e6)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(plot_path + Constants.ENERGY_BAR_PLOT)
+    plt.close()
+
+    fig1, ax1 = plt.subplots(figsize=(11, 9))
+    fig2, ax2 = plt.subplots(figsize=(10, 7))
     pos = list(range(len(decay_rates_lLTP)))
     width = 0.3
     for i in range(len(decay_rates_lLTP)):
-        plt.bar(pos[i], active_forgetting_1[i], width=width, alpha=0.7, color=palette(0), label='Active forgetting 1')
-        plt.bar(pos[i] + width, active_forgetting_2[i], width=width, alpha=0.7, color=palette(12),
-                label='Active forgetting 2')
-    # plt.plot(decay_rates_lLTP, active_forgetting_1, color=palette(0), label='Active forgetting 1', marker='o')
-    # plt.plot(decay_rates_lLTP, active_forgetting_2, color=palette(12), label='Active forgetting 2', marker='o')
+        plt.figure(fig1.number)
+        plt.bar(pos[i], passive_forgetting_1[i], width=width, alpha=0.7, color=palette(0), label=labels[4])
+        plt.bar(pos[i] + width, passive_forgetting_2[i], width=width, alpha=0.7, color=palette(12),
+                label=labels[5])
 
-    plt.axhline(y=benchmark_forgetting, color='gray', lineStyle='--', alpha=0.7, linewidth=2, label='Benchmark')
+        plt.figure(fig2.number)
+        plt.plot(decay_rates_lLTP, passive_forgetting_1, color=palette(0), label=labels[4], marker='o')
+        plt.plot(decay_rates_lLTP, passive_forgetting_2, color=palette(12), label=labels[5], marker='o')
+
+    plt.figure(fig1.number)
+    plt.axhline(y=benchmark_forgetting, color='gray', lineStyle='--', alpha=0.7, linewidth=2, label=labels[0])
     plt.axhline(y=cat_forgetting_1, color=palette(4), lineStyle='--', alpha=0.7, linewidth=2,
-                label='Catastrophic forgetting 1')
+                label=labels[1])
     plt.axhline(y=cat_forgetting_2, color=palette(6), lineStyle='--', alpha=0.7, linewidth=2,
-                label='Catastrophic forgetting 2')
+                label=labels[2])
     plt.axhline(y=cat_forgetting_3, color=palette(8), lineStyle='--', alpha=0.7, linewidth=2,
-                label='Catastrophic forgetting 3')
+                label=labels[3])
 
+    plt.figure(fig2.number)
+    plt.axhline(y=benchmark_forgetting, color='gray', lineStyle='--', alpha=0.7, linewidth=2, label=labels[0])
+    plt.axhline(y=cat_forgetting_1, color=palette(4), lineStyle='--', alpha=0.7, linewidth=2,
+                label=labels[1])
+    plt.axhline(y=cat_forgetting_2, color=palette(6), lineStyle='--', alpha=0.7, linewidth=2,
+                label=labels[2])
+    plt.axhline(y=cat_forgetting_3, color=palette(8), lineStyle='--', alpha=0.7, linewidth=2,
+                label=labels[3])
+
+    plt.figure(fig1.number)
     plt.xlabel('Decay rates')
     plt.ylabel('Energy')
     plt.xticks(range(len(decay_rates_lLTP)), ['{:.3g}'.format(decay_rates_lLTP[i]) for i in range(len(decay_rates_lLTP))])
-    # plt.xticks(decay_rates_lLTP)
     handles, labels = plt.gca().get_legend_handles_labels()
     by_label = OrderedDict(zip(labels, handles))
     plt.legend(by_label.values(), by_label.keys())
     plt.tight_layout()
-    plt.savefig(plot_path + Constants.ENERGY_PLOT)
+    fig1.savefig(plot_path + Constants.ENERGY_FORGETTING_BAR_PLOT)
+    plt.close()
+
+    plt.figure(fig2.number)
+    plt.xlabel('Decay rates')
+    plt.ylabel('Energy')
+    plt.legend(by_label.values(), by_label.keys())
+    plt.tight_layout()
+    fig2.savefig(plot_path + Constants.ENERGY_FORGETTING_LINE_PLOT)
     plt.close()
 
 

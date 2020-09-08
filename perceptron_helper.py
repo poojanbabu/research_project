@@ -601,10 +601,10 @@ def perceptron_forgetting(iProcess, **kwargs):
         logger.info(f'Active forgetting. Decay rate: {decay_rate}')
 
         # Active forgetting 1
-        active_forgetting_1 = Forgetting(nRun, output_path + Constants.ACTIVE_FORGETTING_1, decay_rate=decay_rate)
+        active_forgetting_1 = Forgetting(nRun, output_path + Constants.PASSIVE_FORGETTING_1, decay_rate=decay_rate)
 
         # Active forgetting 2
-        active_forgetting_2 = Forgetting(nRun, output_path + Constants.ACTIVE_FORGETTING_2, n_iter=n_iter,
+        active_forgetting_2 = Forgetting(nRun, output_path + Constants.PASSIVE_FORGETTING_2, n_iter=n_iter,
                                          decay_rate=decay_rate)
         ignore_results = False
         max_tries = 10
@@ -767,11 +767,11 @@ def combine_perceptron_forgetting_results(**kwargs):
         arr_mean_accuracy_decay = np.nan * np.ones(shape=n_iter)
 
         # Active forgetting 1
-        active_forgetting_1_all = Forgetting(nRun * nProcess, output_path + Constants.ACTIVE_FORGETTING_1,
+        active_forgetting_1_all = Forgetting(nRun * nProcess, output_path + Constants.PASSIVE_FORGETTING_1,
                                              decay_rate=decay_rate)
 
         # Active forgetting 2
-        active_forgetting_2_all = Forgetting(nRun * nProcess, output_path + Constants.ACTIVE_FORGETTING_2,
+        active_forgetting_2_all = Forgetting(nRun * nProcess, output_path + Constants.PASSIVE_FORGETTING_2,
                                              n_iter=n_iter,
                                              decay_rate=decay_rate)
 
