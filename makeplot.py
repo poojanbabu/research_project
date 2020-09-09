@@ -504,9 +504,10 @@ def plot_forgetting_all_types(output_path, plot_path):
 
     labels = ['Benchmark', 'Catastrophic forgetting 1', 'Catastrophic forgetting 2', 'Catastrophic forgetting 3',
               'Passive forgetting 1', 'Passive forgetting 2']
+    colors = ['gray', palette(4), palette(6), palette(8), palette(0), palette(12)]
     x_pos = [i for i, _ in enumerate(labels)]
     for i in range(len(x_pos)):
-        plt.bar(x_pos[i], energy_arr[i], color=palette(i * 2), label=labels[i])
+        plt.bar(x_pos[i], energy_arr[i], color=colors[i], alpha=0.7, label=labels[i])
     plt.ylabel('Energy')
     plt.ylim(0, 1e6)
     plt.legend()
