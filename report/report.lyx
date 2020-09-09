@@ -130,8 +130,8 @@ literal "false"
 .
  This may be due to the loss of context cues over time or interference due
  to other similar memories.
- This is translated to decay in weights over time in the context of neural
- networks.
+ This kind of forgetting could be translated to decay in weights over time
+ in the context of neural networks.
  This kind of decay can improve generalisation by suppressing irrelevant
  components of the weight vector and can suppress some effects of static
  noise on the targets 
@@ -143,9 +143,7 @@ literal "false"
 \end_inset
 
 .
- It is also established that a Hebbian Learning rule with passive forgetting
- in a chaotic neural network (CNN) acts as a fuzzy-like pattern classifier
- that performs better than the ordinary CNN 
+ The results from 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "LI2012412"
@@ -153,7 +151,9 @@ literal "false"
 
 \end_inset
 
-.
+ establish that a Hebbian Learning rule with passive forgetting in a chaotic
+ neural network (CNN) acts as a fuzzy-like pattern classifier that performs
+ better than the ordinary CNN.
 \end_layout
 
 \begin_layout Standard
@@ -462,6 +462,8 @@ status open
 
 \begin_layout Plain Layout
 \align center
+
+\emph on
 \begin_inset Graphics
 	filename figures/patterns.png
 	scale 50
@@ -1529,7 +1531,315 @@ Algorithms for forgetting
 \begin_layout Standard
 In the previous section, we studied the accuracy of the perceptron while
  learning the input patterns with passive forgetting.
+ The results suggested that the training of a perceptron with passive forgetting
+ did not show significant conservation in the energy consumed.
+ In addition to that, we wanted to check if the perceptron saves energy
+ in the process of forgetting and uses it for future learning of new patterns.
+ In order to test this, we developed algorithms with either catastrophic
+ or passive forgetting and train the perceptron to learn new patterns.
+ We then compare the energy required to train the perceptron using each
+ of the algorithms with a benchmark value of energy consumed to train a
+ perceptron without any forgetting.
  
+\end_layout
+
+\begin_layout Standard
+Firstly, a perceptron with 
+\begin_inset Formula $\left.N=1000\right.$
+\end_inset
+
+ synapses is considered and trained for 
+\begin_inset Formula $\left.1000\right.$
+\end_inset
+
+ patterns without any decay on the synaptic weights.
+ The perceptron is then trained for the first 
+\begin_inset Formula $\left.1000\right.$
+\end_inset
+
+ patterns along with an additional 
+\begin_inset Formula $\left.100\right.$
+\end_inset
+
+ patterns.
+ The energy expended in training these patterns would be the 
+\emph on
+benchmark
+\emph default
+ value we use to compare with other algorithms.
+ We developed three algorithms of training the perceptron with catastrophic
+ forgetting and two algorithms with passive forgetting.
+ We implement catastrophic forgetting as an interference by deliberately
+ forgetting some of the old patterns learnt by the perceptron and introducing
+ some new patterns to train.
+ Passive forgetting is implemented similar to the previous section where
+ the synaptic weights decay away at a constant rate after each time step
+ of training the perceptron with an additional learning of new patterns.
+ All the algorithms are implemented on a perceptron with 
+\begin_inset Formula $\left.N=1000\right.$
+\end_inset
+
+ synaptic connections.
+\end_layout
+
+\begin_layout Standard
+The first algorithm is implemented by training the perceptron with 
+\begin_inset Formula $\left.1000\right.$
+\end_inset
+
+ patterns, then by training with a new set of 
+\begin_inset Formula $\left.700\right.$
+\end_inset
+
+ randomly selected old patterns and 
+\begin_inset Formula $\left.100\right.$
+\end_inset
+
+ new patterns and measuring the energy required in training the new set.
+ Note that here forgetting is implemented as intentional forgetting of some
+ of the old patterns and interfering those by learning new patterns.
+ The goal of this algorithm is to check the energy consumption having a
+ new training set with total number of patterns (
+\begin_inset Formula $\left.700+100=800)\right.$
+\end_inset
+
+ less than the initial training set (
+\begin_inset Formula $\left.1000\right.$
+\end_inset
+
+).
+ We label this algorithm as 
+\emph on
+catastrophic forgetting 1.
+ 
+\emph default
+For the second algorithm, we initially train the perceptron with 
+\begin_inset Formula $\left.1000\right.$
+\end_inset
+
+ patterns and then completely forget the previous 
+\begin_inset Formula $\left.1000\right.$
+\end_inset
+
+ patterns and only train with 
+\begin_inset Formula $\left.100\right.$
+\end_inset
+
+ new patterns the second time and measure the energy consumed.
+ The objective here is to measure the energy consumed with a significantly
+ lower number of patterns than the number used to train originally.
+ We name this algorithm as 
+\emph on
+catastrophic forgetting 2.
+ 
+\emph default
+The third algorithm is implemented by initially training a perceptron with
+ 
+\begin_inset Formula $\left.1000\right.$
+\end_inset
+
+ patterns, then by training a new set of 
+\begin_inset Formula $\left.900\right.$
+\end_inset
+
+ randomly selected old patterns and 
+\begin_inset Formula $\left.100\right.$
+\end_inset
+
+ new patterns, and measuring the energy expended in training the new set.
+ The aim of this algorithm is to measure the energy consumption having a
+ new training set 
+\begin_inset Formula $\left.(900+100=1000)\right.$
+\end_inset
+
+ equal to the number of patterns in the original set 
+\begin_inset Formula $\left.(1000)\right.$
+\end_inset
+
+.
+ This is called as 
+\emph on
+catastrophic forgetting 3.
+\end_layout
+
+\begin_layout Standard
+The third algorithm is implemented with active forgetting by first training
+ the perceptron initially with 
+\begin_inset Formula $\left.1000\right.$
+\end_inset
+
+ patterns with decay on the synaptic weights, then training 
+\begin_inset Formula $\left.100\right.$
+\end_inset
+
+ new patterns along with the old patterns still retaining the decay on weights.
+ We name this algorithm as 
+\emph on
+passive forgetting 1.
+ 
+\emph default
+In the last algorithm, we first train the perceptron with 
+\begin_inset Formula $\left.1000\right.$
+\end_inset
+
+ patterns with decay on the synaptic weights, then train with a new set
+ of 
+\begin_inset Formula $\left.900\right.$
+\end_inset
+
+ randomly selected old patterns along with 
+\begin_inset Formula $\left.100\right.$
+\end_inset
+
+ new patterns by retaining the decay on weights and measure the energy expended
+ in training the new set.
+ We name this algorithm as 
+\emph on
+passive forgetting 2.
+\end_layout
+
+\begin_layout Standard
+We trained the perceptron with all the different algorithms discussed above
+ and plotted energy required to train the perceptron (Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Forgetting-energy"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
+ First the perceptron was trained with a fixed decay value of 
+\begin_inset Formula $\left.10^{-6}\right.$
+\end_inset
+
+ for passive forgetting algorithms.
+ The results indicate that the energy is conserved for all the algorithms
+ except passive forgetting 1 when compared to the benchmark value as shown
+ in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Forgetting-energy"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ (left).
+ We found similar results when we trained the perceptron over a range of
+ decay values (
+\begin_inset Formula $\left.10^{-6}\right.$
+\end_inset
+
+ to 
+\begin_inset Formula $\left.5*10^{-6}\right.$
+\end_inset
+
+) for passive forgetting, figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Forgetting-energy"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ (right).
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/energy_bar.png
+	scale 45
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/energy_forgetting_line.png
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\series bold
+Forgetting in a perceptron and energy consumption: 
+\series default
+(Left) Energy consumed for all the five different algorithms of learning
+ in a perceptron with forgetting (catastrophic or passive).
+ The perceptron has 
+\begin_inset Formula $\left.N=1000\right.$
+\end_inset
+
+ synapses and trained for 
+\begin_inset Formula $\left.1000\right.$
+\end_inset
+
+ initial patterns.
+ The decay value for passive forgetting is fixed to 
+\begin_inset Formula $\left.10^{-6}\right.$
+\end_inset
+
+.
+ (Right) The energy consumption measured over a range of decay values from
+ 
+\begin_inset Formula $\left.10^{-6}\right.$
+\end_inset
+
+ to 
+\begin_inset Formula $\left.5*10^{-6}\right.$
+\end_inset
+
+ for passive forgetting.
+ The dashed lines represent the energy values for benchmark and three learning
+ algorithms with catastrophic forgetting.
+ The energy data points in both the graphs is an average value of 
+\begin_inset Formula $\left.50\right.$
+\end_inset
+
+ runs.
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Forgetting-energy"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
