@@ -1580,6 +1580,17 @@ benchmark
 \end_inset
 
  synaptic connections.
+ The number of patterns used in each algorithm is given in table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Number-of-patterns"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -1699,57 +1710,455 @@ passive forgetting 2.
 \end_layout
 
 \begin_layout Standard
-We trained the perceptron with all the different algorithms discussed above
- and plotted energy required to train the perceptron (Figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:Forgetting-energy"
-plural "false"
-caps "false"
-noprefix "false"
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align left
+\begin_inset Tabular
+<lyxtabular version="3" rows="7" columns="5">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="middle" width="18text%">
+<column alignment="center" valignment="middle" width="18text%">
+<column alignment="center" valignment="middle" width="18text%">
+<column alignment="center" valignment="middle" width="18text%">
+<column alignment="center" valignment="middle" width="18text%">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+Algorithm
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+Initial training set
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+# of patterns forgotten
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+# of new patterns
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+Total patterns: new training set
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+Benchmark
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+1000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+1100
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+Catastrophic forgetting 1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+1000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+800
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+Catastrophic forgetting 2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+1000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+1000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+100
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+Catastrophic forgetting 3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+1000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+1000
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+Passive forgetting 1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+1000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+1100
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+Passive forgetting 2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+1000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size scriptsize
+1000
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
 
 \end_inset
 
-).
- First the perceptron was trained with a fixed decay value of 
-\begin_inset Formula $\left.10^{-6}\right.$
+
+\end_layout
+
+\begin_layout Plain Layout
+\align left
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Number of patterns for training the perceptron with different algorithms.
+ The number of synapses in the perceptron is set to 
+\begin_inset Formula $\left.N=1000\right.$
 \end_inset
 
- for passive forgetting algorithms.
- The results indicate that the energy is conserved for all the algorithms
- except passive forgetting 1 when compared to the benchmark value as shown
- in figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:Forgetting-energy"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
- (left).
- We found similar results when we trained the perceptron over a range of
- decay values (
-\begin_inset Formula $\left.10^{-6}\right.$
-\end_inset
-
- to 
-\begin_inset Formula $\left.5*10^{-6}\right.$
-\end_inset
-
-) for passive forgetting, figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:Forgetting-energy"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
- (right).
  
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Number-of-patterns"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1760,24 +2169,21 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-\align center
+\align left
 \begin_inset Graphics
 	filename figures/energy_bar.png
-	scale 45
+	scale 42
 
 \end_inset
 
 
 \begin_inset Graphics
 	filename figures/energy_forgetting_line.png
-	scale 40
+	scale 42
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Plain Layout
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
@@ -1833,13 +2239,160 @@ name "fig:Forgetting-energy"
 
 \end_layout
 
-\begin_layout Plain Layout
-
-\end_layout
-
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+We trained the perceptron with all the algorithms discussed above and plotted
+ energy required to train the perceptron (Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Forgetting-energy"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
+ First the perceptron was trained with a fixed decay value of 
+\begin_inset Formula $\left.10^{-6}\right.$
+\end_inset
+
+ for passive forgetting algorithms.
+ The results indicate that the energy is conserved for all the algorithms
+ when compared to the benchmark value except for passive forgetting 1 (Figure
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Forgetting-energy"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ (left)).
+ We found similar results when we trained the perceptron over a range of
+ decay values (
+\begin_inset Formula $\left.10^{-6}\right.$
+\end_inset
+
+ to 
+\begin_inset Formula $\left.5*10^{-6}\right.$
+\end_inset
+
+) for passive forgetting, figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Forgetting-energy"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ (right).
+ 
+\end_layout
+
+\begin_layout Standard
+The total number of patterns in the new training set for catastrophic forgetting
+ 1 and catastrophic forgetting 2 algorithms is less than the number of patterns
+ used for catastrophic forgetting 3 (Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Number-of-patterns"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ last column).
+ All the catastrophic forgetting algorithms perform better with respect
+ to conserving energy when compared to the benchmark (Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Forgetting-energy"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ (left)).
+ Catastrophic forgetting 2 conserves the most energy because the new training
+ set contains only the new patterns with all the originally trained patterns
+ forgotten.
+ Thus the perceptron takes fewer epochs to quickly learn the new patterns
+ which is far less than the patterns in the original set, thus spending
+ less energy.
+ The total number of patterns in catastrophic forgetting 1 algorithm is
+ less than the number of patterns used in catastrophic forgetting 3.
+ An already trained perceptron learns the new set of patterns in the former
+ scenario because more patterns are forgotten as opposed to the latter.
+ This allows the perceptron to learn the new patterns with fewer updates
+ to the weights without any interference to the old patterns, consequently
+ expending less energy.
+ In case of passive forgetting algorithms, the total number of patterns
+ used is less for passive forgetting 2 than passive forgetting 1.
+ In passive forgetting 2, forgetting is a combination of active decay of
+ synaptic weights and intentional forgetting of a few already learnt patterns.
+ This combination gives the perceptron a little leeway to learn the new
+ patterns more effectively than if it had learnt all at once (benchmark).
+ On the contrary, in passive forgetting 1, only decay of weights don't contribut
+e to energy conservation as the constant decay at each time step of training
+ requires the perceptron to updates more often, therefore spending more
+ energy.
+ We have seen a similar behaviour previously in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Performance"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ (bottom right).
+\end_layout
+
+\begin_layout Standard
+We extended this analysis for a range of decay values for passive forgetting
+ algorithms such that the perceptron trained all the patterns with 
+\begin_inset Formula $\left.100\%\right.$
+\end_inset
+
+ accuracy.
+ The catastrophic forgetting algorithms are not affected by this as there
+ are not dependent on decay values, figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Forgetting-energy"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ (right).
+ The passive forgetting 2 algorithm conserved energy and the amount of energy
+ conserved decreased with increase in the decay value till 
+\begin_inset Formula $\left.4.5*10^{-6}\right.$
+\end_inset
+
+ after which there was no energy gain.
+ The passive forgetting 1 algorithm did not conserve energy for all the
+ values of decay.
+ Hence, the catastrophic forgetting algorithms performed well overall and
+ conserved more energy as compared to passive forgetting algorithms.
+\end_layout
+
+\begin_layout Section*
+Discussion
 \end_layout
 
 \begin_layout Standard
