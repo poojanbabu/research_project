@@ -106,13 +106,75 @@ Pooja Nagendra Babu (20216094)
 \end_layout
 
 \begin_layout Subsection*
+Learning and plasticity
+\end_layout
+
+\begin_layout Standard
+Learning in the brain is a process by which the brain encodes information
+ of the surroundings in the form of synaptic connections.
+ These connections, over time, strengthen to form memories, help us to adapt
+ to the surroundings, and makes us who we are.
+ The strengthening of connections, also known as synaptic plasticity, is
+ the biological process by which specific patterns of neural activity changes
+ the strength and efficacy of synaptic connections.
+ Synaptic plasticity determines how effectively neurons communicate with
+ each other, aids in learning and memory, brain development and recovery
+ from brain lesions.
+ Several scientists have made important contributions to the understanding
+ of synaptic plasticity, that dates back to Ramon y Cajal in the 1890s who
+ suggested that the capacity of the brain could be augmented by increasing
+ the number of connections 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "cajal1893nuevo"
+literal "false"
+
+\end_inset
+
+.
+ The properties of synaptic transmission rose into prominence during the
+ twentieth century when Donald Hebb postulated that synapses that change
+ as a consequence of simultaneous firing form the neural basis of learning
+ and memory 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "hebb-organization-of-behavior-1949"
+literal "false"
+
+\end_inset
+
+.
+ The synaptic plasticity can be transient, that lasts from milliseconds
+ to a few minutes, can result in short-term synaptic facilitation and depression
+ resulting in short-term memory 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "doi:10.1146/annurev.physiol.64.092501.114547"
+literal "false"
+
+\end_inset
+
+.
+ On the other hand, frequent neuronal activation can enhance synaptic transmissi
+on for days or weeks, also known as long term potentiation (LTP).
+ Experimental evidence supports this kind of plasticity in the dentate gyrus
+ of the rabbit hippocampus 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "doi:10.1098/rstb.2002.1226"
+literal "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection*
 Forgetting
 \end_layout
 
 \begin_layout Standard
-The process of learning in the brain encodes information as memories which
- helps us to adapt to the surroundings and makes us who we are.
- Traditionally, forgetting in the brain is regarded as a slow and natural
+Traditionally, forgetting in the brain is regarded as a slow and natural
  decay of memories over time due to the general instability of biological
  mechanisms.
  This form of forgetting is referred to as 
@@ -2399,7 +2461,7 @@ Discussion
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
 btprint "btPrintCited"
-bibfiles "references/perceptron,references/energy-efficient-synaptic-plasticity,references/overcoming-catastrophic-forgetting-in-neural-networks,references/catastrophic-forgetting,references/stability-plasticity,references/continual-learning-review,references/biology_of_forgetting,references/a-simple-weight-decay-can-improve-generalization,references/chaotic_nn"
+bibfiles "references/perceptron,references/energy-efficient-synaptic-plasticity,references/overcoming-catastrophic-forgetting-in-neural-networks,references/catastrophic-forgetting,references/stability-plasticity,references/continual-learning-review,references/biology_of_forgetting,references/a-simple-weight-decay-can-improve-generalization,references/chaotic_nn,references/cajal,references/hebb,references/short-term,references/ltp"
 options "apalike"
 
 \end_inset
