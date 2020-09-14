@@ -8,7 +8,7 @@
 \begin_preamble
 \usepackage[font=scriptsize]{caption}
 \captionsetup[figure]{font=scriptsize}
-\hypersetup{urlcolor=blue}
+\hypersetup{linkcolor=blue, citecolor=blue}
 \end_preamble
 \use_default_options true
 \maintain_unincluded_children false
@@ -42,7 +42,7 @@
 \pdf_bookmarksopenlevel 1
 \pdf_breaklinks false
 \pdf_pdfborder true
-\pdf_colorlinks false
+\pdf_colorlinks true
 \pdf_backref false
 \pdf_pdfusetitle true
 \papersize default
@@ -78,7 +78,7 @@
 \headheight 2cm
 \headsep 2cm
 \footskip 2cm
-\secnumdepth 3
+\secnumdepth -2
 \tocdepth 3
 \paragraph_separation indent
 \paragraph_indentation default
@@ -106,7 +106,23 @@ Does forgetting save the brain's metabolic energy for future learning?
 Pooja Nagendra Babu (20216094)
 \end_layout
 
-\begin_layout Section*
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
 Introduction
 \end_layout
 
@@ -278,7 +294,7 @@ n.
  forgetting.
 \end_layout
 
-\begin_layout Subsection*
+\begin_layout Subsection
 Types of forgetting
 \end_layout
 
@@ -397,11 +413,11 @@ literal "false"
 .
 \end_layout
 
-\begin_layout Section*
+\begin_layout Section
 Results
 \end_layout
 
-\begin_layout Subsection*
+\begin_layout Subsection
 Learning in a perceptron
 \end_layout
 
@@ -541,7 +557,7 @@ where
  is set to 1.
 \end_layout
 
-\begin_layout Subsection*
+\begin_layout Subsection
 Forgetting in a perceptron
 \end_layout
 
@@ -1110,7 +1126,7 @@ name "fig:sigmoid"
 
 \end_layout
 
-\begin_layout Subsection*
+\begin_layout Subsection
 Performance of a perceptron
 \end_layout
 
@@ -1695,7 +1711,7 @@ name "fig:epoch-updates"
 
 \end_layout
 
-\begin_layout Subsection*
+\begin_layout Subsection
 Algorithms for forgetting
 \end_layout
 
@@ -2562,7 +2578,7 @@ noprefix "false"
  conserved more energy as compared to passive forgetting algorithms.
 \end_layout
 
-\begin_layout Section*
+\begin_layout Section
 Discussion
 \end_layout
 
