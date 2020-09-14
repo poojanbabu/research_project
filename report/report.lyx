@@ -8,6 +8,7 @@
 \begin_preamble
 \usepackage[font=scriptsize]{caption}
 \captionsetup[figure]{font=scriptsize}
+\hypersetup{urlcolor=blue}
 \end_preamble
 \use_default_options true
 \maintain_unincluded_children false
@@ -105,8 +106,8 @@ Does forgetting save the brain's metabolic energy for future learning?
 Pooja Nagendra Babu (20216094)
 \end_layout
 
-\begin_layout Subsection*
-Learning and plasticity
+\begin_layout Section*
+Introduction
 \end_layout
 
 \begin_layout Standard
@@ -167,10 +168,118 @@ literal "false"
 \end_inset
 
 .
+ The phenomenon of LTP is known to be the neural basis for forming long-term
+ memories.
+\end_layout
+
+\begin_layout Standard
+As the memories start to accumulate in the brain over time, it becomes imperativ
+e for the brain to have a mechanism to eliminate the memories that are obsolete.
+ This phenomenon, called forgetting, is considered as the flip side of learning.
+ Forgetting can occur due to the failed retrieval of an intact engram through
+ the biological degradation of molecular and cellular memory traces or when
+ a fraction of engram cells become disconnected from the engram cell circuit
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "DAVIS2017490"
+literal "false"
+
+\end_inset
+
+.
+ Although forgetting appears to signify as a failure of the brain to recall
+ memories, it is considered essential in processing incoming information.
+ In a study involving Drosophila, forgetting is shown as an adaptive feature
+ of the memory system to adjust to the changing environment by reducing
+ unrewarded memories 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "10.1371/journal.pcbi.1003640"
+literal "false"
+
+\end_inset
+
+.
+ A computational study by 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "article"
+literal "false"
+
+\end_inset
+
+ shows that forgetting offers advantages for memory-guided decision making
+ in environments that change and are noisy.
+ They propose that forgetting enhances behavioural flexibility by eliminating
+ outdated information and it helps to generalise by preventing overfitting
+ memories to instances from the past that may not be helpful in predicting
+ the future.
+\end_layout
+
+\begin_layout Standard
+Learning and memory, specifically long-term memory, formed through synaptic
+ plasticity is an energy intensive process 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Mery1148"
+literal "false"
+
+\end_inset
+
+.
+ Studies on Drosophila flies show that they increase their glucose intake
+ during early stages of long-term memory formation, especially in the neurons
+ of the mushroom body which is the fly's main memory centre 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Placais"
+literal "false"
+
+\end_inset
+
+.
+ Another study on Drosophila showed that under food shortage, the fly's
+ brain disables the formation of energy intensive long-term memories as
+ a strategy for survival 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Placais440"
+literal "false"
+
+\end_inset
+
+.
+ They postulate that the shutdown of long-term memories upon starvation
+ may correspond to a mechanism of conservation between energy homeostasis
+ and the ability to form long-term memories.
+ A more recent computational study by 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Li714055"
+literal "false"
+
+\end_inset
+
+ devise a energy-efficient synaptic plasticity algorithm which shows the
+ benefit of transient forms of plasticity to explore the weight space and
+ find suitable weights expending less energy.
+ Motivated by these experimental studies, we investigate if forgetting some
+ memories in the brain could conserve energy to learn new patterns in the
+ future.
+ We analyse this with the help of a single neuron model, also called a perceptro
+n.
+ We present input patterns to the perceptron and measure the energy consumption
+ while we implement forgetting.
+ We focus on two types of forgetting - passive forgetting and catastrophic
+ forgetting - and examine the energy expended to learn new input patterns.
+ We show that a trained perceptron with catastrophic forgetting saves more
+ energy to learn new patterns when compared to a perceptron with passive
+ forgetting.
 \end_layout
 
 \begin_layout Subsection*
-Forgetting
+Types of forgetting
 \end_layout
 
 \begin_layout Standard
@@ -190,8 +299,8 @@ literal "false"
 \end_inset
 
 .
- This may be due to the loss of context cues over time or interference due
- to other similar memories.
+ Passive forgetting may occur due to the loss of context cues over time
+ or interference due to other similar memories.
  This kind of forgetting could be translated to decay in weights over time
  in the context of neural networks.
  This kind of decay can improve generalisation by suppressing irrelevant
@@ -2458,10 +2567,30 @@ Discussion
 \end_layout
 
 \begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+renewcommand
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bibname{References}
+\end_layout
+
+\end_inset
+
+
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
 btprint "btPrintCited"
-bibfiles "references/perceptron,references/energy-efficient-synaptic-plasticity,references/overcoming-catastrophic-forgetting-in-neural-networks,references/catastrophic-forgetting,references/stability-plasticity,references/continual-learning-review,references/biology_of_forgetting,references/a-simple-weight-decay-can-improve-generalization,references/chaotic_nn,references/cajal,references/hebb,references/short-term,references/ltp"
+bibfiles "references/perceptron,references/energy-efficient-synaptic-plasticity,references/overcoming-catastrophic-forgetting-in-neural-networks,references/catastrophic-forgetting,references/stability-plasticity,references/continual-learning-review,references/biology_of_forgetting,references/a-simple-weight-decay-can-improve-generalization,references/chaotic_nn,references/cajal,references/hebb,references/short-term,references/ltp,references/brea,references/persistence_and_transience,references/a-cost-of-long-term-memory-in-drosophila,references/Primo_BibTeX_Export,references/food-shortage"
 options "apalike"
 
 \end_inset
