@@ -2583,6 +2583,21 @@ Discussion
 \end_layout
 
 \begin_layout Standard
+Synaptic plasticity is known to be the neural basis of learning in animals.
+ The synapses strengthen during learning and leads to the formation of short-ter
+m and long-term memories.
+ Forgetting plays an integral part in the maintenance of these memories
+ and helps the animals to adapt to varying environments.
+ The formation of long-term memories through synaptic plasticity is an energy-in
+tensive process.
+ We combined the concept of forgetting to investigate its role on energy
+ consumption and to learn new memories.
+ With the help of a perceptron, we implemented two types of forgetting,
+ namely passive and catastrophic forgetting.
+ 
+\end_layout
+
+\begin_layout Standard
 \begin_inset ERT
 status open
 
