@@ -88,7 +88,7 @@
 \dynamic_quotes 0
 \papercolumns 1
 \papersides 1
-\paperpagestyle default
+\paperpagestyle plain
 \tracking_changes false
 \output_changes false
 \html_math_output 0
@@ -121,10 +121,39 @@ LatexCommand tableofcontents
 \end_inset
 
 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+thispagestyle{empty}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 \begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setcounter{page}{1}
+\end_layout
+
 \end_inset
 
 
@@ -1761,7 +1790,7 @@ Algorithms for forgetting
 \begin_layout Standard
 In the previous section, we studied the accuracy of the perceptron while
  learning the input patterns with passive forgetting.
- The results suggested that the training of a perceptron with passive forgetting
+ The results suggested that training a perceptron with passive forgetting
  did not show significant conservation in the energy consumed.
  In addition to that, we wanted to check if the perceptron saves energy
  in the process of forgetting and uses it for future learning of new patterns.
@@ -1783,7 +1812,7 @@ Firstly, a perceptron with
 \end_inset
 
  patterns without any decay on the synaptic weights.
- The perceptron is then trained for the first 
+ The perceptron is then trained with the first 
 \begin_inset Formula $\left.1000\right.$
 \end_inset
 
@@ -1824,7 +1853,8 @@ noprefix "false"
 \end_layout
 
 \begin_layout Standard
-The first algorithm is implemented by training the perceptron with 
+The first algorithm is implemented by first training the perceptron with
+ 
 \begin_inset Formula $\left.1000\right.$
 \end_inset
 
@@ -1839,9 +1869,9 @@ The first algorithm is implemented by training the perceptron with
  new patterns and measuring the energy required in training the new set.
  Note that here forgetting is implemented as intentional forgetting of some
  of the old patterns and interfering those by learning new patterns.
- The goal of this algorithm is to check the energy consumption having a
- new training set with total number of patterns (
-\begin_inset Formula $\left.700+100=800)\right.$
+ The goal of this algorithm is to check the energy consumption with a new
+ training set of total number of patterns (
+\begin_inset Formula $\left.800)\right.$
 \end_inset
 
  less than the initial training set (
@@ -2560,10 +2590,12 @@ noprefix "false"
  Thus the perceptron takes fewer epochs to quickly learn the new patterns
  which is far less than the patterns in the original set, thus spending
  less energy.
- The total number of patterns in catastrophic forgetting 1 algorithm is
- less than the number of patterns used in catastrophic forgetting 3.
- An already trained perceptron learns the new set of patterns in the former
- scenario because more patterns are forgotten as opposed to the latter.
+ The total number of patterns in the final training set of catastrophic
+ forgetting 1 algorithm is less than the number of patterns used in catastrophic
+ forgetting 3.
+ In the former scenario, an already trained perceptron learns the new set
+ of patterns more quickly because more patterns are forgotten as opposed
+ to the latter.
  This allows the perceptron to learn the new patterns with fewer updates
  to the weights without any interference to the old patterns, consequently
  expending less energy.
@@ -2572,7 +2604,7 @@ noprefix "false"
  In passive forgetting 2, forgetting is a combination of active decay of
  synaptic weights and intentional forgetting of a few already learnt patterns.
  This combination gives the perceptron a little leeway to learn the new
- patterns more effectively than if it had learnt all at once (benchmark).
+ patterns more effectively than if it had learnt all of them at once (benchmark).
  On the contrary, in passive forgetting 1, only decay of weights don't contribut
 e to energy conservation as the constant decay at each time step of training
  requires the perceptron to update more often, therefore spending more energy.
@@ -2613,9 +2645,9 @@ noprefix "false"
 \begin_inset Formula $\left.4.5*10^{-6}\right.$
 \end_inset
 
- after which there was no energy gain.
- The passive forgetting 1 algorithm did not conserve energy for all the
- values of decay.
+ after which there was no gain in energy savings.
+ The passive forgetting 1 algorithm did not conserve energy for any value
+ of decay.
  Hence, the catastrophic forgetting algorithms performed well overall and
  conserved more energy as compared to passive forgetting algorithms.
 \end_layout
@@ -2662,12 +2694,30 @@ Secondly, we devised a method to quit training the perceptron when there
 \end_layout
 
 \begin_layout Standard
-Finally, in order to investigate if the perceptron saved energy by forgetting
- old patterns and used that to learn new patterns, we used the catastrophic
- and passive forgetting mechanisms in the brain and implemented algorithms
- to train the perceptron.
+Finally, in order to investigate if by forgetting old patterns the perceptron
+ saved energy to learn new patterns, we used the catastrophic and passive
+ forgetting mechanisms in the brain and implemented algorithms to train
+ the perceptron.
  We demonstrated that catastrophic forgetting algorithms always performed
- better as for saving energy relative to passive forgetting algorithms.
+ better with respect to saving energy in comparison with passive forgetting
+ algorithms.
+\end_layout
+
+\begin_layout Standard
+The parsimonious model we used to calculate energy considers only the metabolic
+ cost of synaptic plasticity as it offers a significant contribution.
+ In addition to that, the brain uses energy for maintaining resting potential,
+ spiking, and synaptic transmission.
+ While we could incorporate these to calculate the energy, the model becomes
+ too complex to measure.
+ The brain typically contains billions of neurons which are connected with
+ trillions of connections.
+ Although our results interpret the results for a single-neuron model, it
+ would be beneficial to extend our study to a larger network of neurons
+ with single or multiple layers.
+ We could then implement the decay in weights for the connections between
+ neurons in a streamlined manner.
+ 
 \end_layout
 
 \begin_layout Standard
