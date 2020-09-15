@@ -104,6 +104,14 @@ Does forgetting save the brain's metabolic energy for future learning?
 
 \begin_layout Author
 Pooja Nagendra Babu (20216094)
+\begin_inset Newline newline
+\end_inset
+
+MSc, Computational Neuroscience, Cognition and AI
+\begin_inset Newline newline
+\end_inset
+
+University of Nottingham
 \end_layout
 
 \begin_layout Standard
@@ -199,6 +207,31 @@ e for the brain to have a mechanism to eliminate the memories that are obsolete.
 \begin_inset CommandInset citation
 LatexCommand cite
 key "DAVIS2017490"
+literal "false"
+
+\end_inset
+
+.
+ This form of forgetting is gradual and referred to as natural forgetting
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "article"
+literal "false"
+
+\end_inset
+
+.
+ Forgetting can also be artificially induced with interventions by reversing
+ learning-induced changes in the synaptic strength by manipulating a protein
+ kinase C (PKC) isoform, PKM-
+\begin_inset Formula $\zeta$
+\end_inset
+
+, that plays a key role in maintaining LTP and memory 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "articlePKM"
 literal "false"
 
 \end_inset
@@ -592,10 +625,15 @@ noprefix "false"
 \end_inset
 
 .
- However, when there is a decay on the synaptic weights, the capacity of
- the perceptron will be less than the critical value.
- This is because the decay on the synaptic weights during the training process
- would forget (or unlearn) some of the previously learned patterns.
+ However, when there is a decay on the synaptic weights, the maximum capacity
+ of the perceptron will be less than the critical value.
+ The decay on the synaptic weights during the training process would forget
+ (or unlearn) some of the previously learned patterns resulting in the maximum
+ capacity being 
+\begin_inset Formula $P<2N$
+\end_inset
+
+.
  In order to test this, we trained the perceptron for different values of
  synapses 
 \begin_inset Formula $\left.N\right.$
@@ -612,33 +650,25 @@ noprefix "false"
 \end_inset
 
 ).
- The decay value is applied on the weights at every time step of the training
- process.
+ The decay value is an exponential decay on weights and is applied on the
+ weights at every time step of the training process.
 \end_layout
 
 \begin_layout Standard
 For the given range of decay rates, the maximum capacity of the perceptron
- displays a linear relationship to the decay value.
+ displays a linear relationship with the decay value.
  As the decay value increases, the maximum capacity of the perceptron decreases
- aiding to the decay of synaptic weights during the training period.
+ aiding to the rapid decay of synaptic weights during the training period.
  A similar relationship can be seen in the energy expended by the perceptron
  for training the maximum number of patterns, where the total energy decreases
  with increase in the decay value.
+ The larger the decay value, fewer the weight updates and lesser the energy
+ required to train all the patterns presented to the perceptron.
  The relationship holds good for different values of 
 \begin_inset Formula $\left.N\right.$
 \end_inset
 
 .
- This is because at zero decay on a log scale would yield the maximum capacity
- 
-\begin_inset Formula $\left.P=2N\right.$
-\end_inset
-
- and for higher decay 
-\begin_inset Formula $\left.P\right.$
-\end_inset
-
- is always greater than 0.
 \end_layout
 
 \begin_layout Standard
@@ -1063,14 +1093,24 @@ name "fig:Coefficients"
 \begin_layout Standard
 However, we see this linear relationship between patterns and decay rates
  for the medium range of decay values.
- This does not hold true when we considered low and high range of decay
- values, the curve tends to flatten for those values, resembling a sigmoid
- curve.
+ This does not hold true when we considered low and high decay rates.
+ The curve depicting maximum capacity tends to flatten for these values,
+ resembling a sigmoid curve.
+ This is because at zero decay on a log scale would yield the maximum capacity
+ 
+\begin_inset Formula $\left.P=2N\right.$
+\end_inset
+
+ and for higher decay 
+\begin_inset Formula $\left.P\right.$
+\end_inset
+
+ is always greater than 0.
  We tested this for 
 \begin_inset Formula $\left.N=250\right.$
 \end_inset
 
- and the plot looks as shown in the Figure 
+ and is as shown in the Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:sigmoid"
@@ -1081,6 +1121,9 @@ noprefix "false"
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Standard
 \begin_inset Float figure
 placement h
 wide false
@@ -1185,7 +1228,7 @@ noprefix "false"
 \begin_inset Formula $\left.n=25\right.$
 \end_inset
 
- as the accuracy starts to plateau around that value.
+ as the mean accuracy starts to plateau around that value.
 \end_layout
 
 \begin_layout Standard
@@ -1437,7 +1480,7 @@ name "fig:Performance"
 \end_layout
 
 \begin_layout Standard
-It can be seen from Figure 
+From Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:Performance"
@@ -1447,8 +1490,8 @@ noprefix "false"
 
 \end_inset
 
- that with the increase in decay rate of the weights, the accuracy of the
- perceptron decreases and plateaus for higher decay values.
+, we can see that with the increase in decay rate of the weights, the accuracy
+ of the perceptron decreases and plateaus for higher decay values.
  A similar pattern can be observed for epochs or the learning time of the
  perceptron, where the learning time is high for low decay rates as the
  perceptron has a larger capacity, whereas as the decay value increases,
@@ -1482,15 +1525,15 @@ noprefix "false"
 \begin_inset Formula $\left.10^{-5}\right.$
 \end_inset
 
- after which the energy decreases till the decay value becomes 
+ after which the energy decreases till the decay value reaches 
 \begin_inset Formula $\left.10^{-4}\right.$
 \end_inset
 
  after which the value of energy increases again.
- In order to gain more insight into this behaviour in the energy consumed,
- we wanted to see how the weights of the perceptron are updated in each
- epoch during the process of training as the value of total energy expended
- is directly determined by the change its synaptic weights (Equation 
+ In order to gain more insight into this behaviour of energy consumed, we
+ checked how the weights of the perceptron are updated in each epoch during
+ the process of training as the value of total energy expended is directly
+ determined by the change its synaptic weights (Equation 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "eq:2"
@@ -1593,7 +1636,7 @@ noprefix "false"
 
 \end_inset
 
- top-left) accounting for fewer weight updates than the former case.
+ top-left) accounting for fewer weight updates than the former.
  This explains why there in an increase in the energy curve in the decay
  range 
 \begin_inset Formula $\left.10^{-4}\right.$
@@ -1632,8 +1675,8 @@ noprefix "false"
 
  bottom-right) where the total number of updates to the weights is less
  than the scenario without decay.
- Hence, passive decay in weights during the training process does not contribute
- to energy conservation in the perceptron.
+ Hence, passive decay in weights during the training process contributes
+ to energy conservation in the perceptron for very low decay values.
 \end_layout
 
 \begin_layout Standard
@@ -2532,8 +2575,7 @@ noprefix "false"
  patterns more effectively than if it had learnt all at once (benchmark).
  On the contrary, in passive forgetting 1, only decay of weights don't contribut
 e to energy conservation as the constant decay at each time step of training
- requires the perceptron to updates more often, therefore spending more
- energy.
+ requires the perceptron to update more often, therefore spending more energy.
  We have seen a similar behaviour previously in figure 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2588,13 +2630,44 @@ Synaptic plasticity is known to be the neural basis of learning in animals.
 m and long-term memories.
  Forgetting plays an integral part in the maintenance of these memories
  and helps the animals to adapt to varying environments.
- The formation of long-term memories through synaptic plasticity is an energy-in
-tensive process.
+ The formation of long-term memories through synaptic plasticity is an energy
+ intensive process.
  We combined the concept of forgetting to investigate its role on energy
  consumption and to learn new memories.
  With the help of a perceptron, we implemented two types of forgetting,
  namely passive and catastrophic forgetting.
+ Firstly, we implemented passive forgetting as a constant decay on the synaptic
+ weights of the perceptron and studied the maximum capacity of a perceptron.
+ We showed that for different synaptic connections, the maximum capacity
+ of the perceptron decreased with increase in the decay value.
+ We also showed that the energy required to train the perceptron to its
+ maximum capacity with passive forgetting decreased with increase in the
+ decay value.
+ Even though, biologically, not all the synaptic connections of a neuron
+ contribute to memories, the result signifies the limitations on the capacity
+ of forgetful networks to hold memories.
+\end_layout
+
+\begin_layout Standard
+Secondly, we devised a method to quit training the perceptron when there
+ is no further increase in its mean accuracy.
+ We measured the accuracy, learning time, error rate, and the energy consumed
+ by the perceptron and showed that the accuracy and learning time decreased
+ with increase in decay till it flattened for high decay values, where as
+ the error rate and energy increased with the decay and plateaued at high
+ decay values.
+ We demonstrated that passive forgetting caused a tiny amount of energy
+ conservation for very low decay values.
  
+\end_layout
+
+\begin_layout Standard
+Finally, in order to investigate if the perceptron saved energy by forgetting
+ old patterns and used that to learn new patterns, we used the catastrophic
+ and passive forgetting mechanisms in the brain and implemented algorithms
+ to train the perceptron.
+ We demonstrated that catastrophic forgetting algorithms always performed
+ better as for saving energy relative to passive forgetting algorithms.
 \end_layout
 
 \begin_layout Standard
@@ -2621,7 +2694,7 @@ bibname{References}
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
 btprint "btPrintCited"
-bibfiles "references/perceptron,references/energy-efficient-synaptic-plasticity,references/overcoming-catastrophic-forgetting-in-neural-networks,references/catastrophic-forgetting,references/stability-plasticity,references/continual-learning-review,references/biology_of_forgetting,references/a-simple-weight-decay-can-improve-generalization,references/chaotic_nn,references/cajal,references/hebb,references/short-term,references/ltp,references/brea,references/persistence_and_transience,references/a-cost-of-long-term-memory-in-drosophila,references/Primo_BibTeX_Export,references/food-shortage"
+bibfiles "references/perceptron,references/energy-efficient-synaptic-plasticity,references/overcoming-catastrophic-forgetting-in-neural-networks,references/catastrophic-forgetting,references/stability-plasticity,references/continual-learning-review,references/biology_of_forgetting,references/a-simple-weight-decay-can-improve-generalization,references/chaotic_nn,references/cajal,references/hebb,references/short-term,references/ltp,references/brea,references/persistence_and_transience,references/a-cost-of-long-term-memory-in-drosophila,references/Primo_BibTeX_Export,references/food-shortage,references/PKM"
 options "apalike"
 
 \end_inset
