@@ -771,7 +771,7 @@ def combine_perceptron_forgetting_results(**kwargs):
     np.savetxt(output_path + Constants.CAT_FORGETTING_3 + Constants.ENERGY_FILE, arr_mean_energy_wo_decay)
     np.savetxt(output_path + Constants.CAT_FORGETTING_3 + Constants.ACCURACY_FILE, arr_mean_accuracy_wo_decay)
 
-    np.savetxt(output_path + Constants.ENERGY_FILE, np.mean(arr_base_energy))
+    np.savetxt(output_path + Constants.ENERGY_FILE, np.array([np.mean(arr_base_energy)]))
 
     ############################# Active forgetting ##########################################
     decay_rates = []

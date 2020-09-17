@@ -510,10 +510,10 @@ def plot_forgetting_all_types(output_path, plot_path):
     x_pos = [i for i, _ in enumerate(labels)]
     for i in range(len(x_pos)):
         plt.bar(x_pos[i], energy_arr[i], color=colors[i], alpha=0.7, label=labels[i])
-    plt.axhline(y=base_energy, color='gray', lineStyle='--', alpha=0.7, linewidth=2,
+    plt.axhline(y=base_energy, color='black', lineStyle='--', alpha=0.7, linewidth=2,
                 label='Initial training - 1000 patterns')
     plt.ylabel('Energy')
-    plt.ylim(0, 1e6)
+    # plt.ylim(0, 1e6)
     plt.legend()
     plt.tight_layout()
     plt.savefig(plot_path + Constants.ENERGY_BAR_PLOT)
