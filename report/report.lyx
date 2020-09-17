@@ -9,6 +9,12 @@
 \usepackage[font=scriptsize]{caption}
 \captionsetup[figure]{font=scriptsize}
 \hypersetup{linkcolor=blue, citecolor=blue}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{}\chead{}\rhead{}\lfoot{}\cfoot{\small\thepage}\rfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\footskip}{30pt}
 \end_preamble
 \use_default_options true
 \maintain_unincluded_children false
@@ -88,7 +94,7 @@
 \dynamic_quotes 0
 \papercolumns 1
 \papersides 1
-\paperpagestyle plain
+\paperpagestyle fancy
 \tracking_changes false
 \output_changes false
 \html_math_output 0
@@ -121,10 +127,36 @@ LatexCommand tableofcontents
 \end_inset
 
 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+thispagestyle{empty}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 \begin_inset FloatList figure
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+thispagestyle{empty}
+\end_layout
 
 \end_inset
 
@@ -191,8 +223,9 @@ Learning in the brain is a process by which the brain encodes information
  the biological process by which specific patterns of neural activity change
  the strength and efficacy of synaptic connections.
  Synaptic plasticity determines how effectively neurons communicate with
- each other, is the fundamental mechanism for learning and memory, and facilitat
-e brain development and recovery from brain lesions.
+ each other.
+ It is the fundamental mechanism for learning and memory, and facilitates
+ brain development and recovery from brain lesions.
  Many scientists have made important contributions to the understanding
  of synaptic plasticity, that dates back to the Spanish neuroanatomist Santiago
  Ramon y Cajal in the 1890s who suggested that the capacity of the brain
@@ -205,10 +238,9 @@ literal "false"
 \end_inset
 
 .
- The properties of synaptic transmission rose into prominence during the
- twentieth century when Donald Hebb postulated that synapses change as a
- consequence of simultaneous firing form the neural basis of learning and
- memory 
+ The properties of synaptic transmission rose to prominence during the twentieth
+ century when Donald Hebb postulated that synapses change as a consequence
+ of simultaneous firing form the neural basis of learning and memory 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "hebb-organization-of-behavior-1949"
@@ -218,7 +250,7 @@ literal "false"
 
 .
  One of the phenomenon underlying synaptic plasticity is long-term potentiation
- (LTP), which is a persistent strengthening of synapses based on the neural
+ (LTP), which is the persistent strengthening of synapses based on the neural
  activity.
  This kind of synaptic plasticity can be transient, that lasts from milliseconds
  to a few minutes, and result in short-term synaptic facilitation and depression.
@@ -259,11 +291,11 @@ literal "false"
 
 \begin_layout Standard
 As memories start to accumulate in the brain over time, it may be beneficial
- for the brain to have a mechanism to eliminate the memories that are obsolete.
+ for the brain to have a mechanism to eliminate memories that are obsolete.
  For example, retaining outdated memories might impede judgement and make
  it difficult to adjust to changing environment.
  Preserving strong and disabling memories associated with brain disorders
- like post-traumatic stress disorder (PTSD) can be debilitating.
+ like post-traumatic stress disorder (PTSD) can also be debilitating.
  This phenomenon of getting rid of unwanted memories, called forgetting,
  is considered as the flip side of learning.
  Forgetting can occur due to the failed retrieval of an intact engram through
@@ -306,7 +338,7 @@ literal "false"
  Although forgetting appears to signify as a failure of the brain to recall
  memories, it is considered essential in processing incoming information.
  In a study involving Drosophila, forgetting is shown as an adaptive feature
- of the memory system to adjust to the changing environment by reducing
+ of the memory system to adjust to the changing environment by removing
  unrewarded memories 
 \begin_inset CommandInset citation
 LatexCommand cite
@@ -368,7 +400,6 @@ literal "false"
  They postulate that the shutdown of LTP upon starvation may correspond
  to a mechanism of conservation between energy homeostasis and the ability
  to form long-term memories.
- 
 \end_layout
 
 \begin_layout Standard
@@ -380,15 +411,15 @@ literal "false"
 
 \end_inset
 
- shows that the more memories a network has, higher metabolic cost to conduct
- future learning.
+ shows that the more memories a network has, higher the metabolic cost to
+ conduct future learning.
  Motivated by this, I investigate if forgetting some memories in the brain
  could conserve energy to learn new patterns in the future.
  I analyse this with the help of a single neuron model, also called a perceptron.
  I present input patterns to the perceptron and measure the energy consumption
  while I implement forgetting.
- I focus on two types of forgetting - passive forgetting and catastrophic
- forgetting - and examine the energy expended to learn new input patterns.
+ I focus on two types of forgetting — passive forgetting and catastrophic
+ forgetting — and examine the energy expended to learn new input patterns.
  I show that a trained perceptron with catastrophic forgetting saves more
  energy to learn new patterns when compared to a trained perceptron with
  passive forgetting.
@@ -615,12 +646,21 @@ literal "false"
  
 \begin_inset Formula 
 \begin{equation}
-w_{i}(t+1)=w_{i}(t)+\eta(d_{i}-f_{i}(t))x_{i}\label{eq:2}
+w_{i}(t+1)=w_{i}(t)+\eta(d_{j}-f_{j}(t))x_{j,i}\label{eq:2}
 \end{equation}
 
 \end_inset
 
-The learning time is measured as the time taken for the perceptron to learn
+where 
+\begin_inset Formula $\left.\eta\right.$
+\end_inset
+
+ is the learning rate which is set to 1, 
+\begin_inset Formula $\left.d_{j}\right.$
+\end_inset
+
+ is the desired output.
+ The learning time is measured as the time taken for the perceptron to learn
  all the input patterns over multiple iterations, which is measured in epochs.
 \end_layout
 
@@ -683,10 +723,10 @@ How forgetting affects memory capacity
 \end_layout
 
 \begin_layout Standard
-Firstly, I tried passive forgetting in the perceptron which is implemented
+Firstly, I implement passive forgetting in the perceptron which is implemented
  as a slow exponential decay of the synaptic weights which occurs at every
  time-step.
- With the decay in place, I first tried to check the capacity of the perceptron
+ With the decay in place, I first try to check the capacity of the perceptron
  which can be defined as the maximum number of patterns that the perceptron
  could successfully train.
  It is clear from the equation 
@@ -732,8 +772,8 @@ literal "false"
 \end_inset
 
 .
- In order to test this, I trained the perceptron for different values of
- synapses 
+ In order to test this, I train the perceptron for different values of synapses
+ 
 \begin_inset Formula $\left.N\right.$
 \end_inset
 
@@ -799,9 +839,18 @@ status open
 \begin_layout Plain Layout
 
 \series bold
-Maximum capacity and energy consumed: 
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+Maximum memory capacity and energy consumed
+\end_layout
+
+\end_inset
+
+
 \series default
-(left) The maximum capacity of the perceptron as a function of decay rate.
+ (left) The maximum capacity of the perceptron as a function of decay rate.
  This is calculated for different values of 
 \begin_inset Formula $\left.N\right.$
 \end_inset
@@ -843,7 +892,7 @@ noprefix "false"
 
 \end_inset
 
-, I calculated the slope of the lines and found a linear relationship between
+, I calculate the slope of the lines and find a linear relationship between
  the slope and the number of synapses, 
 \begin_inset Formula $\left.N\right.$
 \end_inset
@@ -937,7 +986,18 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-A plot of slope of the fitted lines in Figure 
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Slope vs #synapses
+\end_layout
+
+\end_inset
+
+ A plot of slope of the fitted lines in Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:Maximum-capacity"
@@ -1168,6 +1228,15 @@ Intercept
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+Coefficients - slope and intercept
+\end_layout
+
+\end_inset
+
 Coefficients - slope and intercept values of fitted lines for different
  N 
 \begin_inset CommandInset label
@@ -1196,7 +1265,7 @@ name "fig:Coefficients"
 
 \begin_layout Standard
 Even though we see this linear relationship between patterns and decay rates
- for the medium range of decay values, this does not hold true when I considered
+ for the medium range of decay values, this does not hold true when I consider
  lower and higher decay rates.
  The curve depicting maximum capacity tends to flatten for these values,
  resembling a sigmoid-like curve.
@@ -1250,8 +1319,19 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Maximum number of patterns trained by a perceptron for N=250 and for a wide
- range of decay values.
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Maximum capacity of a perceptron for N=250
+\end_layout
+
+\end_inset
+
+ Maximum number of patterns trained by a perceptron for N=250 and for a
+ wide range of decay values.
  Each data point is an average of 50 runs and the error bar is the standard
  deviation of the 50 runs.
 \begin_inset CommandInset label
@@ -1290,7 +1370,7 @@ The performance of a perceptron is measured based on its ability to learn
  So, it becomes imperative to quit training at the right moment instead
  of trying to train the perceptron over multiple epochs with no improvement
  in its accuracy and waste unnecessary metabolic energy.
- In order to achieve this, I devised a method to monitor the accuracy of
+ In order to achieve this, I devise a method to monitor the accuracy of
  the perceptron over the training process and quit it when the accuracy
  no longer improves.
  In this method, I calculate the accuracy of the perceptron in each epoch
@@ -1307,11 +1387,11 @@ The performance of a perceptron is measured based on its ability to learn
 \end_inset
 
  epochs.
- I calculated the optimal value of the window size 
+ I calculate the optimal value of the window size 
 \begin_inset Formula $\left.n\right.$
 \end_inset
 
-, by training the perceptron with different values for 
+, by training the perceptron with different values of 
 \begin_inset Formula $\left.n\right.$
 \end_inset
 
@@ -1331,19 +1411,19 @@ noprefix "false"
 \begin_inset Formula $\left.n\right.$
 \end_inset
 
- is because, due to statistical fluctuation, if 
+ is, due to statistical fluctuation, if 
 \begin_inset Formula $\left.n\right.$
 \end_inset
 
  is too small, the perceptron can still improve its accuracy if it is allowed
- to train or a longer time.
+ to train for a longer time.
  On the other hand, if 
 \begin_inset Formula $\left.n\right.$
 \end_inset
 
  is too large, the perceptron may over-train and over-estimate the metabolic
  energy cost.
- Hence, I decided on the optimal value as 
+ Hence, I decide on the optimal value as 
 \begin_inset Formula $\left.n=25\right.$
 \end_inset
 
@@ -1371,7 +1451,18 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Accuracy with which the perceptron quits for different 
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Window size for training
+\end_layout
+
+\end_inset
+
+ Accuracy with which the perceptron quits for different 
 \begin_inset Formula $\left.n\right.$
 \end_inset
 
@@ -1405,7 +1496,7 @@ name "fig:window_size"
 \end_layout
 
 \begin_layout Standard
-I then tested the behaviour of the perceptron by fixing the number of synapses
+I then test the behaviour of the perceptron by fixing the number of synapses
  
 \begin_inset Formula $\left.N=1000\right.$
 \end_inset
@@ -1415,8 +1506,8 @@ I then tested the behaviour of the perceptron by fixing the number of synapses
 \end_inset
 
 .
- I measured the accuracy, learning rate, and the energy consumed by the
- perceptron for a decay range of 
+ I measure the accuracy, learning rate, and the energy consumed by the perceptro
+n for a decay range of 
 \begin_inset Formula $\left.10^{-8}\right.$
 \end_inset
 
@@ -1478,10 +1569,19 @@ status open
 \begin_layout Plain Layout
 
 \series bold
-Performance of the perceptron: 
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+Accuracy, learning time, and energy consumed for a perceptron
+\end_layout
+
+\end_inset
+
+
 \series default
-Different performance metrics along with energy consumed are measured for
- the perceptron with a decay in weights, resulting in passive forgetting.
+ Accuracy, learning time, and energy consumed are measured for the perceptron
+ with a decay in weights, resulting in passive forgetting.
  (Top left) Accuracy of the perceptron measured as the number of input patterns
  that are correctly classified among all the input patterns.
  (Top right) Epochs or the learning time of perceptron is the measure of
@@ -1540,7 +1640,7 @@ name "fig:Performance"
 \end_layout
 
 \begin_layout Standard
-From Figure 
+From figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:Performance"
@@ -1584,7 +1684,7 @@ noprefix "false"
 
  after which the value of energy increases again.
  In order to gain more insight into this behaviour of energy consumed, I
- checked how the weights of the perceptron are updated in each epoch during
+ check how the weights of the perceptron are updated in each epoch during
  the process of training as the value of total energy expended is directly
  determined by the change its synaptic weights (Equation 
 \begin_inset CommandInset ref
@@ -1597,7 +1697,7 @@ noprefix "false"
 \end_inset
 
 ).
- Thus, I plotted the number of updates to the synaptic weights versus each
+ Thus, I plot the number of updates to the synaptic weights versus each
  epoch in the training (Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1716,7 +1816,7 @@ To summarise, the energy required to train the perceptron increases as the
 \begin_inset Formula $\left.10^{-7}\right.$
 \end_inset
 
-, I can observe a small amount of energy being saved (Figure 
+, we can observe a small amount of energy being saved (Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:Performance"
@@ -1728,8 +1828,6 @@ noprefix "false"
 
  bottom) where the total number of updates to the weights is less than the
  scenario without decay.
- Hence, passive decay in weights during the training process contributes
- to energy conservation in the perceptron for very low decay values.
 \end_layout
 
 \begin_layout Standard
@@ -1761,8 +1859,19 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-The number of updates to the synaptic weights of the perceptron during the
- training process.
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Synaptic weight updates during training
+\end_layout
+
+\end_inset
+
+ The number of updates to the synaptic weights of the perceptron during
+ the training process.
  (Left) The number of updates to weights for the decay values 
 \begin_inset Formula $\left.10^{-6}\right.$
 \end_inset
@@ -1808,22 +1917,26 @@ name "fig:epoch-updates"
 \end_layout
 
 \begin_layout Subsection
-Algorithms for forgetting
+Forgetting and energy conservation for future learning
 \end_layout
 
 \begin_layout Standard
-In the previous section, I studied the accuracy of the perceptron while
+In the previous section, we studied the accuracy of the perceptron while
  learning the input patterns with passive forgetting.
- The results suggested that training a perceptron with passive forgetting
- did not show significant conservation in the energy consumed.
- In addition to that, I wanted to check if the perceptron saves energy in
- the process of forgetting and uses it for future learning of new patterns.
- In order to test this, I developed algorithms with either catastrophic
- or passive forgetting and train the perceptron to learn new patterns.
+ We examined the energy conservation of the perceptron to learn new patterns
+ while it was forgetting at the same time.
+ However, biologically, memories are formed and stored initially and then
+ forgotten with time if they are unwanted or unused.
+ At the same time, the brain can learn and form new memories by consuming
+ energy.
+ Equating this to our model, I wanted to see in a perceptron that is already
+ trained with some prior memories, if forgetting would be helpful to conserve
+ energy, and use it to learn new patterns.
+ In order to test this, I develop algorithms with catastrophic and passive
+ forgetting and train the perceptron with prior memories to learn new patterns.
  I then compare the energy required to train the perceptron using each of
- the algorithms with a benchmark value of energy consumed to train a perceptron
- without any forgetting.
- 
+ the algorithms with a benchmark algorithm in which the perceptron is trained
+ without forgetting.
 \end_layout
 
 \begin_layout Standard
@@ -1836,7 +1949,8 @@ Firstly, a perceptron with
 \end_inset
 
  patterns without any decay on the synaptic weights.
- The perceptron is then trained with the first 
+ This forms a perceptron with prior memories.
+ The perceptron is again trained with the first 
 \begin_inset Formula $\left.1000\right.$
 \end_inset
 
@@ -1849,21 +1963,23 @@ Firstly, a perceptron with
 \emph on
 benchmark
 \emph default
- value I use to compare with other algorithms.
- I developed three algorithms of training the perceptron with catastrophic
+ value that is used to compare with other algorithms.
+ I develop three algorithms of training the perceptron with catastrophic
  forgetting and two algorithms with passive forgetting.
- I implement catastrophic forgetting as an interference by deliberately
- forgetting some of the old patterns learnt by the perceptron and introducing
- some new patterns to train.
+ Catastrophic forgetting is implemented as intentional forgetting of some
+ of the old patterns learnt by the perceptron along with interference by
+ introducing some new patterns to train.
  Passive forgetting is implemented similar to the previous section where
- the synaptic weights decay away at a constant rate after each time step
- of training the perceptron with an additional learning of new patterns.
+ the synaptic weights decay away at a constant rate after each epoch of
+ training, with an added task here of learning new patterns.
  All the algorithms are implemented on a perceptron with 
 \begin_inset Formula $\left.N=1000\right.$
 \end_inset
 
  synaptic connections.
- The number of patterns used in each algorithm is given in table 
+ The number of patterns used to train the perceptron with some prior memories,
+ the number of patterns forgotten, and the number of new patterns to learn
+ in each algorithm is listed in table 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "tab:Number-of-patterns"
@@ -1877,8 +1993,8 @@ noprefix "false"
 \end_layout
 
 \begin_layout Standard
-The first algorithm is implemented by first training the perceptron with
- 
+The first algorithm is implemented by initially training the perceptron
+ with 
 \begin_inset Formula $\left.1000\right.$
 \end_inset
 
@@ -1894,7 +2010,7 @@ The first algorithm is implemented by first training the perceptron with
  Note that here forgetting is implemented as intentional forgetting of some
  of the old patterns and interfering those by learning new patterns.
  The goal of this algorithm is to check the energy consumption with a new
- training set of total number of patterns (
+ training set with total number of patterns in the new training set (
 \begin_inset Formula $\left.800)\right.$
 \end_inset
 
@@ -1903,7 +2019,7 @@ The first algorithm is implemented by first training the perceptron with
 \end_inset
 
 ).
- I label this algorithm as 
+ This algorithm is called 
 \emph on
 catastrophic forgetting 1.
  
@@ -1922,8 +2038,9 @@ For the second algorithm, I initially train the perceptron with
 
  new patterns the second time and measure the energy consumed.
  The objective here is to measure the energy consumed with a significantly
- lower number of patterns than the number used to train originally.
- I name this algorithm as 
+ lower number of patterns in the new training set than the number used to
+ train originally.
+ This algorithm is named 
 \emph on
 catastrophic forgetting 2.
  
@@ -1952,45 +2069,57 @@ The third algorithm is implemented by initially training a perceptron with
 \end_inset
 
 .
- This is called as 
+ This algorithm is called 
 \emph on
 catastrophic forgetting 3.
 \end_layout
 
 \begin_layout Standard
-The third algorithm is implemented with active forgetting by first training
- the perceptron initially with 
-\begin_inset Formula $\left.1000\right.$
+We can observe from figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Forgetting-energy"
+plural "false"
+caps "false"
+noprefix "false"
+
 \end_inset
 
- patterns with decay on the synaptic weights, then training 
-\begin_inset Formula $\left.100\right.$
+ (left) that all the three catastrophic forgetting algorithms conserve some
+ energy when compared with the benchmark value.
+ The total number of patterns in the new training set for catastrophic forgettin
+g 1 and catastrophic forgetting 2 algorithms is less than the number of
+ patterns used for catastrophic forgetting 3 (Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Number-of-patterns"
+plural "false"
+caps "false"
+noprefix "false"
+
 \end_inset
 
- new patterns along with the old patterns still retaining the decay on weights.
- I name this algorithm as 
-\emph on
-passive forgetting 1.
- 
-\emph default
-In the last algorithm, I first train the perceptron with 
-\begin_inset Formula $\left.1000\right.$
-\end_inset
-
- patterns with decay on the synaptic weights, then train with a new set
- of 
-\begin_inset Formula $\left.900\right.$
-\end_inset
-
- randomly selected old patterns along with 
-\begin_inset Formula $\left.100\right.$
-\end_inset
-
- new patterns by retaining the decay on weights and measure the energy expended
- in training the new set.
- I name this algorithm as 
-\emph on
-passive forgetting 2.
+ last column).
+ Catastrophic forgetting 2 conserves the most energy because the new training
+ set contains only the new patterns with all the originally trained patterns
+ forgotten.
+ The perceptron takes fewer epochs to quickly learn the new patterns which
+ is far less than the patterns in the original set, thus spending less energy.
+ The total number of patterns in the final training set of catastrophic
+ forgetting 1 algorithm is less than the number of patterns used in catastrophic
+ forgetting 3.
+ In the former case, a perceptron with prior memories learns the new set
+ of patterns more quickly because more patterns are forgotten as opposed
+ to the latter.
+ This allows the perceptron to learn the new patterns with fewer updates
+ to the weights without any interference to the old patterns, consequently
+ expending less energy.
+ Energy conservation with catastrophic forgetting 3 is noteworthy here because
+ the number of patterns used to train originally is the same as the new
+ training set with some forgotten patterns and new patterns.
+ The perceptron clearly uses less energy for updating weights to learn new
+ patterns while forgetting some old patterns in comparison to learning the
+ same number of patterns from scratch.
 \end_layout
 
 \begin_layout Standard
@@ -2420,6 +2549,15 @@ Passive forgetting 2
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+Patterns for forgetting and future learning
+\end_layout
+
+\end_inset
+
 Number of patterns for training the perceptron with different algorithms.
  The number of synapses in the perceptron is set to 
 \begin_inset Formula $\left.N=1000\right.$
@@ -2473,9 +2611,18 @@ status open
 \begin_layout Plain Layout
 
 \series bold
-Forgetting in a perceptron and energy consumption: 
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+Forgetting in perceptron and energy consumption for future learning
+\end_layout
+
+\end_inset
+
+
 \series default
-(Left) Energy consumed for all the five different algorithms of learning
+ (Left) Energy consumed for all the five different algorithms of learning
  in a perceptron with forgetting (catastrophic or passive).
  The perceptron has 
 \begin_inset Formula $\left.N=1000\right.$
@@ -2529,8 +2676,51 @@ name "fig:Forgetting-energy"
 \end_layout
 
 \begin_layout Standard
-I trained the perceptron with all the algorithms discussed above and plotted
- energy required to train the perceptron (Figure 
+The last two algorithms are implemented with passive forgetting.
+ In the first case, I train the perceptron initially with 
+\begin_inset Formula $\left.1000\right.$
+\end_inset
+
+ patterns with a decay on the synaptic weights, then train 
+\begin_inset Formula $\left.100\right.$
+\end_inset
+
+ new patterns along with the old patterns by retaining the decay on weights.
+ This algorithm is called 
+\emph on
+passive forgetting 1.
+ 
+\emph default
+In the last algorithm, I first train the perceptron with 
+\begin_inset Formula $\left.1000\right.$
+\end_inset
+
+ patterns with a decay on the synaptic weights, then train with a new set
+ of 
+\begin_inset Formula $\left.900\right.$
+\end_inset
+
+ randomly selected old patterns along with 
+\begin_inset Formula $\left.100\right.$
+\end_inset
+
+ new patterns by retaining the decay on weights and measure the energy expended
+ in training the new set.
+ This algorithm is called 
+\emph on
+passive forgetting 2.
+ 
+\emph default
+The objective of the two algorithms is to examine if the gradual decay of
+ memories conserve any energy to benefit future learning.
+\end_layout
+
+\begin_layout Standard
+First the perceptron is trained with a fixed decay value of 
+\begin_inset Formula $\left.10^{-6}\right.$
+\end_inset
+
+ (Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:Forgetting-energy"
@@ -2540,15 +2730,20 @@ noprefix "false"
 
 \end_inset
 
-).
- First the perceptron was trained with a fixed decay value of 
-\begin_inset Formula $\left.10^{-6}\right.$
-\end_inset
-
- for passive forgetting algorithms.
- The results indicate that the energy is conserved for all the algorithms
- when compared to the benchmark value except for passive forgetting 1 (Figure
- 
+ (left)) for passive forgetting algorithms.
+ The total number of patterns used for passive forgetting 2 is less than
+ the patterns used for passive forgetting 1.
+ Intuitively, it appears that the gradual decay of weights at every epoch
+ of the training process should conserve more energy and make it easier
+ for the perceptron for future learning.
+ However, in reality, the constant decay of weights don't actually lead
+ to forgetting specific memories.
+ The weight decay could also correspond to the new memories which makes
+ it harder for the perceptron to learn new memories.
+ Therefore, the weights get frequently updated in the training process,
+ inevitably increasing the energy consumption.
+ This behaviour can be clearly observed in the energy consumption of passive
+ forgetting 1 algorithm where the value exceeds the benchmark (Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:Forgetting-energy"
@@ -2559,8 +2754,15 @@ noprefix "false"
 \end_inset
 
  (left)).
- I found similar results when I trained the perceptron over a range of decay
- values (
+ On the other hand, passive forgetting 2 with a combination of decay in
+ weights and intentional forgetting consumes less energy than the benchmark.
+ This combination gives the perceptron a little leeway to learn the new
+ patterns more effectively than if it had learnt all of them at once (benchmark).
+ 
+\end_layout
+
+\begin_layout Standard
+I extended this analysis over a range of decay values (
 \begin_inset Formula $\left.10^{-6}\right.$
 \end_inset
 
@@ -2568,92 +2770,12 @@ noprefix "false"
 \begin_inset Formula $\left.5*10^{-6}\right.$
 \end_inset
 
-) for passive forgetting, figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:Forgetting-energy"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
- (right).
- 
-\end_layout
-
-\begin_layout Standard
-The total number of patterns in the new training set for catastrophic forgetting
- 1 and catastrophic forgetting 2 algorithms is less than the number of patterns
- used for catastrophic forgetting 3 (Table 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "tab:Number-of-patterns"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
- last column).
- All the catastrophic forgetting algorithms perform better with respect
- to conserving energy when compared to the benchmark (Figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:Forgetting-energy"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
- (left)).
- Catastrophic forgetting 2 conserves the most energy because the new training
- set contains only the new patterns with all the originally trained patterns
- forgotten.
- Thus the perceptron takes fewer epochs to quickly learn the new patterns
- which is far less than the patterns in the original set, thus spending
- less energy.
- The total number of patterns in the final training set of catastrophic
- forgetting 1 algorithm is less than the number of patterns used in catastrophic
- forgetting 3.
- In the former scenario, an already trained perceptron learns the new set
- of patterns more quickly because more patterns are forgotten as opposed
- to the latter.
- This allows the perceptron to learn the new patterns with fewer updates
- to the weights without any interference to the old patterns, consequently
- expending less energy.
- In case of passive forgetting algorithms, the total number of patterns
- used is less for passive forgetting 2 than passive forgetting 1.
- In passive forgetting 2, forgetting is a combination of active decay of
- synaptic weights and intentional forgetting of a few already learnt patterns.
- This combination gives the perceptron a little leeway to learn the new
- patterns more effectively than if it had learnt all of them at once (benchmark).
- On the contrary, in passive forgetting 1, only decay of weights don't contribut
-e to energy conservation as the constant decay at each time step of training
- requires the perceptron to update more often, therefore spending more energy.
- I have seen a similar behaviour previously in figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:Performance"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
- (bottom right).
-\end_layout
-
-\begin_layout Standard
-I extended this analysis for a range of decay values for passive forgetting
- algorithms such that the perceptron trained all the patterns with 
+) for passive forgetting algorithms such that the perceptron trained all
+ the patterns with 
 \begin_inset Formula $\left.100\%\right.$
 \end_inset
 
- accuracy.
- The catastrophic forgetting algorithms are not affected by this as there
- are not dependent on decay values, figure 
+ accuracy (figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:Forgetting-energy"
@@ -2663,7 +2785,9 @@ noprefix "false"
 
 \end_inset
 
- (right).
+ (right)).
+ The energy values of catastrophic forgetting algorithms are not affected
+ by this as they are not dependent on decay values.
  The passive forgetting 2 algorithm conserved energy and the amount of energy
  conserved decreased with increase in the decay value till 
 \begin_inset Formula $\left.4.5*10^{-6}\right.$
@@ -2672,8 +2796,8 @@ noprefix "false"
  after which there was no gain in energy savings.
  The passive forgetting 1 algorithm did not conserve energy for any value
  of decay.
- Hence, the catastrophic forgetting algorithms performed well overall and
- conserved more energy as compared to passive forgetting algorithms.
+ Hence, the catastrophic forgetting algorithms perform well overall and
+ conserve more energy as compared to passive forgetting algorithms.
 \end_layout
 
 \begin_layout Section
@@ -2688,8 +2812,9 @@ m and long-term memories.
  and helps the animals to adapt to varying environments.
  The formation of long-term memories through synaptic plasticity is an energy
  intensive process.
- I combined the concept of forgetting to investigate its role on energy
- consumption and to learn new memories.
+ It has been shown theoretically that networks with fewer memories use less
+ energy on future learning, therefore I wondered if forgetting can help
+ networks save energy on learning.
  With the help of a perceptron, I implemented two types of forgetting, namely
  passive and catastrophic forgetting.
  Firstly, I implemented passive forgetting as a constant decay on the synaptic
@@ -2697,23 +2822,22 @@ m and long-term memories.
  I showed that for different synaptic connections, the maximum capacity
  of the perceptron decreased with increase in the decay value.
  I also showed that the energy required to train the perceptron to its maximum
- capacity with passive forgetting decreased with increase in the decay value.
+ capacity with passive forgetting decreased with increase in the decay value
+ due to reduction in training time as the capacity decreases.
  Even though, biologically, not all the synaptic connections of a neuron
  contribute to memories, the result signifies the limitations on the capacity
  of forgetful networks to hold memories.
 \end_layout
 
 \begin_layout Standard
-Secondly, I devised a method to quit training the perceptron when there
- is no further increase in its mean accuracy.
- I measured the accuracy, learning time, error rate, and the energy consumed
- by the perceptron and showed that the accuracy and learning time decreased
- with increase in decay till it flattened for high decay values, where as
- the error rate and energy increased with the decay and plateaued at high
- decay values.
+Secondly, I devised a method to measure the accuracy of the perceptron as
+ a function of decay.
+ I measured the accuracy, learning time, and the energy consumed by the
+ perceptron and showed that the accuracy and learning time decreased with
+ increase in decay till it flattened for high decay values.
  I demonstrated that passive forgetting caused a tiny amount of energy conservat
-ion for very low decay values.
- [some content here]
+ion for very low decay values while the total energy expended increased
+ as a function of decay.
 \end_layout
 
 \begin_layout Standard
@@ -2721,27 +2845,66 @@ Finally, in order to investigate if by forgetting old patterns the perceptron
  saved energy to learn new patterns, I used the catastrophic and passive
  forgetting mechanisms in the brain and implemented algorithms to train
  the perceptron.
- I demonstrated that catastrophic forgetting algorithms always performed
- better with respect to saving energy in comparison with passive forgetting
- algorithms.
- [some content here]
+ I demonstrated that catastrophic forgetting algorithms conserved significant
+ amount of energy for future learning.
+ Biologically, the intentional forgetting and interference mechanisms used
+ in catastrophic forgetting algorithms is observed in an fMRI study of word-pict
+ure associations that showed suppression of non-practiced memories by the
+ way of forgetting by inhibition 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Wimber"
+literal "false"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
-The parsimonious model I used to calculate energy considers only the metabolic
+I also showed that passive forgetting algorithms do not perform very well
+ with respect to conserving energy.
+ Among them, passive forgetting 2 performed better than passive forgetting
+ 1.
+ More realistically, learning in animals is not a onetime phenomenon.
+ We normally learn something new multiple times by practice or recall spaced
+ over multiple intervals.
+ This could be mimicked in our model by extending the passive forgetting
+ algorithm 2 to make the perceptron learn new patterns multiple times.
+ For instance, the randomly selected 
+\begin_inset Formula $\left.900\right.$
+\end_inset
+
+ old patterns in passive forgetting 2 could be trained in three cycles with
+ 
+\begin_inset Formula $\left.300\right.$
+\end_inset
+
+ old patterns in each cycle along with 
+\begin_inset Formula $\left.100\right.$
+\end_inset
+
+ new patterns.
+ This way, the perceptron would learn new patterns three times rather than
+ only once.
+ It would be helpful to investigate how much energy is conserved in this
+ scenario.
+\end_layout
+
+\begin_layout Standard
+The parsimonious model used to calculate energy considers only the metabolic
  cost of synaptic plasticity as it offers a significant contribution.
- In addition to that, the brain uses energy for maintaining resting potential,
- spiking, and synaptic transmission.
- While I could incorporate these to calculate the energy, the model becomes
+ In addition to that, when synaptic connections are changed, neural activities
+ are altered resulting in spikes and synaptic transmission, which can lead
+ to difference in energy consumption in the networks.
+ While we could incorporate these to calculate the energy, the model becomes
  too complex to measure.
  The brain typically contains billions of neurons which are connected with
  trillions of connections.
- Although our results interpret the results for a single-neuron model, it
- would be beneficial to extend our study to a larger network of neurons
- with single or multiple layers.
- I could then implement the decay in weights for the connections between
- neurons in a streamlined manner.
- 
+ Although our analysis interpret the results for a single-neuron model,
+ it would be beneficial to extend our study to a larger network of neurons
+ with single or multiple layers as this would be more representative of
+ the connections in the brain.
 \end_layout
 
 \begin_layout Standard
@@ -2768,7 +2931,7 @@ bibname{References}
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
 btprint "btPrintCited"
-bibfiles "references/perceptron,references/energy-efficient-synaptic-plasticity,references/overcoming-catastrophic-forgetting-in-neural-networks,references/catastrophic-forgetting,references/stability-plasticity,references/continual-learning-review,references/biology_of_forgetting,references/a-simple-weight-decay-can-improve-generalization,references/chaotic_nn,references/cajal,references/hebb,references/short-term,references/ltp,references/brea,references/persistence_and_transience,references/a-cost-of-long-term-memory-in-drosophila,references/Primo_BibTeX_Export,references/food-shortage,references/PKM,references/synaptic-consolidation,references/per-capacity"
+bibfiles "references/perceptron,references/energy-efficient-synaptic-plasticity,references/overcoming-catastrophic-forgetting-in-neural-networks,references/catastrophic-forgetting,references/stability-plasticity,references/continual-learning-review,references/biology_of_forgetting,references/a-simple-weight-decay-can-improve-generalization,references/chaotic_nn,references/cajal,references/hebb,references/short-term,references/ltp,references/brea,references/persistence_and_transience,references/a-cost-of-long-term-memory-in-drosophila,references/Primo_BibTeX_Export,references/food-shortage,references/PKM,references/synaptic-consolidation,references/per-capacity,references/suppression"
 options "apalike"
 
 \end_inset
