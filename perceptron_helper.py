@@ -536,6 +536,9 @@ def perceptron_forgetting(iProcess, **kwargs):
     # Catastrophic forgetting 3
     cat_forgetting_3 = Forgetting(nRun, output_path + Constants.CAT_FORGETTING_3, n_iter=n_iter)
 
+    # Base training values
+    arr_energy = np.zeros(shape=nRun)
+
     ################### Benchmark and catastrophic forgetting ###############################
     logger.info('########################### Benchmark and catastrophic forgetting ###########################')
     for iRun in range(nRun):
@@ -551,6 +554,7 @@ def perceptron_forgetting(iProcess, **kwargs):
         logger.info(
             f"Process: {iProcess} energy: {energy} energy_eLTP: {energy_eLTP} energy_lLTP: {energy_lLTP} error: {error}"
             f" epoch: {epoch} accuracy: {accuracy}")
+        arr_energy[iRun] = energy
 
         # Make a copy of the object to use it later
         base_per_obj = copy.deepcopy(Per)
@@ -594,6 +598,8 @@ def perceptron_forgetting(iProcess, **kwargs):
     cat_forgetting_1.save_proc_output(iProcess)
     cat_forgetting_2.save_proc_output(iProcess)
     cat_forgetting_3.save_proc_output(iProcess)
+
+    np.savetxt(output_path + Constants.ENERGY_FILE_PROC.format(str(iProcess)), arr_energy)
 
     ###################################### Active forgetting ###########################################
     logger.info('########################### Active forgetting ###########################')
@@ -699,6 +705,9 @@ def combine_perceptron_forgetting_results(**kwargs):
     # Catastrophic forgetting 3
     cat_forgetting_3_all = Forgetting(nRun * nProcess, output_path + Constants.CAT_FORGETTING_3, n_iter=n_iter)
 
+    # Energy used in base training
+    arr_base_energy = np.zeros(shape=(nProcess * nRun))
+
     for iProcess in range(nProcess):
         start_index = iProcess * nRun
         end_index = start_index + nRun
@@ -735,6 +744,10 @@ def combine_perceptron_forgetting_results(**kwargs):
         cat_forgetting_3_all.energy[start_index:end_index, :] = arr_energy
         cat_forgetting_3_all.accuracy[start_index:end_index, :] = arr_accuracy
 
+        # Base energy
+        arr_energy = np.loadtxt(output_path + Constants.ENERGY_FILE_PROC.format(str(iProcess)))
+        arr_base_energy[start_index:end_index] = arr_energy
+
     for i_iter in range(n_iter):
         arr_mean_accuracy_wo_decay[i_iter] = np.mean(cat_forgetting_3_all.accuracy[:, i_iter])
         arr_mean_energy_wo_decay[i_iter] = np.mean(cat_forgetting_3_all.energy[:, i_iter])
@@ -757,6 +770,8 @@ def combine_perceptron_forgetting_results(**kwargs):
 
     np.savetxt(output_path + Constants.CAT_FORGETTING_3 + Constants.ENERGY_FILE, arr_mean_energy_wo_decay)
     np.savetxt(output_path + Constants.CAT_FORGETTING_3 + Constants.ACCURACY_FILE, arr_mean_accuracy_wo_decay)
+
+    np.savetxt(output_path + Constants.ENERGY_FILE, np.mean(arr_base_energy))
 
     ############################# Active forgetting ##########################################
     decay_rates = []

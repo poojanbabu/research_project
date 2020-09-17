@@ -490,6 +490,8 @@ def plot_forgetting_all_types(output_path, plot_path):
     passive_forgetting_1 = np.ones(len(decay_rates_lLTP))
     passive_forgetting_2 = np.ones(len(decay_rates_lLTP))
 
+    base_energy = np.loadtxt(output_path + Constants.ENERGY_FILE)
+
     energy_arr = [benchmark_forgetting, cat_forgetting_1, cat_forgetting_2, cat_forgetting_3]
     for index in range(len(decay_rates_lLTP)):
         decay_rate = decay_rates_lLTP[index]
@@ -508,6 +510,8 @@ def plot_forgetting_all_types(output_path, plot_path):
     x_pos = [i for i, _ in enumerate(labels)]
     for i in range(len(x_pos)):
         plt.bar(x_pos[i], energy_arr[i], color=colors[i], alpha=0.7, label=labels[i])
+    plt.axhline(y=base_energy, color='gray', lineStyle='--', alpha=0.7, linewidth=2,
+                label='Initial training - 1000 patterns')
     plt.ylabel('Energy')
     plt.ylim(0, 1e6)
     plt.legend()
