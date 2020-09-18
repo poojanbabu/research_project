@@ -249,7 +249,11 @@ literal "false"
 \end_inset
 
 .
- One of the phenomenon underlying synaptic plasticity is long-term potentiation
+ 
+\end_layout
+
+\begin_layout Standard
+One of the phenomena underlying synaptic plasticity is long-term potentiation
  (LTP), which is the persistent strengthening of synapses based on the neural
  activity.
  This kind of synaptic plasticity can be transient, that lasts from milliseconds
@@ -263,8 +267,8 @@ literal "false"
 \end_inset
 
 .
- On the other hand, the synaptic transmission can last for days or weeks,
- leading to late-phase LTP.
+ On the other hand, the synaptic strength can last for days or weeks, leading
+ to late-phase LTP.
  This phase is characterised by gene transcription and protein synthesis
  in the postsynaptic neuron.
  Experimental evidence supports this kind of plasticity in the dentate gyrus
@@ -335,7 +339,11 @@ literal "false"
 \end_inset
 
 .
- Although forgetting appears to signify as a failure of the brain to recall
+ 
+\end_layout
+
+\begin_layout Standard
+Although forgetting appears to signify as a failure of the brain to recall
  memories, it is considered essential in processing incoming information.
  In a study involving Drosophila, forgetting is shown as an adaptive feature
  of the memory system to adjust to the changing environment by removing
@@ -503,11 +511,13 @@ literal "false"
 
 \end_inset
 
-, which is considered as a form of 
+.
+ It is considered as a form of 
 \emph on
-active forgetting
+active forgetting 
 \emph default
- 
+which in neuroscience is considered as a method where the brain has mechanisms
+ to remove memories that become unused 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "DAVIS2017490"
@@ -557,6 +567,16 @@ The metabolic energy expended due to synaptic plasticity during learning
  is studied in a perceptron.
  A perceptron is a single neuron model which linearly classifies the input
  patterns into binary classes.
+ A simple perceptron, with its binary input and output, is used for modelling
+ the operation of the cerebellar cortex 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Brunel"
+literal "false"
+
+\end_inset
+
+.
  In our case, the input patterns are random patterns each associated to
  a randomly selected binary output.
  The perceptron takes the input patterns and calculates the output which
@@ -694,10 +714,6 @@ M=\mathop{\sum_{i=1}^{N}}\sum_{t=1}^{T}|w_{i}(t)-w_{i}(t-1)|^{\alpha}\label{eq:3
 
 \begin_layout Standard
 where 
-\begin_inset Formula $\left.N\right.$
-\end_inset
-
- is the number of synapses, 
 \begin_inset Formula $w_{i}$
 \end_inset
 
@@ -739,7 +755,7 @@ noprefix "false"
 
 \end_inset
 
- that the energy required by the perceptron is directly proportional to
+ that the energy required by the perceptron is linearly proportional to
  the number of input patterns to be classified as more patterns require
  longer training time.
  Without decay, the critical capacity of a perceptron with 
@@ -796,8 +812,18 @@ For the given range of decay rates, the maximum capacity of the perceptron
  As the decay value increases, the maximum capacity of the perceptron decreases
  aiding to the rapid decay of synaptic weights during the training period.
  A similar relationship can be seen in the energy expended by the perceptron
- for training the maximum number of patterns, where the total energy decreases
- with increase in the decay value.
+ for training the maximum number of patterns (Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Energy-max-capacity"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ (left)).
+ The total energy decreases with increase in the decay value.
  The larger the decay value, fewer the weight updates and lesser the energy
  required to train all the patterns presented to the perceptron.
  The relationship holds good for different values of 
@@ -805,6 +831,46 @@ For the given range of decay rates, the maximum capacity of the perceptron
 \end_inset
 
 .
+ The plot showing energy consumed per pattern is interesting (Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Energy-max-capacity"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ (right)).
+ The curves represents the plot of a convex-like function.
+ For 
+\begin_inset Formula $\left.N=1500\right.$
+\end_inset
+
+ and 
+\begin_inset Formula $\left.N=1000\right.$
+\end_inset
+
+, energy per pattern is high for decay 
+\begin_inset Formula $\left.10^{-6}\right.$
+\end_inset
+
+ as the capacity of the perceptron is high and thus requires more energy
+ to train all the patterns.
+ The value of energy per pattern decreases as the decay value approaches
+ 
+\begin_inset Formula $\left.10^{-5}\right.$
+\end_inset
+
+ because the capacity decreases.
+ However, as the decay reaches the value 
+\begin_inset Formula $\left.10^{-4}\right.$
+\end_inset
+
+, energy per pattern starts to increase.
+ The high value of decay rate overpowers in this range and the perceptron
+ updates the weights more often even though the capacity is low and consumes
+ more energy.
 \end_layout
 
 \begin_layout Standard
@@ -819,14 +885,7 @@ status open
 \emph on
 \begin_inset Graphics
 	filename figures/patterns.png
-	scale 50
-
-\end_inset
-
-
-\begin_inset Graphics
-	filename figures/energy.png
-	scale 50
+	scale 60
 
 \end_inset
 
@@ -837,20 +896,16 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-
-\series bold
 \begin_inset Argument 1
 status open
 
 \begin_layout Plain Layout
-Maximum memory capacity and energy consumed
+Maximum memory capacity of perceptron
 \end_layout
 
 \end_inset
 
-
-\series default
- (left) The maximum capacity of the perceptron as a function of decay rate.
+(left) The maximum capacity of the perceptron as a function of decay rate.
  This is calculated for different values of 
 \begin_inset Formula $\left.N\right.$
 \end_inset
@@ -858,13 +913,73 @@ Maximum memory capacity and energy consumed
 .
  The dotted lines shows the actual curve and the solid line shows a straight
  line fit to the curve.
- (right) The energy required to train the maximum capacity of the perceptron
- as a function of decay rate.
  Each data point in both the graphs is an average of 50 runs.
  
 \begin_inset CommandInset label
 LatexCommand label
 name "fig:Maximum-capacity"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/energy.png
+	scale 55
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/energy_per_pattern.png
+	scale 55
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+Energy consumed for maximum memory capacity
+\end_layout
+
+\end_inset
+
+ (left) The energy required to train the maximum capacity of the perceptron
+ as a function of decay rate.
+ (right) Energy required to train per pattern when the perceptron reaches
+ its maximum capacity.
+ Each data point in both the graphs is an average of 50 runs.
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Energy-max-capacity"
 
 \end_inset
 
@@ -913,7 +1028,7 @@ noprefix "false"
 \end_inset
 
 , a straight line is fit for the decay range of 
-\begin_inset Formula $\left.4*10^{-5}\right.$
+\begin_inset Formula $\left.4.10^{-5}\right.$
 \end_inset
 
  to 
@@ -975,7 +1090,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename figures/slope.png
-	scale 50
+	scale 55
 
 \end_inset
 
@@ -990,8 +1105,6 @@ status open
 status open
 
 \begin_layout Plain Layout
-
-\series bold
 Slope vs #synapses
 \end_layout
 
@@ -1027,7 +1140,7 @@ name "fig:slope"
 
 
 \begin_inset space \hspace{}
-\length 2cm
+\length 3cm
 \end_inset
 
 
@@ -1066,6 +1179,7 @@ captionsetup{type=table}
 \end_layout
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Tabular
 <lyxtabular version="3" rows="5" columns="3">
 <features tabularvalignment="middle">
@@ -1077,6 +1191,8 @@ captionsetup{type=table}
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 N
 \end_layout
 
@@ -1086,6 +1202,8 @@ N
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 Slope
 \end_layout
 
@@ -1095,6 +1213,8 @@ Slope
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 Intercept
 \end_layout
 
@@ -1106,6 +1226,8 @@ Intercept
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 1500
 \end_layout
 
@@ -1115,6 +1237,8 @@ Intercept
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 -309.41380411
 \end_layout
 
@@ -1124,6 +1248,8 @@ Intercept
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 -2346.92473118
 \end_layout
 
@@ -1135,6 +1261,8 @@ Intercept
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 1000
 \end_layout
 
@@ -1144,6 +1272,8 @@ Intercept
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 -210.26772697
 \end_layout
 
@@ -1153,6 +1283,8 @@ Intercept
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 -1458.99595753
 \end_layout
 
@@ -1164,6 +1296,8 @@ Intercept
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 500
 \end_layout
 
@@ -1173,6 +1307,8 @@ Intercept
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 -210.26772697
 \end_layout
 
@@ -1182,6 +1318,8 @@ Intercept
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 -524.04731183
 \end_layout
 
@@ -1193,6 +1331,8 @@ Intercept
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 250
 \end_layout
 
@@ -1202,6 +1342,8 @@ Intercept
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 -44.34603812
 \end_layout
 
@@ -1211,6 +1353,8 @@ Intercept
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 -150.74210526
 \end_layout
 
@@ -1307,7 +1451,7 @@ status open
 \align center
 \begin_inset Graphics
 	filename figures/patterns_250.png
-	scale 50
+	scale 55
 	rotateOrigin center
 
 \end_inset
@@ -1323,8 +1467,6 @@ status open
 status open
 
 \begin_layout Plain Layout
-
-\series bold
 Maximum capacity of a perceptron for N=250
 \end_layout
 
@@ -1370,9 +1512,13 @@ The performance of a perceptron is measured based on its ability to learn
  So, it becomes imperative to quit training at the right moment instead
  of trying to train the perceptron over multiple epochs with no improvement
  in its accuracy and waste unnecessary metabolic energy.
- In order to achieve this, I devise a method to monitor the accuracy of
- the perceptron over the training process and quit it when the accuracy
- no longer improves.
+ 
+\end_layout
+
+\begin_layout Standard
+In order to achieve this, I devise a method to monitor the accuracy of the
+ perceptron over the training process and quit it when the accuracy no longer
+ improves.
  In this method, I calculate the accuracy of the perceptron in each epoch
  and quit the training when the mean accuracy of the last 
 \begin_inset Formula $\left.(n+1)\right.$
@@ -1428,6 +1574,29 @@ noprefix "false"
 \end_inset
 
  because the mean accuracy starts to plateau around that value.
+ I performed this analysis for decay 
+\begin_inset Formula $10^{-6}$
+\end_inset
+
+ and 
+\begin_inset Formula $10^{-5}$
+\end_inset
+
+ and found that window of 
+\begin_inset Formula $\left.n=25\right.$
+\end_inset
+
+ holds good for both values (Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:window_size"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Standard
@@ -1440,7 +1609,14 @@ status open
 \align center
 \begin_inset Graphics
 	filename figures/window_sizes.png
-	scale 60
+	scale 55
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/accuracy_1.png
+	scale 55
 
 \end_inset
 
@@ -1455,9 +1631,7 @@ status open
 status open
 
 \begin_layout Plain Layout
-
-\series bold
-Window size for training
+Window size for training the perceptron
 \end_layout
 
 \end_inset
@@ -1472,10 +1646,14 @@ Window size for training
 
  represents the window size.
  The value of decay was fixed to 
-\begin_inset Formula $\left.1e^{-6}\right.$
+\begin_inset Formula $\left.10^{-6}\right.$
 \end_inset
 
- 
+ in the left and 
+\begin_inset Formula $10^{-5}$
+\end_inset
+
+ in the right figure 
 \begin_inset CommandInset label
 LatexCommand label
 name "fig:window_size"
@@ -1538,14 +1716,14 @@ status open
 \align center
 \begin_inset Graphics
 	filename figures/accuracy.png
-	scale 50
+	scale 55
 
 \end_inset
 
 
 \begin_inset Graphics
 	filename figures/epoch_accuracy.png
-	scale 50
+	scale 55
 
 \end_inset
 
@@ -1686,7 +1864,7 @@ noprefix "false"
  In order to gain more insight into this behaviour of energy consumed, I
  check how the weights of the perceptron are updated in each epoch during
  the process of training as the value of total energy expended is directly
- determined by the change its synaptic weights (Equation 
+ determined by the change of synaptic weights (Equation 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "eq:3"
@@ -1713,8 +1891,8 @@ noprefix "false"
 \end_layout
 
 \begin_layout Standard
-Even though the number of updates to the weights is more for the decay value
- of 
+Even though the number of updates to the weights is larger for the decay
+ value of 
 \begin_inset Formula $\left.10^{-4}\right.$
 \end_inset
 
@@ -1832,7 +2010,6 @@ noprefix "false"
 
 \begin_layout Standard
 \begin_inset Float figure
-placement h
 wide false
 sideways false
 status open
@@ -1841,14 +2018,14 @@ status open
 \align center
 \begin_inset Graphics
 	filename figures/epoch_updates_1.png
-	scale 45
+	scale 55
 
 \end_inset
 
 
 \begin_inset Graphics
 	filename figures/epoch_updates_2.png
-	scale 45
+	scale 55
 
 \end_inset
 
@@ -1863,8 +2040,6 @@ status open
 status open
 
 \begin_layout Plain Layout
-
-\series bold
 Synaptic weight updates during training
 \end_layout
 
@@ -1932,8 +2107,9 @@ In the previous section, we studied the accuracy of the perceptron while
  Equating this to our model, I wanted to see in a perceptron that is already
  trained with some prior memories, if forgetting would be helpful to conserve
  energy, and use it to learn new patterns.
- In order to test this, I develop algorithms with catastrophic and passive
- forgetting and train the perceptron with prior memories to learn new patterns.
+ In order to test this, I develop algorithms with passive forgetting and
+ training schedules that lead to catastrophic forgetting and train the perceptro
+n with prior memories to learn new patterns.
  I then compare the energy required to train the perceptron using each of
  the algorithms with a benchmark algorithm in which the perceptron is trained
  without forgetting.
@@ -1966,7 +2142,11 @@ benchmark
  value that is used to compare with other algorithms.
  I develop three algorithms of training the perceptron with catastrophic
  forgetting and two algorithms with passive forgetting.
- Catastrophic forgetting is implemented as intentional forgetting of some
+ 
+\end_layout
+
+\begin_layout Standard
+Catastrophic forgetting is implemented as intentional forgetting of some
  of the old patterns learnt by the perceptron along with interference by
  introducing some new patterns to train.
  Passive forgetting is implemented similar to the previous section where
@@ -2023,7 +2203,9 @@ The first algorithm is implemented by initially training the perceptron
 \emph on
 catastrophic forgetting 1.
  
-\emph default
+\end_layout
+
+\begin_layout Standard
 For the second algorithm, I initially train the perceptron with 
 \begin_inset Formula $\left.1000\right.$
 \end_inset
@@ -2044,7 +2226,9 @@ For the second algorithm, I initially train the perceptron with
 \emph on
 catastrophic forgetting 2.
  
-\emph default
+\end_layout
+
+\begin_layout Standard
 The third algorithm is implemented by initially training a perceptron with
  
 \begin_inset Formula $\left.1000\right.$
@@ -2085,8 +2269,8 @@ noprefix "false"
 
 \end_inset
 
- (left) that all the three catastrophic forgetting algorithms conserve some
- energy when compared with the benchmark value.
+ that all the three catastrophic forgetting algorithms conserve some energy
+ when compared with the benchmark value.
  The total number of patterns in the new training set for catastrophic forgettin
 g 1 and catastrophic forgetting 2 algorithms is less than the number of
  patterns used for catastrophic forgetting 3 (Table 
@@ -2105,9 +2289,13 @@ noprefix "false"
  forgotten.
  The perceptron takes fewer epochs to quickly learn the new patterns which
  is far less than the patterns in the original set, thus spending less energy.
- The total number of patterns in the final training set of catastrophic
- forgetting 1 algorithm is less than the number of patterns used in catastrophic
- forgetting 3.
+ 
+\end_layout
+
+\begin_layout Standard
+The total number of patterns in the final training set of catastrophic forgettin
+g 1 algorithm is less than the number of patterns used in catastrophic forgettin
+g 3.
  In the former case, a perceptron with prior memories learns the new set
  of patterns more quickly because more patterns are forgotten as opposed
  to the latter.
@@ -2130,19 +2318,23 @@ status open
 
 \begin_layout Plain Layout
 \align left
+
+\size scriptsize
 \begin_inset Tabular
-<lyxtabular version="3" rows="7" columns="5">
+<lyxtabular version="3" rows="7" columns="6">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="middle" width="18text%">
-<column alignment="center" valignment="middle" width="18text%">
-<column alignment="center" valignment="middle" width="18text%">
-<column alignment="center" valignment="middle" width="18text%">
-<column alignment="center" valignment="middle" width="18text%">
+<column alignment="center" valignment="middle" width="14text%">
+<column alignment="center" valignment="middle" width="14text%">
+<column alignment="center" valignment="middle" width="14text%">
+<column alignment="center" valignment="middle" width="14text%">
+<column alignment="center" valignment="middle" width="14text%">
 <row>
 <cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
 
 \size scriptsize
 Algorithm
@@ -2154,6 +2346,7 @@ Algorithm
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
 
 \size scriptsize
 Initial training set
@@ -2165,9 +2358,10 @@ Initial training set
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
 
 \size scriptsize
-# of patterns forgotten
+# patterns removed from the initial training set
 \end_layout
 
 \end_inset
@@ -2176,9 +2370,22 @@ Initial training set
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
 
 \size scriptsize
-# of new patterns
+# patterns retained from the initial training set
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\align center
+
+\size scriptsize
+# new patterns
 \end_layout
 
 \end_inset
@@ -2187,6 +2394,7 @@ Initial training set
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
 
 \size scriptsize
 Total patterns: new training set
@@ -2200,6 +2408,7 @@ Total patterns: new training set
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
 
 \size scriptsize
 Benchmark
@@ -2211,6 +2420,7 @@ Benchmark
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
 
 \size scriptsize
 1000
@@ -2222,6 +2432,7 @@ Benchmark
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
 
 \size scriptsize
 0
@@ -2233,6 +2444,19 @@ Benchmark
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
+
+\size scriptsize
+1000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\align center
 
 \size scriptsize
 100
@@ -2244,6 +2468,7 @@ Benchmark
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
 
 \size scriptsize
 1100
@@ -2257,6 +2482,7 @@ Benchmark
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
 
 \size scriptsize
 Catastrophic forgetting 1
@@ -2268,6 +2494,7 @@ Catastrophic forgetting 1
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
 
 \size scriptsize
 1000
@@ -2279,6 +2506,7 @@ Catastrophic forgetting 1
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
 
 \size scriptsize
 300
@@ -2290,6 +2518,19 @@ Catastrophic forgetting 1
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
+
+\size scriptsize
+700
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\align center
 
 \size scriptsize
 100
@@ -2301,6 +2542,7 @@ Catastrophic forgetting 1
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
 
 \size scriptsize
 800
@@ -2314,6 +2556,7 @@ Catastrophic forgetting 1
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
 
 \size scriptsize
 Catastrophic forgetting 2
@@ -2325,6 +2568,7 @@ Catastrophic forgetting 2
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
 
 \size scriptsize
 1000
@@ -2336,6 +2580,7 @@ Catastrophic forgetting 2
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
 
 \size scriptsize
 1000
@@ -2347,109 +2592,7 @@ Catastrophic forgetting 2
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\size scriptsize
-100
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-100
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-Catastrophic forgetting 3
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-1000
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-100
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-100
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-1000
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-Passive forgetting 1
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-1000
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
+\align center
 
 \size scriptsize
 0
@@ -2461,6 +2604,7 @@ Passive forgetting 1
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
 
 \size scriptsize
 100
@@ -2472,6 +2616,155 @@ Passive forgetting 1
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
+
+\size scriptsize
+100
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\align center
+
+\size scriptsize
+Catastrophic forgetting 3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\align center
+
+\size scriptsize
+1000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\align center
+
+\size scriptsize
+100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\align center
+
+\size scriptsize
+900
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\align center
+
+\size scriptsize
+100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\align center
+
+\size scriptsize
+1000
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\align center
+
+\size scriptsize
+Passive forgetting 1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\align center
+
+\size scriptsize
+1000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\align center
+
+\size scriptsize
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\align center
+
+\size scriptsize
+1000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\align center
+
+\size scriptsize
+100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\align center
 
 \size scriptsize
 1100
@@ -2485,6 +2778,7 @@ Passive forgetting 1
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
 
 \size scriptsize
 Passive forgetting 2
@@ -2496,6 +2790,7 @@ Passive forgetting 2
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
 
 \size scriptsize
 1000
@@ -2507,6 +2802,7 @@ Passive forgetting 2
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
 
 \size scriptsize
 100
@@ -2518,6 +2814,19 @@ Passive forgetting 2
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
+
+\size scriptsize
+900
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\align center
 
 \size scriptsize
 100
@@ -2529,6 +2838,7 @@ Passive forgetting 2
 \begin_inset Text
 
 \begin_layout Plain Layout
+\align center
 
 \size scriptsize
 1000
@@ -2585,23 +2895,15 @@ name "tab:Number-of-patterns"
 
 \begin_layout Standard
 \begin_inset Float figure
-placement h
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
-\align left
+\align center
 \begin_inset Graphics
 	filename figures/energy_bar.png
-	scale 42
-
-\end_inset
-
-
-\begin_inset Graphics
-	filename figures/energy_forgetting_line.png
-	scale 42
+	scale 55
 
 \end_inset
 
@@ -2638,31 +2940,18 @@ Forgetting in perceptron and energy consumption for future learning
 \end_inset
 
 .
- (Right) The energy consumption measured over a range of decay values from
- 
-\begin_inset Formula $\left.10^{-6}\right.$
-\end_inset
-
- to 
-\begin_inset Formula $\left.5*10^{-6}\right.$
-\end_inset
-
- for passive forgetting.
- The dashed lines represent the energy values for benchmark and three learning
- algorithms with catastrophic forgetting.
  The energy data points in both the graphs is an average value of 
 \begin_inset Formula $\left.50\right.$
 \end_inset
 
- runs.
- 
+ runs 
 \begin_inset CommandInset label
 LatexCommand label
 name "fig:Forgetting-energy"
 
 \end_inset
 
-
+.
 \end_layout
 
 \end_inset
@@ -2730,7 +3019,7 @@ noprefix "false"
 
 \end_inset
 
- (left)) for passive forgetting algorithms.
+) for passive forgetting algorithms.
  The total number of patterns used for passive forgetting 2 is less than
  the patterns used for passive forgetting 1.
  Intuitively, it appears that the gradual decay of weights at every epoch
@@ -2753,12 +3042,82 @@ noprefix "false"
 
 \end_inset
 
- (left)).
+).
  On the other hand, passive forgetting 2 with a combination of decay in
  weights and intentional forgetting consumes less energy than the benchmark.
  This combination gives the perceptron a little leeway to learn the new
  patterns more effectively than if it had learnt all of them at once (benchmark).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/energy_forgetting_line.png
+	scale 55
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+Forgetting and energy consumption for future learning over a range of decay
+ rates
+\end_layout
+
+\end_inset
+
+The energy consumption measured over a range of decay values from 
+\begin_inset Formula $\left.10^{-6}\right.$
+\end_inset
+
+ to 
+\begin_inset Formula $\left.5*10^{-6}\right.$
+\end_inset
+
+ for passive forgetting.
+ The dashed lines represent the energy values for benchmark and three learning
+ algorithms with catastrophic forgetting.
+ The energy data points in both the graphs is an average value of 
+\begin_inset Formula $\left.50\right.$
+\end_inset
+
+ runs.
  
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:forgetting-energy-decay"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2778,14 +3137,14 @@ I extended this analysis over a range of decay values (
  accuracy (figure 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "fig:Forgetting-energy"
+reference "fig:forgetting-energy-decay"
 plural "false"
 caps "false"
 noprefix "false"
 
 \end_inset
 
- (right)).
+)).
  The energy values of catastrophic forgetting algorithms are not affected
  by this as they are not dependent on decay values.
  The passive forgetting 2 algorithm conserved energy and the amount of energy
@@ -2931,7 +3290,7 @@ bibname{References}
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
 btprint "btPrintCited"
-bibfiles "references/perceptron,references/energy-efficient-synaptic-plasticity,references/overcoming-catastrophic-forgetting-in-neural-networks,references/catastrophic-forgetting,references/stability-plasticity,references/continual-learning-review,references/biology_of_forgetting,references/a-simple-weight-decay-can-improve-generalization,references/chaotic_nn,references/cajal,references/hebb,references/short-term,references/ltp,references/brea,references/persistence_and_transience,references/a-cost-of-long-term-memory-in-drosophila,references/Primo_BibTeX_Export,references/food-shortage,references/PKM,references/synaptic-consolidation,references/per-capacity,references/suppression"
+bibfiles "references/perceptron,references/energy-efficient-synaptic-plasticity,references/overcoming-catastrophic-forgetting-in-neural-networks,references/catastrophic-forgetting,references/stability-plasticity,references/continual-learning-review,references/biology_of_forgetting,references/a-simple-weight-decay-can-improve-generalization,references/chaotic_nn,references/cajal,references/hebb,references/short-term,references/ltp,references/brea,references/persistence_and_transience,references/a-cost-of-long-term-memory-in-drosophila,references/Primo_BibTeX_Export,references/food-shortage,references/PKM,references/synaptic-consolidation,references/per-capacity,references/suppression,references/purkinje"
 options "apalike"
 
 \end_inset
