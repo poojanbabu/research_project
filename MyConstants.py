@@ -58,6 +58,7 @@ BENCHMARK_FORGETTING = '/benchmark'
 CAT_FORGETTING_1 = '/cat_forgetting_1'
 CAT_FORGETTING_2 = '/cat_forgetting_2'
 CAT_FORGETTING_3 = '/cat_forgetting_3'
+CAT_FORGETTING_4 = '/cat_forgetting_4'
 PASSIVE_FORGETTING_1 = '/active_forgetting_1'
 PASSIVE_FORGETTING_2 = '/active_forgetting_2'
 

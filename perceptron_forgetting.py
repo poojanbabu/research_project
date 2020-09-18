@@ -6,7 +6,7 @@ import numpy as np
 
 def main():
     decay_rates_lLTP = np.logspace(-6, -5, 21)
-    dir_name = '/types_pre_final'
+    dir_name = '/types_final_Sep18'
     helper.perceptron_forgetting_wrapper(nDimension=1000, nPattern=1000, dir_name=dir_name, new_patterns=100,
                                          n_iter=10, decay_rates_lLTP=decay_rates_lLTP)
 

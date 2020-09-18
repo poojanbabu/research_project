@@ -470,6 +470,20 @@ def perceptron_cat_forgetting_3(nDimension, n_iter, new_patterns_count, Per):
     return accuracy, energy
 
 
+def perceptron_cat_forgetting_4(nDimension, new_patterns_count, Per):
+    Per.initialize_weights = False
+
+    # Generate new patterns
+    pattern, pattern_answer = create_patterns(new_patterns_count, nDimension, 1)
+    Per.pattern = pattern[0]
+    Per.pattern_answer = pattern_answer[0]
+    Per.nPattern = len(Per.pattern_answer)
+
+    energy, energy_eLTP, energy_lLTP, error, epoch, accuracy, epoch_updates, energy_updates = Per.AlgoStandard()
+
+    return accuracy, energy
+
+
 def perceptron_active_forgetting_1(nDimension, new_patterns_count, decay_rate, Per):
     Per.initialize_weights = False
     Per.decay_lLTP = decay_rate
@@ -536,6 +550,9 @@ def perceptron_forgetting(iProcess, **kwargs):
     # Catastrophic forgetting 3
     cat_forgetting_3 = Forgetting(nRun, output_path + Constants.CAT_FORGETTING_3, n_iter=n_iter)
 
+    # Catastrophic forgetting 4
+    cat_forgetting_4 = Forgetting(nRun, output_path + Constants.CAT_FORGETTING_4)
+
     # Base training values
     arr_energy = np.zeros(shape=nRun)
 
@@ -593,11 +610,20 @@ def perceptron_forgetting(iProcess, **kwargs):
         cat_forgetting_3.accuracy[iRun] = accuracy
         cat_forgetting_3.energy[iRun] = energy
 
+        #### Catastrophic forgetting - 4 ####
+        Per = copy.deepcopy(base_per_obj)
+        accuracy, energy = perceptron_cat_forgetting_4(nDimension, 1000, Per)
+        logger.info(
+            f"Process: {iProcess} perceptron_cat_forgetting_2: Run: {iRun} energy: {energy} accuracy: {accuracy}")
+        cat_forgetting_4.accuracy[iRun] = accuracy
+        cat_forgetting_4.energy[iRun] = energy
+
     # Save all the output values to files.
     benchmark_forgetting.save_proc_output(iProcess)
     cat_forgetting_1.save_proc_output(iProcess)
     cat_forgetting_2.save_proc_output(iProcess)
     cat_forgetting_3.save_proc_output(iProcess)
+    cat_forgetting_4.save_proc_output(iProcess)
 
     np.savetxt(output_path + Constants.ENERGY_FILE_PROC.format(str(iProcess)), arr_energy)
 
@@ -705,6 +731,9 @@ def combine_perceptron_forgetting_results(**kwargs):
     # Catastrophic forgetting 3
     cat_forgetting_3_all = Forgetting(nRun * nProcess, output_path + Constants.CAT_FORGETTING_3, n_iter=n_iter)
 
+    # Catastrophic forgetting 4
+    cat_forgetting_4_all = Forgetting(nRun * nProcess, output_path + Constants.CAT_FORGETTING_4)
+
     # Energy used in base training
     arr_base_energy = np.zeros(shape=(nProcess * nRun))
 
@@ -744,6 +773,14 @@ def combine_perceptron_forgetting_results(**kwargs):
         cat_forgetting_3_all.energy[start_index:end_index, :] = arr_energy
         cat_forgetting_3_all.accuracy[start_index:end_index, :] = arr_accuracy
 
+        # 5. Catastrophic forgetting - 4
+        arr_energy = np.loadtxt(output_path + Constants.CAT_FORGETTING_4 +
+                                Constants.ENERGY_FILE_PROC.format(str(iProcess)))
+        arr_accuracy = np.loadtxt(output_path + Constants.CAT_FORGETTING_4 +
+                                  Constants.ACCURACY_FILE_PROC.format(str(iProcess)))
+        cat_forgetting_4_all.energy[start_index:end_index] = arr_energy.reshape(-1, 1)
+        cat_forgetting_4_all.accuracy[start_index:end_index] = arr_accuracy.reshape(-1, 1)
+
         # Base energy
         arr_energy = np.loadtxt(output_path + Constants.ENERGY_FILE_PROC.format(str(iProcess)))
         arr_base_energy[start_index:end_index] = arr_energy
@@ -767,6 +804,11 @@ def combine_perceptron_forgetting_results(**kwargs):
                np.array([np.mean(cat_forgetting_2_all.energy)]))
     np.savetxt(output_path + Constants.CAT_FORGETTING_2 + Constants.ACCURACY_FILE,
                np.array([np.mean(cat_forgetting_2_all.accuracy)]))
+
+    np.savetxt(output_path + Constants.CAT_FORGETTING_4 + Constants.ENERGY_FILE,
+               np.array([np.mean(cat_forgetting_4_all.energy)]))
+    np.savetxt(output_path + Constants.CAT_FORGETTING_4 + Constants.ACCURACY_FILE,
+               np.array([np.mean(cat_forgetting_4_all.accuracy)]))
 
     np.savetxt(output_path + Constants.CAT_FORGETTING_3 + Constants.ENERGY_FILE, arr_mean_energy_wo_decay)
     np.savetxt(output_path + Constants.CAT_FORGETTING_3 + Constants.ACCURACY_FILE, arr_mean_accuracy_wo_decay)

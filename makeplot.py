@@ -486,13 +486,14 @@ def plot_forgetting_all_types(output_path, plot_path):
     cat_forgetting_1 = np.loadtxt(output_path + Constants.CAT_FORGETTING_1 + Constants.ENERGY_FILE)
     cat_forgetting_2 = np.loadtxt(output_path + Constants.CAT_FORGETTING_2 + Constants.ENERGY_FILE)
     cat_forgetting_3 = np.loadtxt(output_path + Constants.CAT_FORGETTING_3 + Constants.ENERGY_FILE)[0]
+    cat_forgetting_4 = np.loadtxt(output_path + Constants.CAT_FORGETTING_4 + Constants.ENERGY_FILE)
 
     passive_forgetting_1 = np.ones(len(decay_rates_lLTP))
     passive_forgetting_2 = np.ones(len(decay_rates_lLTP))
 
     base_energy = np.loadtxt(output_path + Constants.ENERGY_FILE)
 
-    energy_arr = [benchmark_forgetting, cat_forgetting_1, cat_forgetting_2, cat_forgetting_3]
+    energy_arr = [benchmark_forgetting, cat_forgetting_1, cat_forgetting_2, cat_forgetting_3, cat_forgetting_4]
     for index in range(len(decay_rates_lLTP)):
         decay_rate = decay_rates_lLTP[index]
 
@@ -505,13 +506,13 @@ def plot_forgetting_all_types(output_path, plot_path):
             energy_arr.append(passive_forgetting_2[index])
 
     labels = ['Benchmark', 'Catastrophic forgetting 1', 'Catastrophic forgetting 2', 'Catastrophic forgetting 3',
-              'Passive forgetting 1', 'Passive forgetting 2']
-    colors = ['gray', palette(4), palette(6), palette(8), palette(0), palette(12)]
+              'Catastrophic forgetting 4', 'Passive forgetting 1', 'Passive forgetting 2']
+    colors = ['gray', palette(4), palette(6), palette(8), palette(10), palette(0), palette(12)]
     x_pos = [i for i, _ in enumerate(labels)]
     for i in range(len(x_pos)):
         plt.bar(x_pos[i], energy_arr[i], color=colors[i], alpha=0.7, label=labels[i])
-    plt.axhline(y=base_energy, color='black', lineStyle='--', alpha=0.7, linewidth=2,
-                label='Initial training - 1000 patterns')
+    # plt.axhline(y=base_energy, color='black', lineStyle='--', alpha=0.7, linewidth=2,
+    #             label='Initial training - 1000 patterns')
     plt.ylabel('Energy')
     # plt.ylim(0, 1e6)
     plt.legend()
@@ -541,6 +542,8 @@ def plot_forgetting_all_types(output_path, plot_path):
                 label=labels[2])
     plt.axhline(y=cat_forgetting_3, color=palette(8), lineStyle='--', alpha=0.7, linewidth=2,
                 label=labels[3])
+    plt.axhline(y=cat_forgetting_4, color=palette(10), lineStyle='--', alpha=0.7, linewidth=2,
+                label=labels[4])
 
     plt.figure(fig2.number)
     plt.axhline(y=benchmark_forgetting, color='gray', lineStyle='--', alpha=0.7, linewidth=2, label=labels[0])
@@ -550,6 +553,8 @@ def plot_forgetting_all_types(output_path, plot_path):
                 label=labels[2])
     plt.axhline(y=cat_forgetting_3, color=palette(8), lineStyle='--', alpha=0.7, linewidth=2,
                 label=labels[3])
+    plt.axhline(y=cat_forgetting_4, color=palette(10), lineStyle='--', alpha=0.7, linewidth=2,
+                label=labels[4])
 
     plt.figure(fig1.number)
     plt.xlabel('Decay rates')
