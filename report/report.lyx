@@ -125,11 +125,11 @@ Abstract
 \end_layout
 
 \begin_layout Standard
-The human brain only weighs 2% of the total body mass, but is responsible
+The human brain only weighs 2% of the total body mass but is responsible
  for 20% of the body's resting metabolism.
  Therefore, it is critical that the brain is an energy-efficient organ.
  Theoretical evidence has suggested that the energy cost to form new memories
- rises steeply with the amount of memories already stored in the system.
+ rises steeply with the number of memories already stored in the system.
  Thus, the brain might have mechanisms to lower the memory load in order
  to decrease the energy consumption for future learning.
  That is, the brain forgets some memories to make future learning more energy-ef
@@ -137,11 +137,11 @@ ficient.
  In this project, I study the impact of forgetting on the amount of energy
  expended on future learning and network performance using a single-neuron
  model called the perceptron.
- By implementing forgetting as an exponential decay of weights of the perceptron
-, I show that the maximum capacity of the perceptron decreases with increase
+ By implementing forgetting as exponential decay of weights of the perceptron,
+ I show that the maximum capacity of the perceptron decreases with an increase
  in decay rate.
  I devise a method to measure the accuracy of the perceptron as a function
- of decay value, and show that accuracy and learning time decreases with
+ of decay value and show that accuracy and learning time decreases with
  increase in the decay rate, and energy increases with increase in decay
  rate.
  Lastly, I implement training schedules that would lead to catastrophic
@@ -345,7 +345,7 @@ literal "false"
 As memories start to accumulate in the brain over time, it may be beneficial
  for the brain to have a mechanism to eliminate memories that are obsolete.
  For example, retaining outdated memories might impede judgement and make
- it difficult to adjust to changing environment.
+ it difficult to adjust to a changing environment.
  Preserving strong and disabling memories associated with brain disorders
  like post-traumatic stress disorder (PTSD) can also be debilitating.
  This phenomenon of getting rid of unwanted memories, called forgetting,
@@ -431,7 +431,7 @@ literal "false"
 
 \begin_layout Standard
 Learning and memory, specifically long-term memory, formed through synaptic
- plasticity is an energy intensive process 
+ plasticity is an energy-intensive process 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "Mery1148"
@@ -452,7 +452,7 @@ literal "false"
 
 .
  Another study on Drosophila showed that under food shortage, the fly's
- brain disables the formation of energy intensive long-term memories as
+ brain disables the formation of energy-intensive long-term memories as
  a strategy for survival 
 \begin_inset CommandInset citation
 LatexCommand cite
@@ -553,7 +553,7 @@ literal "false"
 
 .
  This poses a problem for the networks to learn a sequence of tasks where
- learning new information may degrade the performance of previous learned
+ learning new information may degrade the performance of previously learned
  tasks due to information loss.
  This property of the networks to forget the old information when learning
  the new information is called 
@@ -836,7 +836,7 @@ literal "false"
 \end_inset
 
 .
- However, when there is a decay on the synaptic weights, the maximum capacity
+ However, when there is decay on the synaptic weights, the maximum capacity
  of the perceptron will be less than the critical value.
  The decay on the synaptic weights during the training process would forget
  (or unlearn) some of the previously learned patterns resulting in the maximum
@@ -850,7 +850,7 @@ literal "false"
 \begin_inset Formula $\left.N\right.$
 \end_inset
 
- and calculate the capacity as a function of decay rate (Figure 
+ and calculate the capacity as a function of the decay rate (Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:Maximum-capacity"
@@ -880,7 +880,7 @@ noprefix "false"
 \end_inset
 
  (left)).
- The total energy decreases with increase in the decay value.
+ The total energy decreases with the increase in the decay value.
  The larger the decay value, fewer the weight updates and lesser the energy
  required to train all the patterns presented to the perceptron due to decrease
  in the memory capacity.
@@ -893,7 +893,8 @@ noprefix "false"
 \end_layout
 
 \begin_layout Standard
-The plot showing energy consumed per pattern is interesting (Figure 
+The plot showing the energy consumed per pattern is interesting (Figure
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:Energy-max-capacity"
@@ -971,7 +972,7 @@ noprefix "false"
 \begin_inset Formula $\left.N\right.$
 \end_inset
 
- decrease faster with increase in decay value in contrast to lower 
+ decrease faster with the increase in decay value in contrast to lower 
 \begin_inset Formula $\left.N\right.$
 \end_inset
 
@@ -1954,7 +1955,7 @@ noprefix "false"
  A similar pattern can be observed for epochs or the learning time of the
  perceptron, where the learning time is high for low decay rates as the
  perceptron has a larger capacity, whereas as the decay value increases,
- the perceptron capacity reduces and so does the learning time, until it
+ the perceptron capacity reduces and so does the learning time until it
  plateaus for high decay values.
 \end_layout
 
@@ -2470,7 +2471,8 @@ noprefix "false"
  set contains only the new patterns with all the originally trained patterns
  free to be forgotten.
  The perceptron takes fewer epochs to quickly learn the new patterns which
- is far less than the patterns in the original set, thus spending less energy.
+ are far less than the patterns in the original set, thus spending less
+ energy.
  
 \end_layout
 
@@ -3177,7 +3179,7 @@ The last two algorithms are implemented with passive forgetting.
 \begin_inset Formula $\left.1000\right.$
 \end_inset
 
- patterns with a decay on the synaptic weights, then train 
+ patterns with decay on the synaptic weights, then train 
 \begin_inset Formula $\left.100\right.$
 \end_inset
 
@@ -3191,7 +3193,7 @@ In the last algorithm, I first train the perceptron with
 \begin_inset Formula $\left.1000\right.$
 \end_inset
 
- patterns with a decay on the synaptic weights, then train with a new set
+ patterns with decay on the synaptic weights, then train with a new set
  of 
 \begin_inset Formula $\left.900\right.$
 \end_inset
@@ -3212,7 +3214,7 @@ passive forgetting 2.
  
 \emph default
 The objective of the two algorithms is to examine if the gradual decay of
- memories conserve any energy to benefit future learning.
+ memories conserves any energy to benefit future learning.
 \end_layout
 
 \begin_layout Standard
@@ -3243,7 +3245,7 @@ In order to clearly understand the energy consumption in these two scenarios,
  in the space of synaptic weights that classifies all the patterns.
  The search of synaptic weights follows a random walk until a solution for
  the weight vector is found, and the metabolic cost of learning is proportional
- to length of the random walk 
+ to the length of the random walk 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "Li714055"
@@ -3292,7 +3294,7 @@ It is now interesting to compare the results of catastrophic forgetting
 \begin_inset Formula $\left.900+100\right.$
 \end_inset
 
-) in the new training set, with only difference to the decay of weights
+) in the new training set, with the only difference to the decay of weights
  in the latter.
  As discussed above passive forgetting 2 performs better than the benchmark
  because the perceptron was allowed to forget 
@@ -3302,7 +3304,7 @@ It is now interesting to compare the results of catastrophic forgetting
  patterns catastrophically.
  However, it does not perform better than catastrophic forgetting 3 because
  the additional decay of synaptic weights in passive forgetting 2 further
- contributes to consume more energy.
+ contributes to consuming more energy.
 \end_layout
 
 \begin_layout Standard
@@ -3401,13 +3403,13 @@ noprefix "false"
  by this as they are not dependent on the decay values.
  The passive forgetting 2 algorithm conserves energy compared to benchmark
  because the perceptron was allowed to forget some of the prior memories.
- The amount of energy conserved decreases with increase in the decay value
- till 
+ The amount of energy conserved decreases with the increase in the decay
+ value till 
 \begin_inset Formula $\left.4.5*10^{-6}\right.$
 \end_inset
 
  after which there is no gain in energy savings.
- This is because the weights decays faster and the perceptron has to spend
+ This is because the weights decay faster and the perceptron has to spend
  more energy into updating the weights to learn new patterns.
  The passive forgetting 1 algorithm did not conserve energy for any value
  of decay showing that forgetting with only decay on weights is not beneficial
@@ -3422,32 +3424,32 @@ Discussion
 
 \begin_layout Standard
 Synaptic plasticity is known to be the neural basis of learning in animals.
- The synapses strengthen during learning and leads to the formation of short-ter
-m and long-term memories.
+ The synapses strengthen during learning and lead to the formation of short-term
+ and long-term memories.
  Forgetting plays an integral part in the maintenance of these memories
  and helps the animals to adapt to varying environments.
- The formation of long-term memories through synaptic plasticity is an energy
- intensive process.
+ The formation of long-term memories through synaptic plasticity is an energy-in
+tensive process.
  It has been shown theoretically that networks with fewer memories use less
  energy on future learning, therefore I wondered if forgetting can help
  networks save energy on learning.
- With the help of a perceptron, I induced algorithms with passive forgetting,
+ With the help of a perceptron, I induced algorithms with passive forgetting
  and training schedules that led to catastrophic forgetting.
  Firstly, I implemented passive forgetting as a constant decay on the synaptic
  weights of the perceptron and studied the maximum capacity of a perceptron.
- I showed that for different number of synaptic connections, the maximum
- capacity of the perceptron decreased with increase in the decay value.
+ I showed that for a different number of synaptic connections, the maximum
+ capacity of the perceptron decreased with the increase in the decay value.
  I also showed that the energy required to train the perceptron to its maximum
- capacity with passive forgetting decreased with increase in the decay value
- due to reduction in training time as the capacity decreased.
- Even though, biologically, not all the synaptic connections of a neuron
+ capacity with passive forgetting decreased with the increase in the decay
+ value due to a reduction in training time as the capacity decreased.
+ Even though biologically, not all the synaptic connections of a neuron
  contribute to memories, the result signifies the limitations on the capacity
  of forgetful networks to hold memories.
 \end_layout
 
 \begin_layout Standard
 Secondly, I devised a method to measure the accuracy of the perceptron as
- a function of decay rate.
+ a function of the decay rate.
  I measured the accuracy, learning time, and the energy consumed by the
  perceptron and showed that the accuracy and learning time decreased with
  increase in decay till it flattened for high decay values, and the total
@@ -3459,11 +3461,11 @@ Finally, in order to investigate if old patterns that are allowed to be
  forgotten in the perceptron saved energy to learn new patterns, I used
  the passive forgetting and interference mechanisms leading to catastrophic
  forgetting in the brain and implemented algorithms to train the perceptron.
- I demonstrated that catastrophic forgetting algorithms conserved significant
+ I demonstrated that catastrophic forgetting algorithms conserved a significant
  amount of energy for future learning.
  Biologically, the intentional forgetting and interference mechanisms used
  in catastrophic forgetting algorithms is observed in an fMRI study of word-pict
-ure associations that showed suppression of non-practiced memories by the
+ure associations that showed suppression of non-practised memories by the
  way of forgetting by inhibition 
 \begin_inset CommandInset citation
 LatexCommand cite
@@ -3520,7 +3522,7 @@ More realistically, learning in animals is not a onetime phenomenon.
 In this study, energy is calculated by a parsimonious model with only the
  metabolic cost of synaptic plasticity as it offers a significant contribution.
  In reality, when synaptic connections are changed, neuronal properties
- are altered, which can lead to difference in energy consumption in the
+ are altered, which can lead to a difference in energy consumption in the
  networks.
  While we could incorporate these to calculate energy, the model becomes
  too complex to measure.
