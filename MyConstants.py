@@ -62,6 +62,7 @@ CAT_FORGETTING_4 = '/cat_forgetting_4'
 PASSIVE_FORGETTING_1 = '/passive_forgetting_1'
 PASSIVE_FORGETTING_2 = '/passive_forgetting_2'
 PASSIVE_FORGETTING_3 = '/passive_forgetting_3'
+PASSIVE_FORGETTING_4 = '/passive_forgetting_4'
 
 ################ PLOT ###################
 BASE_PLOT_PATH = HOME_DIR + '/Research_Project/Shared/Plot'

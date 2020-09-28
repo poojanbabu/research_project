@@ -491,6 +491,7 @@ def plot_forgetting_all_types(output_path, plot_path):
     passive_forgetting_1 = np.ones(len(decay_rates_lLTP))
     passive_forgetting_2 = np.ones(len(decay_rates_lLTP))
     passive_forgetting_3 = np.ones(len(decay_rates_lLTP))
+    passive_forgetting_4 = np.ones(len(decay_rates_lLTP))
 
     energy_arr = [benchmark_forgetting, cat_forgetting_1, cat_forgetting_2, cat_forgetting_3]
     for index in range(len(decay_rates_lLTP)):
@@ -502,14 +503,17 @@ def plot_forgetting_all_types(output_path, plot_path):
                                                  Constants.ENERGY_FILE)[0]
         passive_forgetting_3[index] = np.loadtxt(output_path + Constants.PASSIVE_FORGETTING_3 + '/' + str(decay_rate) +
                                                  Constants.ENERGY_FILE)
+        passive_forgetting_4[index] = np.loadtxt(output_path + Constants.PASSIVE_FORGETTING_4 + '/' + str(decay_rate) +
+                                                 Constants.ENERGY_FILE)
         if decay_rate == 1e-6:
             energy_arr.append(passive_forgetting_1[index])
             energy_arr.append(passive_forgetting_2[index])
             energy_arr.append(passive_forgetting_3[index])
+            energy_arr.append(passive_forgetting_4[index])
 
     labels = ['Benchmark', 'Catastrophic forgetting 1', 'Catastrophic forgetting 2', 'Catastrophic forgetting 3',
-              'Passive forgetting 1', 'Passive forgetting 2', 'Passive forgetting 3']
-    colors = ['gray', palette(4), palette(6), palette(8), palette(0), palette(12), palette(11)]
+              'Passive forgetting 1', 'Passive forgetting 2', 'Passive forgetting 3', 'Passive Forgetting 4']
+    colors = ['gray', palette(4), palette(6), palette(8), palette(0), palette(12), palette(11), palette(16)]
     x_pos = [i for i, _ in enumerate(labels)]
     for i in range(len(x_pos)):
         plt.bar(x_pos[i], energy_arr[i], color=colors[i], alpha=0.7, label=labels[i])
@@ -529,13 +533,16 @@ def plot_forgetting_all_types(output_path, plot_path):
         plt.bar(pos[i], passive_forgetting_1[i], width=width, alpha=0.7, color=palette(0), label=labels[4])
         plt.bar(pos[i] + width, passive_forgetting_2[i], width=width, alpha=0.7, color=palette(12),
                 label=labels[5])
-        plt.bar(pos[i] + width, passive_forgetting_3[i], width=width, alpha=0.7, color=palette(11),
+        plt.bar(pos[i] + 2 * width, passive_forgetting_3[i], width=width, alpha=0.7, color=palette(11),
                 label=labels[6])
+        plt.bar(pos[i] + 3 * width, passive_forgetting_4[i], width=width, alpha=0.7, color=palette(16),
+                label=labels[7])
 
         plt.figure(fig2.number)
         plt.plot(decay_rates_lLTP, passive_forgetting_1, color=palette(0), label=labels[4], marker='o')
         plt.plot(decay_rates_lLTP, passive_forgetting_2, color=palette(12), label=labels[5], marker='o')
         plt.plot(decay_rates_lLTP, passive_forgetting_3, color=palette(11), label=labels[6], marker='o')
+        plt.plot(decay_rates_lLTP, passive_forgetting_4, color=palette(16), label=labels[7], marker='o')
 
     plt.figure(fig1.number)
     plt.axhline(y=benchmark_forgetting, color='gray', lineStyle='--', alpha=0.7, linewidth=2, label=labels[0])
