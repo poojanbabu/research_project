@@ -582,6 +582,56 @@ def plot_forgetting_all_types(output_path, plot_path):
     plt.close()
 
 
+def plot_forgetting_all_types_subsets(output_path, plot_path):
+    Path(plot_path).mkdir(parents=True, exist_ok=True)
+    plt.style.use('seaborn-darkgrid')
+    palette = plt.get_cmap('tab20')
+    n_subsets = np.loadtxt(output_path + Constants.TRAINING_SUBSETS).astype(int)
+    decay_rate = 1e-6
+
+    lineStyle = {"linestyle": "-", "linewidth": 2, "markeredgewidth": 2, "elinewidth": 1, "capsize": 3,
+                 "ecolor": "gray"}
+
+    benchmark_forgetting = np.zeros(shape=len(n_subsets))
+    benchmark_forgetting_std = np.zeros(shape=len(n_subsets))
+
+    passive_forgetting_3 = np.zeros(shape=len(n_subsets))
+    passive_forgetting_3_std = np.zeros(shape=len(n_subsets))
+
+    passive_forgetting_4 = np.zeros(shape=len(n_subsets))
+    passive_forgetting_4_std = np.zeros(shape=len(n_subsets))
+
+    for i, i_subsets in enumerate(n_subsets):
+        benchmark_forgetting[i] = np.loadtxt(output_path + Constants.BENCHMARK_FORGETTING + '/' + str(i_subsets) +
+                                             Constants.ENERGY_FILE)
+        benchmark_forgetting_std[i] = np.loadtxt(output_path + Constants.BENCHMARK_FORGETTING + '/' + str(i_subsets) +
+                                                 Constants.STD_ENERGY_FILE)
+        passive_forgetting_3[i] = np.loadtxt(output_path + Constants.PASSIVE_FORGETTING_3 + '/' + str(decay_rate) +
+                                             '/' + str(i_subsets) + Constants.ENERGY_FILE)
+        passive_forgetting_3_std[i] = np.loadtxt(output_path + Constants.PASSIVE_FORGETTING_3 + '/' + str(decay_rate) +
+                                                 '/' + str(i_subsets) + Constants.STD_ENERGY_FILE)
+        passive_forgetting_4[i] = np.loadtxt(output_path + Constants.PASSIVE_FORGETTING_4 + '/' + str(decay_rate) +
+                                             '/' + str(i_subsets) + Constants.ENERGY_FILE)
+        passive_forgetting_4_std[i] = np.loadtxt(output_path + Constants.PASSIVE_FORGETTING_4 + '/' + str(decay_rate) +
+                                                 '/' + str(i_subsets) + Constants.STD_ENERGY_FILE)
+
+    plt.plot(n_subsets, benchmark_forgetting, label='Benchmark', color=palette(0))
+    plt.errorbar(n_subsets, passive_forgetting_3, yerr=passive_forgetting_3_std, label='Passive forgetting 3',
+                 **lineStyle, color=palette(2))
+    plt.errorbar(n_subsets, passive_forgetting_4, yerr=passive_forgetting_4_std, label='Passive forgetting 4',
+                 **lineStyle, color=palette(4))
+
+    plt.xlabel('# Subsets')
+    plt.ylabel('Energy')
+    plt.xticks(n_subsets)
+    handles, labels = plt.gca().get_legend_handles_labels()
+    by_label = OrderedDict(zip(labels, handles))
+    plt.legend(by_label.values(), by_label.keys())
+    plt.tight_layout()
+    plt.savefig(plot_path + Constants.ENERGY_FORGETTING_BAR_PLOT)
+    plt.close()
+
+
 def main():
     nDimensions = [1500, 1000, 500, 250]
     # for i in range(len(nDimensions)):

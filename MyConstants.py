@@ -18,6 +18,7 @@ EPOCH_FILE = '/epoch.txt'
 PATTERNS_FILE = "/patterns.txt"
 ACCURACY_FILE = '/accuracy.txt'
 ACCURACY_WITHOUT_DECAY_FILE = '/accuracy_without_decay.txt'
+TRAINING_SUBSETS = '/training_subsets.txt'
 
 # Mean values from individual process
 ENERGY_FILE_PROC = '/energy_{}.txt'

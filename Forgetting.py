@@ -6,21 +6,27 @@ import Code.MyConstants as Constants
 
 
 class Forgetting:
-    def __init__(self, nRun, output_path, decay_rate=0.0, n_iter=1, initialize_all=False):
-        self.energy = np.nan * np.ones(shape=(nRun, n_iter))
-        self.accuracy = np.nan * np.ones(shape=(nRun, n_iter))
+    def __init__(self, nRun, output_path, n_subsets=1, decay_rate=0.0, n_iter=1, initialize_all=False):
+        self.energy = np.zeros(shape=(nRun, n_iter))
+        self.accuracy = np.zeros(shape=(nRun, n_iter))
         self.decay_lLTP = decay_rate
+        self.n_subsets = n_subsets
         self.output_path = output_path
         self.initialize_all = initialize_all
 
         if self.decay_lLTP != 0.0:
-            self.output_path = self.output_path + '/' + str(self.decay_lLTP)
+            if self.n_subsets > 1:
+                self.output_path = self.output_path + '/' + str(self.decay_lLTP) + '/' + str(self.n_subsets)
+            else:
+                self.output_path = self.output_path + '/' + str(self.decay_lLTP)
+        elif self.n_subsets > 1:
+            self.output_path = self.output_path + '/' + str(self.n_subsets)
 
         if initialize_all:
-            self.energy_eLTP = np.nan * np.ones(shape=(nRun, n_iter))
-            self.energy_lLTP = np.nan * np.ones(shape=(nRun, n_iter))
-            self.error = np.nan * np.ones(shape=(nRun, n_iter))
-            self.epoch = np.nan * np.ones(shape=(nRun, n_iter))
+            self.energy_eLTP = np.zeros(shape=(nRun, n_iter))
+            self.energy_lLTP = np.zeros(shape=(nRun, n_iter))
+            self.error = np.zeros(shape=(nRun, n_iter))
+            self.epoch = np.zeros(shape=(nRun, n_iter))
             self.epoch_updates = []
             self.energy_updates = []
 
